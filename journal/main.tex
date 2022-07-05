@@ -1,0 +1,153 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2021
+
+% ready for submission
+% \usepackage{style}
+\usepackage[nonatbib]{style}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2021}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2021}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2021}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{dsfont}
+\usepackage{amsthm}
+\usepackage{txfonts}
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{\mathbb V ar}}
+\newcommand{\Cov}{\operatorname{\mathbb C ov}}
+%\newcommand{\EE}[2][]{\mathbb{E}_{#1}[#2]}
+%\newcommand{\odds}{\mathbb{O\,}}
+%\llbracket \rrbracket 
+\newtheorem{theorem}{Theorem}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=bibtex]{biblatex} %backend=biber
+\addbibresource{biblio.bib}
+
+
+
+
+\title{Journal}
+
+
+
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Introduction}
+	
+	Let $\mathcal{X}=\left\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{n}\right\}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, and $\theta$ an element of $\Theta$. We consider cost functions of the form:
+	$$
+	L(\theta)=\sum_{\boldsymbol{x} \in \mathcal{X}} f(x, \theta)
+	$$
+	
+	Let $\mathcal{S}=\left\{x_{s_{1}}, \ldots, x_{s_{m}}\right\}$ be a subset of $\mathcal{X}$ (possibly with repetitions). To each element $x_{s} \in \mathcal{S}$, associate a weight $\omega\left(x_{s}\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted subset $\mathcal{S}$ as:
+	$$
+	\hat{L}(\theta)=\sum_{\boldsymbol{x}_{s} \in \mathcal{S}} \omega\left(\boldsymbol{x}_{s}\right) f\left(\boldsymbol{x}_{s}, \theta\right) .
+	$$
+	\begin{definition}[Coreset]
+			Let $\epsilon \in {]}0,1{[}$. The weighted subset $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any parameter $\theta$, the estimated cost is equal to the exact cost up to a relative error:
+		$$
+		\forall \theta \in \Theta \quad\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
+		$$
+	\end{definition}
+
+An important consequence of the coreset property is the following
+$$
+(1-\epsilon) L\left(\theta^{\text {opt }}\right) \le(1-\epsilon) L\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \theta^{\text {opt }}\right) \le(1+\epsilon) L\left( \theta^{\text {opt }}\right)
+$$
+
+\begin{definition}[Sensitivity]
+	The sensitivity $\sigma_i$ of a datapoint $\boldsymbol{x}_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
+	$$
+	\begin{cases}
+		\sigma_{i}=\sup _{\theta \in \Theta} \frac{f\left(\boldsymbol{x}_{i}, \theta\right)}{L(\mathcal{X}, \theta)} \quad \in[0,1]\\
+			\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
+	\end{cases}
+$$
+\end{definition} 
+
+
+\section{Variance argument}
+\subsection{Multinomial case}
+Multinomial case $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ independent categorical sampling where $\mathbb P(x_i)  = q(x_i)$
+
+$$
+	\operatorname{Var}[\hat L(\theta)] =\frac{1}{m} \operatorname{Var}\left[\frac {f_{\theta}(x)} {q(x)}\right] 
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2}
+$$
+For any query $\theta \in \Theta$, the variance is minimized by
+$$
+q_{\theta}(x)=\frac{ f_{\theta}(x)}{\sum_{x^{\prime} \in \mathcal{X}}  f_{\theta}\left(x^{\prime}\right)},
+$$
+
+\subsection{DPP case}
+DPP case where $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. We have
+$$
+\operatorname{Var}[\hat L(\theta)]
+=\sum_{i, j}\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
+\quad \text{with} \quad
+\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]=
+\begin{cases}
+	\det\left(\mathrm{K}_{ij}\right)=\pi_{i} \pi_{j}-\mathrm{K}_{i j}^{2}, & \text{if } i \neq j \\
+	\mathbb{E}\left[\epsilon_{i}\right]=\pi_{i}, & \text{if } i = j
+\end{cases}
+$$
+
+
+
+Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
+$$
+\Var [\hat L(\theta)]=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{\mathrm{K}_{i j}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta^\top (\Pi^{-1}  - \tilde{K}) f_\theta 
+$$
+
+	
+For a Bernoulli process where $\mathbb P(x_i \in \mathcal S) = \pi_i$ independently, $K = \Pi$ then $\tilde K = I$. The DPP variance beats uniformly the Bernoulli process variance if $\tilde K$ dominates the identity i.e. 
+$$ \forall f_\theta, \, \Var [\hat L_{K}(\theta)] < \Var [\hat L_{\Pi}(\theta)] \iff \tilde K \succ I$$
+
+But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
+	
+	
+	
+	
+	\vfill
+	
+	
+	\printbibliography
+%	 \bibliographystyle{chicago}
+%	 \bibliography{biblio.bib}
+	
+\end{document}
