@@ -69,14 +69,14 @@
 	
 	\section{Introduction}
 	
-	Let $\mathcal{X}=\left\{\boldsymbol{x}_{1}, \ldots, \boldsymbol{x}_{n}\right\}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, and $\theta$ an element of $\Theta$. We consider cost functions of the form:
+	Let $\mathcal{X}=\left\{x_{1}, \ldots, x_{n}\right\}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, and $\theta$ an element of $\Theta$. We consider cost functions of the form:
 	$$
-	L(\theta)=\sum_{\boldsymbol{x} \in \mathcal{X}} f(x, \theta)
+	L(\theta)=\sum_{x \in \mathcal{X}} f(x, \theta)
 	$$
 	
-	Let $\mathcal{S}=\left\{x_{s_{1}}, \ldots, x_{s_{m}}\right\}$ be a subset of $\mathcal{X}$ (possibly with repetitions). To each element $x_{s} \in \mathcal{S}$, associate a weight $\omega\left(x_{s}\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted subset $\mathcal{S}$ as:
+	Let $\mathcal{S}=\left\{x_{s_{1}}, \ldots, x_{s_{m}}\right\}$ be a subset of $\mathcal{X}$ (possibly with repetitions). To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted subset $\mathcal{S}$ as:
 	$$
-	\hat{L}(\theta)=\sum_{\boldsymbol{x}_{s} \in \mathcal{S}} \omega\left(\boldsymbol{x}_{s}\right) f\left(\boldsymbol{x}_{s}, \theta\right) .
+	\hat{L}(\theta)=\sum_{x \in \mathcal{S}} \omega\left(x\right) f\left(x, \theta\right) .
 	$$
 	\begin{definition}[Coreset]
 			Let $\epsilon \in {]}0,1{[}$. The weighted subset $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any parameter $\theta$, the estimated cost is equal to the exact cost up to a relative error:
@@ -90,15 +90,6 @@ $$
 (1-\epsilon) L\left(\theta^{\text {opt }}\right) \le(1-\epsilon) L\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \theta^{\text {opt }}\right) \le(1+\epsilon) L\left( \theta^{\text {opt }}\right)
 $$
 
-\begin{definition}[Sensitivity]
-	The sensitivity $\sigma_i$ of a datapoint $\boldsymbol{x}_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
-	$$
-	\begin{cases}
-		\sigma_{i}=\sup _{\theta \in \Theta} \frac{f\left(\boldsymbol{x}_{i}, \theta\right)}{L(\mathcal{X}, \theta)} \quad \in[0,1]\\
-			\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
-	\end{cases}
-$$
-\end{definition} 
 
 
 \section{Variance argument}
@@ -109,9 +100,9 @@ $$
 	\operatorname{Var}[\hat L(\theta)] =\frac{1}{m} \operatorname{Var}\left[\frac {f_{\theta}(x)} {q(x)}\right] 
 	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2}
 $$
-For any query $\theta \in \Theta$, the variance is minimized by
+For any query $\theta \in \Theta$, the variance is reduced to 0 by
 $$
-q_{\theta}(x)=\frac{ f_{\theta}(x)}{\sum_{x^{\prime} \in \mathcal{X}}  f_{\theta}\left(x^{\prime}\right)},
+q_{\theta}(x):=\frac{ f_{\theta}(x)}{\sum_{x^{\prime} \in \mathcal{X}}  f_{\theta}\left(x^{\prime}\right)}
 $$
 
 \subsection{DPP case}
@@ -140,6 +131,38 @@ $$ \forall f_\theta, \, \Var [\hat L_{K}(\theta)] < \Var [\hat L_{\Pi}(\theta)] 
 
 But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
 	
+	
+
+\section{Sensitivity}
+\begin{definition}[Sensitivity]
+	The sensitivity $\sigma_i$ of a datapoint $\boldsymbol{x}_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
+	$$
+	\begin{cases}
+		\sigma_{i}=\sup_{\theta \in \Theta} q_{\theta}(x_i) = \sup _{\theta \in \Theta} \frac{f_{\theta}\left(\boldsymbol{x}_{i}\right)}{L(\theta)} \quad \in[0,1]\\
+		\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
+	\end{cases}
+	$$
+\end{definition} 
+
+Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let sample  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i}  \quad \in[0,1]$
+
+By Hoeffding's inequality, we thus have for any $\theta \in \Theta$ and $\varepsilon^{\prime}>0$
+$$
+\mathbb{P}\left[\left|\mathbb{E}\left[g_{\theta}(x)\right]-\frac{1}{m} \sum_{x \in \mathcal{S}} g_{Q}(x)\right|>\varepsilon^{\prime}\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right) .
+$$
+By definition, $\mathbb{E}\left[g_{\theta}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{C}} g_{Q}(x)=\frac{\operatorname{cost}(\mathcal{C}, Q)}{S \operatorname{cost}(\mathcal{X}, Q)}$. As such, for any $Q \in \mathcal{Q}$
+$$
+\mathbb{P}\left[|\operatorname{cost}(\mathcal{X}, Q)-\operatorname{cost}(\mathcal{C}, Q)|>\varepsilon^{\prime} S \operatorname{cost}(\mathcal{X}, Q)\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right)
+$$
+Hence, the set $\mathcal{C}$ satisfies the coreset property in (2.2) for any single query $Q \in \mathcal{Q}$ and $\varepsilon>0$ with probability at least $1-\delta$, if we choose
+$$
+m \geq \frac{S^{2}}{2 \varepsilon^{2}} \log \frac{2}{\delta}
+$$
+
+
+
+
+\section{SGD Paper}
 	
 	
 	
