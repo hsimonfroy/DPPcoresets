@@ -10,5 +10,5 @@ jobs:
         uses: dante-ev/latex-action@2021-A
         with:
           working_directory: journal
-          root_file: journal/main.tex
+          root_file: main.tex
           
