@@ -13,6 +13,8 @@ jobs:
           root_file: main.tex
       - name: Commit report
         run: |
+          git config --global user.name 'Hugo Simon'
+          git config --global user.email 'hsimonfroy@users.noreply.github.com'
           git commit -am "Automated report"
           git push
           
