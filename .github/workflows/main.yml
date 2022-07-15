@@ -15,6 +15,11 @@ jobs:
         run: |
           git config --global user.name 'Hugo Simon'
           git config --global user.email 'hsimonfroy@users.noreply.github.com'
+          git add main.pdf
           git commit -am "Automated report"
           git push
-          
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: PDF
+          path: main.pdf
