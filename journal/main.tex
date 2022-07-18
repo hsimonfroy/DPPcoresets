@@ -46,7 +46,6 @@
 \newcommand{\Var}{\operatorname{\mathbb V ar}}
 \newcommand{\Cov}{\operatorname{\mathbb C ov}}
 %\newcommand{\EE}[2][]{\mathbb{E}_{#1}[#2]}
-%\newcommand{\odds}{\mathbb{O\,}}
 %\llbracket \rrbracket 
 \newtheorem{theorem}{Theorem}
 \theoremstyle{definition}
@@ -80,9 +79,9 @@
 	$$
 	\begin{definition}[Coreset]
 			Let $\epsilon \in {]}0,1{[}$. The weighted subset $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any parameter $\theta$, the estimated cost is equal to the exact cost up to a relative error:
-		$$
-		\forall \theta \in \Theta \quad\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
-		$$
+		\begin{equation}
+			\forall \theta \in \Theta \quad\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
+		\end{equation}
 	\end{definition}
 
 An important consequence of the coreset property is the following
@@ -96,10 +95,11 @@ See \cite{bachem2017coresetML}.
 \subsection{Multinomial case}
 Multinomial case $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ independent categorical sampling where $\mathbb P(x_i)  = q(x_i)$
 
-$$
-	\operatorname{Var}[\hat L(\theta)] =\frac{1}{m} \operatorname{Var}\left[\frac {f_{\theta}(x)} {q(x)}\right] 
+\begin{equation}
+	\Var[\hat L(\theta)] =\frac{1}{m} \Var\left[\frac {f_{\theta}(x)} {q(x)}\right] 
 	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2}
-$$
+\end{equation}
+
 For any query $\theta \in \Theta$, the variance is reduced to 0 by
 $$
 q_{\theta}(x):=\frac{ f_{\theta}(x)}{\sum_{x^{\prime} \in \mathcal{X}}  f_{\theta}\left(x^{\prime}\right)}
@@ -108,12 +108,12 @@ $$
 \subsection{DPP case}
 DPP case where $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. We have
 $$
-\operatorname{Var}[\hat L(\theta)]
+\Var[\hat L(\theta)]
 =\sum_{i, j}\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
 \quad \text{with} \quad
 \mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]=
 \begin{cases}
-	\det\left(\mathrm{K}_{ij}\right)=\pi_{i} \pi_{j}-\mathrm{K}_{i j}^{2}, & \text{if } i \neq j \\
+	\det\left(K_{\{i, j\}}\right)=\pi_{i} \pi_{j}-K_{i j}^{2}, & \text{if } i \neq j \\
 	\mathbb{E}\left[\epsilon_{i}\right]=\pi_{i}, & \text{if } i = j
 \end{cases}
 $$
@@ -121,17 +121,34 @@ $$
 
 
 Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
-$$
-\Var [\hat L(\theta)]=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{\mathrm{K}_{i j}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta^\top (\Pi^{-1}  - \tilde{K}) f_\theta 
-$$
+
+\begin{equation}
+	\Var [\hat L(\theta)]=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{K_{i j}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta^\top (\Pi^{-1}  - \tilde{K}) f_\theta 
+\end{equation}
+
 
 	
 For a Bernoulli process where $\mathbb P(x_i \in \mathcal S) = \pi_i$ independently, $K = \Pi$ then $\tilde K = I$. The DPP variance beats uniformly the Bernoulli process variance if $\tilde K$ dominates the identity i.e. 
-$$ \forall f_\theta, \, \Var [\hat L_{K}(\theta)] < \Var [\hat L_{\Pi}(\theta)] \iff \tilde K \succ I$$
+\begin{equation}
+	\forall f_\theta, \, \Var [\hat L_{K}(\theta)] < \Var [\hat L_{\Pi}(\theta)] \iff \tilde K \succ I
+\end{equation}
 
 But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
-	
-	
+
+
+\subsection{m-DPP case}
+
+The marginals $b_{i} \equiv \mathbb{E}\left[m_{i}\right]$ have an analytic form. Moreover, let be defined
+$$
+C_{i j}=\frac{\mathbb{E}\left[\left(m_{i}-b_{i}\right)\left(m_{j}-b_{j}\right)\right]}{\mathbb{E}\left[m_{i}\right] \mathbb{E}\left[m_{j}\right]}=\frac{\mathbb{E}\left[m_{i} m_{j}\right]}{b_{i} b_{j}}-1
+$$
+
+\begin{equation}
+	\operatorname{Var}\left(g^{*}\right)=\frac{1}{m^{2}} \sum_{i=1}^{N}\left(b_{i}-b_{i}^{2}\right) f_\theta(x_i)^2
+	+\frac{1}{m^{2}} \sum_{i \neq j} C_{i j} b_{i} b_{j} f_\theta(x_i)^{\top} f_\theta(x_j)
+\end{equation}
+
+So \cite{zhang2017dppminibatch} assume $\forall i\neq j, \quad  C_{ij}f_\theta(x_i)f_\theta(x_j) <0$
 
 \section{Sensitivity}
 \begin{definition}[Sensitivity]
@@ -163,9 +180,30 @@ $$
 
 
 \section{SGD Paper}
-	
 
 
+\section{Pending questions}
+\begin{itemize}
+	\item Variance for formula for k-DPP, in \cite{zhang2017dppminibatch}.
+	\item How $\tilde K$ eigenspaces look like ? When $n \xrightarrow[]{} \infty$ ?
+	\begin{itemize}
+		\item How does it compare to \cite{bardenet2020mcdpp} ?
+		\item If $f$ is given, can I find a $K$ for which $f$ is in "good" eigenspaces (eigenvalue $\geq$ 1).
+	\end{itemize}
+	\item Defining discrete OPE, because discretized continuous OPE is probably not a DPP. See Gautschi Orthogonal Polynomials, 2004.
+	\begin{itemize}
+		\item For making links with SGD paper \cite{bardenet2021sgddpp}
+		\item Look at the limit e.g. for Jacobi ensembles. 
+	\end{itemize}
+\end{itemize}
+
+\vspace{1cm}
+
+\begin{itemize}
+	\item Take a Bernoulli and beat it with a DPP.
+	\item Focus on metric we could have advantages on, e.g. look how variance decay with coreset size. 
+	\item Better with direct applications e.g. on k-means or linear regression.
+\end{itemize}
 	
 	\vfill
 	
