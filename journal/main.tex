@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{article} % [fleqn, leqno]: flush left equations, left equation numbers
 
 % if you need to pass options to natbib, use, e.g.:
 %     \PassOptionsToPackage{numbers, compress}{natbib}
@@ -29,12 +29,16 @@
 \usepackage{xcolor}         % colors
 
 
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{subcaption}
-\usepackage{dsfont}
-\usepackage{amsthm}
-\usepackage{txfonts}
+\usepackage{amsmath} % most maths
+\usepackage{graphicx} % figures 
+\usepackage{subcaption} % subfigures
+\usepackage{dsfont} % \mathds
+\usepackage{amsthm} % \theoremstyle
+\usepackage{amssymb} % \nsucc
+\usepackage{stmaryrd} % \llbracket
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
+\usepackage{tcolorbox}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
 
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
@@ -45,10 +49,16 @@
 \newcommand{\EE}{\mathbb{E}}
 \newcommand{\Var}{\operatorname{\mathbb V ar}}
 \newcommand{\Cov}{\operatorname{\mathbb C ov}}
+\newcommand{\T}{^\top}  % or ^\intercal
+\newcommand{\1}{\mathds{1}} % indicator
+\newcommand{\voones}{\boldsymbol{j}} % vector of ones
+\newcommand{\moones}{\boldsymbol{J}} % matrix of ones
+\newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
+\newcommand{\note}[2][]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note[inline]{"note"}
 %\newcommand{\EE}[2][]{\mathbb{E}_{#1}[#2]}
-%\llbracket \rrbracket 
+% Show fontsize: \fontname\font\ at \the\fontdimen6\font 
 \newtheorem{theorem}{Theorem}
-\theoremstyle{definition}
+\theoremstyle{definition} % no italics in definition
 \newtheorem{definition}{Definition}[section]
 
 \usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
@@ -68,53 +78,69 @@
 	
 	\section{Introduction}
 	
-	Let $\mathcal{X}=\left\{x_{1}, \ldots, x_{n}\right\}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, and $\theta$ an element of $\Theta$. We consider cost functions of the form:
+	Let $\mathcal{X}=\begin{Bmatrix}
+		x_{i} \mid i\in \intint{1}{n}
+	\end{Bmatrix}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, and $\theta$ an element of $\Theta$. We consider cost functions of the form:
 	$$
-	L(\theta)=\sum_{x \in \mathcal{X}} f(x, \theta)
+	L(\theta)=\sum_{x \in \mathcal{X}} f_\theta(x)
 	$$
 	
-	Let $\mathcal{S}=\left\{x_{s_{1}}, \ldots, x_{s_{m}}\right\}$ be a subset of $\mathcal{X}$ (possibly with repetitions). To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted subset $\mathcal{S}$ as:
+	Let $\mathcal{S}=\begin{Bmatrix}
+		x_{i} \mid i\in \intint{1}{m}
+	\end{Bmatrix}$ be a submultiset (possibly with repetitions) of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted submultiset $\mathcal{S}$ as:
 	$$
-	\hat{L}(\theta)=\sum_{x \in \mathcal{S}} \omega\left(x\right) f\left(x, \theta\right) .
+	\hat{L}(\theta)=\sum_{x \in \mathcal{S}} \omega\left(x\right) f_\theta(x)
 	$$
 	\begin{definition}[Coreset]
-			Let $\epsilon \in {]}0,1{[}$. The weighted subset $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any parameter $\theta$, the estimated cost is equal to the exact cost up to a relative error:
+			Let $\epsilon \in {]}0,1{[}$. $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any parameter $\theta$, the estimated cost is equal to the exact cost up to a relative error:
 		\begin{equation}
 			\forall \theta \in \Theta \quad\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
 		\end{equation}
+		\label{coresetprop}
 	\end{definition}
 
 An important consequence of the coreset property is the following
-$$
-(1-\epsilon) L\left(\theta^{\text {opt }}\right) \le(1-\epsilon) L\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \theta^{\text {opt }}\right) \le(1+\epsilon) L\left( \theta^{\text {opt }}\right)
-$$
-
+\begin{equation}
+	(1-\epsilon) L\left(\theta^{\text {opt }}\right) \le(1-\epsilon) L\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \hat{\theta}^{\text {opt }}\right) \le \hat{L}\left( \theta^{\text {opt }}\right) \le(1+\epsilon) L\left( \theta^{\text {opt }}\right)
+\end{equation}
 See \cite{bachem2017coresetML}.
 
-\section{Variance argument}
+\section{Variance arguments}
 \subsection{Multinomial case}
-Multinomial case $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ independent categorical sampling where $\mathbb P(x_i)  = q(x_i)$
 
+
+In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\PP(x_i) = q(x_i)$.
+Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{iid}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{m q(x_i)}
+\end{equation*}
+Its variance is
 \begin{equation}
-	\Var[\hat L(\theta)] =\frac{1}{m} \Var\left[\frac {f_{\theta}(x)} {q(x)}\right] 
-	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2}
+	\Var_{\textrm{iid}}(\theta) :=\frac{1}{m} \Var\left[\frac {f_{\theta}(x_i)} {q(x_i)}\right] 
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2} = f_\theta\T(\frac{Q^{-1}} m - \frac{\moones} m)f_\theta
 \end{equation}
+where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
 For any query $\theta \in \Theta$, the variance is reduced to 0 by
 $$
-q_{\theta}(x):=\frac{ f_{\theta}(x)}{\sum_{x^{\prime} \in \mathcal{X}}  f_{\theta}\left(x^{\prime}\right)}
+q_{\theta}(x):=\frac{ f_{\theta}(x)}{L(\theta)}
 $$
 
+
 \subsection{DPP case}
-DPP case where $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. We have
+In the DPP case, we have $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{DPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{\pi_i}
+\end{equation*}
+Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$:
 $$
-\Var[\hat L(\theta)]
-=\sum_{i, j}\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
+\Var_{\textrm{DPP}}(\theta)
+=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
 \quad \text{with} \quad
-\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]=
+\EE\left[\epsilon_{i} \epsilon_{j}\right]=
 \begin{cases}
-	\det\left(K_{\{i, j\}}\right)=\pi_{i} \pi_{j}-K_{i j}^{2}, & \text{if } i \neq j \\
-	\mathbb{E}\left[\epsilon_{i}\right]=\pi_{i}, & \text{if } i = j
+	\det(K_{\{i, j\}})=\pi_{i} \pi_{j}-K_{ij}^{2}, & \text{if } i \neq j \\
+	\EE\left[\epsilon_{i}\right]=\pi_{i},&\text{if } i = j
 \end{cases}
 $$
 
@@ -123,66 +149,152 @@ $$
 Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
 
 \begin{equation}
-	\Var [\hat L(\theta)]=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{K_{i j}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta^\top (\Pi^{-1}  - \tilde{K}) f_\theta 
+	\Var_{\textrm{DPP}}(\theta)=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta\T (\Pi^{-1}  - \tilde{K}) f_\theta 
 \end{equation}
 
-
-	
-For a Bernoulli process where $\mathbb P(x_i \in \mathcal S) = \pi_i$ independently, $K = \Pi$ then $\tilde K = I$. The DPP variance beats uniformly the Bernoulli process variance if $\tilde K$ dominates the identity i.e. 
-\begin{equation}
-	\forall f_\theta, \, \Var [\hat L_{K}(\theta)] < \Var [\hat L_{\Pi}(\theta)] \iff \tilde K \succ I
-\end{equation}
-
-But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
+For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var_{\textrm{diag}}$.
 
 
 \subsection{m-DPP case}
 
-The marginals $b_{i} \equiv \mathbb{E}\left[m_{i}\right]$ have an analytic form. Moreover, let be defined
-$$
-C_{i j}=\frac{\mathbb{E}\left[\left(m_{i}-b_{i}\right)\left(m_{j}-b_{j}\right)\right]}{\mathbb{E}\left[m_{i}\right] \mathbb{E}\left[m_{j}\right]}=\frac{\mathbb{E}\left[m_{i} m_{j}\right]}{b_{i} b_{j}}-1
-$$
+In the m-DPP case, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and the marginals $b_{i} := \mathbb{E}\left[\epsilon_{i}\right]$ have an analytic form. Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{mDPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{b_i}
+\end{equation*}
 
+Note that we could also be interested in a biaised cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
+$$
+\tilde L(\theta) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[f_\theta(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} f_\theta\left(x_{i}\right)
+$$
+Then an unbiased estimator of $\tilde L$ is
+\begin{equation*}
+	\hat{\tilde L}_{\textrm{mDPP}}(\theta) = \frac{1}{m}\sum_{x_i\in \mathcal S} f_\theta(x_i)
+\end{equation*}
+We can switch between $L$ and $\tilde L$, substituting $f_\theta(x_i)$ by $\frac{b_i f_\theta(x_i)}{m}$.
+
+Returning to the estimation of $L$, we are interested in the variance of $\hat L_{\textrm{mDPP}}$ which is
 \begin{equation}
-	\operatorname{Var}\left(g^{*}\right)=\frac{1}{m^{2}} \sum_{i=1}^{N}\left(b_{i}-b_{i}^{2}\right) f_\theta(x_i)^2
-	+\frac{1}{m^{2}} \sum_{i \neq j} C_{i j} b_{i} b_{j} f_\theta(x_i)^{\top} f_\theta(x_j)
+	\Var_{\textrm{mDPP}}(\theta)=\sum_{i}\left(\frac{1}{b_i}-1\right) f_\theta(x_i)^2
+	+ \sum_{i \neq j} C_{ij}f_\theta(x_i) f_\theta(x_j)
 \end{equation}
+where $C_{ij}=\frac{\mathbb{E}\left[\left(\epsilon_{i}-b_{i}\right)\left(\epsilon_{j}-b_{j}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]}{b_{i} b_{j}}-1
+$
 
-So \cite{zhang2017dppminibatch} assume $\forall i\neq j, \quad  C_{ij}f_\theta(x_i)f_\theta(x_j) <0$
+Observe that if the m-DPP kernel is reduced to its diagonal ($C_{ij} = 0$), we recover $\Var_{\textrm{diag}}$, the variance of a Bernoulli process with same marginals ($\pi_i = b_i$), though here the number of elements sampled is fixed to $m$.
 
-\section{Sensitivity}
+In order to benefit from some variance reduction, one should want $\forall i\neq j \,,\, C_{ij}f_\theta(x_i) f_\theta(x_j) <0$ for a given m-DPP.
+\cite{zhang2017dppminibatch} discuss that intuitively, if the m-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{ij}<0$) and their value have positive scalar product ($f_\theta(x_i) f_\theta(x_j) > 0$). Reversely, it is argued that 2 dissimilar points should have negative correlation, and their value show "no tendency to align" hinting $f_\theta(x_i) f_\theta(x_j) < 0$. We could more conservatively consider that the induced variance change, wether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independance.
+
+
+
+
+\subsection[]{Variance comparaison}
+In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var_{\textrm{iid}}$, $\Var_{\textrm{diag}}$ and $\Var_{\textrm{DPP}}$ are quadratic forms of $f_\theta$ associated with respective matrices
+$$\begin{cases}
+	\Var_{\textrm{iid}} \equiv \Pi^{-1} - \frac{\moones}{m} \\
+	\Var_{\textrm{diag}} \equiv \Pi^{-1} - I \\
+	\Var_{\textrm{DPP}} \equiv \Pi^{-1} - \tilde K
+\end{cases}$$
+
+\subsubsection{DPP versus diag?}
+The DPP variance strictly beats uniformly the Bernoulli process variance if $\tilde K$ strictly dominates identity i.e. 
+\begin{equation}
+	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{diag}} \iff \tilde K \succ I
+\end{equation}
+But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
+
+\subsubsection{DPP versus i.i.d.?}
+The DPP variance strictly beats uniformly the multinomial variance if $\tilde K$ strictly dominates $\frac{\moones}{m}$ i.e. 
+\begin{equation}
+	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{iid}} \iff \tilde K \succ \frac{\moones}{m}
+\end{equation}
+$K$ being positive of rank $r \in \intint{0}{n}$, it exists $V = \begin{pmatrix}
+	V_i \mid i\in \intint{1}{n}
+\end{pmatrix} \in \mathcal{M}_{r,n}$ such that $K = V\T V$.
+
+For any vector $v \in \RR^{r}$, \cite{copenhaver2013diagramvectors} define its diagram vector 
+$$\tilde v :=
+ \frac{1}{\sqrt{r-1}} ((v_k^{2}-v_l^{2} , \sqrt{2 r} v_k v_l ) \mid k<l)\T \in \RR^{r(r-1)}$$
+concatenating all the differences of squares and products.
+
+Then introducing $\tilde V = \begin{pmatrix}\tilde V_i \mid i\in\intint{1}{n}\end{pmatrix}
+$ allows us to rewritte $\tilde K_{ij} = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$. Therefore, for a projective DPP with rank $r = m$ \note{justify the use of a projective DPP. requires $r\geq m$ but we always have $m \leq r$, therefore $r= m$}, we have $\tilde K - \frac{\moones}{m} =  \frac{m-1}{m} \tilde V\T \tilde V \succeq 0$ \; ($\succ$ if $m>1$). That is to say, for every multinomial sampling, we have a DPP which always beats it uniformly.
+
+
+\section{State of the art}
 \begin{definition}[Sensitivity]
-	The sensitivity $\sigma_i$ of a datapoint $\boldsymbol{x}_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
+	The sensitivity $\sigma_i$ of a datapoint $x_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
 	$$
 	\begin{cases}
-		\sigma_{i}=\sup_{\theta \in \Theta} q_{\theta}(x_i) = \sup _{\theta \in \Theta} \frac{f_{\theta}\left(\boldsymbol{x}_{i}\right)}{L(\theta)} \quad \in[0,1]\\
+		\sigma_{i}=\sup_{\theta \in \Theta} q_{\theta}(x_i) = \sup _{\theta \in \Theta} \frac{f_{\theta}\left(x_{i}\right)}{L(\theta)} \quad \in[0,1]\\
 		\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
 	\end{cases}
 	$$
 \end{definition} 
 
-Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let sample  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i}  \quad \in[0,1]$
+\subsection{Main proof}
+Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let sample  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i} = \frac{f_{\theta(x_i)}}{s_i L(\theta)}  \quad \in[0,1]$
 
 By Hoeffding's inequality, we thus have for any $\theta \in \Theta$ and $\varepsilon^{\prime}>0$
-$$
-\mathbb{P}\left[\left|\mathbb{E}\left[g_{\theta}(x)\right]-\frac{1}{m} \sum_{x \in \mathcal{S}} g_{Q}(x)\right|>\varepsilon^{\prime}\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right) .
-$$
-By definition, $\mathbb{E}\left[g_{\theta}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{C}} g_{Q}(x)=\frac{\operatorname{cost}(\mathcal{C}, Q)}{S \operatorname{cost}(\mathcal{X}, Q)}$. As such, for any $Q \in \mathcal{Q}$
-$$
-\mathbb{P}\left[|\operatorname{cost}(\mathcal{X}, Q)-\operatorname{cost}(\mathcal{C}, Q)|>\varepsilon^{\prime} S \operatorname{cost}(\mathcal{X}, Q)\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right)
-$$
-Hence, the set $\mathcal{C}$ satisfies the coreset property in (2.2) for any single query $Q \in \mathcal{Q}$ and $\varepsilon>0$ with probability at least $1-\delta$, if we choose
-$$
-m \geq \frac{S^{2}}{2 \varepsilon^{2}} \log \frac{2}{\delta}
-$$
+\begin{equation}
+	\mathbb{P}\left[\left|\mathbb{E}\left[g_{\theta}(x)\right]-\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\theta}(x)\right|>\varepsilon^{\prime}\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right)
+\end{equation}
+and by definition, $\mathbb{E}\left[g_{\theta}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\theta}(x)=\frac{\hat L_{\textrm{iid}}(\theta)}{S L(\theta)}$, thus
+\begin{equation*}
+	\mathbb{P}\left[|L(\theta)-\hat L_{\textrm{iid}}(\theta)|>\varepsilon^{\prime} S L(\theta)\right] \leq 2 \exp \left(-2 m \varepsilon^{\prime 2}\right)
+\end{equation*}
+Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset property \ref{coresetprop} for any single query $\theta \in \Theta$ with probability at least $1-\delta$, if we choose
+\begin{equation*}
+	m \geq \frac{S^{2}}{2 \varepsilon^{2}} \log \frac{2}{\delta}
+\end{equation*}
+
+
+\subsection{Extension to all queries}
+See \textbf{Uniform guarantee for all queries} in \cite{bachem2017coresetML}. Introducing the pseudo-dimension $d'$, it gives
+\begin{equation}
+	m \geq \mathcal O(\frac{S^{2}}{2 \varepsilon^{2}} (d' + \log \frac{2}{\delta}))
+\end{equation}
+
+See \textbf{Theorem 5.5} of \cite{braverman2016coresetsota} for an improved bound (when $f$ is positive?).
+\begin{equation}
+	m \geq \mathcal O(\frac{S}{2 \varepsilon^{2}} (d' \log S + \log \frac{2}{\delta}))
+\end{equation}
 
 
 
 
-\section{SGD Paper}
+\section{Improving concentration with DPP}
+
+\begin{tcolorbox}
+	Assume better variance with DPP, can we improve concentration?
+\begin{itemize}
+	\item Can we use the $\sqrt {N^{1 + \frac 1 d}}$ rate from the SGD paper?
+	\item Concentration inequality for a sum of \textbf{dependant} variables?
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Theorem 3.4.} from \cite{pemantle2011rayleighconcentration}: Let $\mathbb{P}$ be a k-homogeneous probability measure on $\mathcal{B}_{n}$ satisfying the Stochastic Covering Property (SCP). Let $f$ be a 1-Lipschitz function on $\mathcal{B}_{n}$. Then
+$$
+\mathbb{P}(\lvert f-\mathbb{E} f \rvert \geq a) \leq 2 \exp \left(-\frac{a^{2}}{8 k}\right)
+$$
+
+Bennett inequality: Let be $(X_i)_{i\in \intint{1}{n}}$ independant and centered real-valued random variables, and $\sigma^2 = \frac{1}{n}\sum_i \Var[X_i]$, then for any $t>0$
+$$
+\mathbb{P}\left\{\sum_{i=1}^{n} X_{i}>t\right\} \leq \exp \left(-n \sigma^{2} h\left(\frac{t}{n \sigma^{2}}\right)\right)
+$$
+where $h(u)=(1+u) \log (1+u)-u$ for $u \geq 0$.
 
 
-\section{Pending questions}
+\section{Discrete OPE}
+\begin{tcolorbox}
+	Can we bypass the Kernel Density Estimate (KDE) in SGD paper by using discrete OPE? See \cite{gautschi2004ope}.
+	
+\end{tcolorbox}
+
+
+
+
+\section{Holydays questions}
 \begin{itemize}
 	\item Variance for formula for k-DPP, in \cite{zhang2017dppminibatch}.
 	\item How $\tilde K$ eigenspaces look like ? When $n \xrightarrow[]{} \infty$ ?
@@ -196,9 +308,6 @@ $$
 		\item Look at the limit e.g. for Jacobi ensembles. 
 	\end{itemize}
 \end{itemize}
-
-\vspace{1cm}
-
 \begin{itemize}
 	\item Take a Bernoulli and beat it with a DPP.
 	\item Focus on metric we could have advantages on, e.g. look how variance decay with coreset size. 
