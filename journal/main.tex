@@ -46,7 +46,9 @@
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\CC}{\mathbb{C}}
 \newcommand{\PP}{\mathbb{P}}
+\newcommand{\PPP}[2]{\mathbb{P}_{#1}\left[#2\right]}
 \newcommand{\EE}{\mathbb{E}}
+\newcommand{\EEE}[2]{\mathbb{E}_{#1}\left[#2\right]}
 \newcommand{\OO}{\mathcal{O}}
 \newcommand{\Var}{\operatorname{\mathbb V ar}}
 \newcommand{\Cov}{\operatorname{\mathbb C ov}}
@@ -55,10 +57,12 @@
 \newcommand{\voones}{\boldsymbol{j}} % vector of ones
 \newcommand{\moones}{\boldsymbol{J}} % matrix of ones
 \newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
-\newcommand{\note}[2][]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note[inline]{"note"}
-%\newcommand{\EE}[2][]{\mathbb{E}_{#1}[#2]}
+\newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
+
 % Show fontsize: \fontname\font\ at \the\fontdimen6\font 
 \newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
 \theoremstyle{definition} % no italics in definition
 \newtheorem{definition}{Definition}[section]
 
@@ -81,14 +85,14 @@
 	
 	Let $\mathcal{X}=\begin{Bmatrix}
 		x_{i} \mid i\in \intint{1}{n}
-	\end{Bmatrix}$ be a set of $n$ datapoints. Let $\Theta$ be a space of parameters, or queries, and $\theta$ an element of $\Theta$. We consider cost functions of the form
+	\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ datapoints. Let $\Theta$ be a space of parameters, or queries, and $\theta$ an element of $\Theta$. We consider cost functions of the form
 	$$
 	L(\theta)=\sum_{x \in \mathcal{X}} f_\theta(x)
 	$$
 	
 	Let $\mathcal{S}=\begin{Bmatrix}
 		x_{i} \mid i\in \intint{1}{m}
-	\end{Bmatrix}$ be a submultiset (possibly with repetitions) of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted submultiset $\mathcal{S}$ as
+	\end{Bmatrix}$ be a submultiset of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted submultiset $\mathcal{S}$ as
 	$$
 	\hat{L}(\theta)=\sum_{x \in \mathcal{S}} \omega\left(x\right) f_\theta(x)
 	$$
@@ -96,7 +100,7 @@
 			Let $\epsilon \in {]}0,1{[}$. $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any query $\theta$, the estimated cost is equal to the exact cost up to a relative error, i.e. for all $\theta \in \Theta$
 		\begin{equation}
 			\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
-		\label{coresetprop}
+		\label{def_coresetprop}
 		\end{equation}
 	\end{definition}
 An important consequence of the coreset property is the following
@@ -184,7 +188,7 @@ Observe that if the m-DPP kernel is reduced to its diagonal ($C_{ij} = 0$), we r
 
 In order to benefit from some variance reduction, one should want $\forall i\neq j \,,\, C_{ij}f_\theta(x_i) f_\theta(x_j) <0$ for a given m-DPP.
 \cite{zhang2017dppminibatch} discuss that intuitively, if the m-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{ij}<0$) and their value have positive scalar product ($f_\theta(x_i) f_\theta(x_j) > 0$). Reversely, it is argued that 2 dissimilar points should have positive correlation 
-										\note{contradiction with property of strong Rayleigh measures}
+										\note{}{contradiction with property of strong Rayleigh measures}
 , and their value show "no tendency to align" hinting $f_\theta(x_i) f_\theta(x_j) < 0$. We could more conservatively consider that the induced variance change, wether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independance.
 
 
@@ -235,7 +239,7 @@ $ allows us to rewritte $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T
 \end{definition} 
 
 \subsection{Main proof}
-Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i} = \frac{f_{\theta(x_i)}}{s_i L(\theta)}  \quad \in[0,1]$
+Let be $s$ an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i} = \frac{f_{\theta(x_i)}}{s_i L(\theta)}  \, \in[0,1]$
 
 By Hoeffding's inequality, we thus have for any $\theta \in \Theta$ and $\epsilon^{\prime}>0$
 \begin{equation}
@@ -245,13 +249,14 @@ and by definition, $\mathbb{E}\left[g_{\theta}(x)\right]=\frac{1}{S}$ and $\frac
 \begin{equation*}
 	\mathbb{P}\left[|\hat L_{\textrm{iid}}(\theta) - L(\theta)|>\epsilon^{\prime} S L(\theta)\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
 \end{equation*}
-Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset property \ref{coresetprop} for any single query $\theta \in \Theta$ with probability at least $1-\delta$, if we choose
+Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset property \ref{def_coresetprop} for any single query $\theta \in \Theta$ with probability at least $1-\delta$, if we choose
 \begin{equation}
 	m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
 \end{equation}
 
 
 \subsection{Extension to all queries}
+\note{}{developp sota}
 See \textbf{Uniform guarantee for all queries} in \cite{bachem2017coresetML}. Introducing the pseudo-dimension $d'$, it gives
 \begin{equation}
 	m \geq \OO(\frac{S^{2}}{2 \epsilon^{2}} (d' + \log \frac{2}{\delta}))
@@ -267,27 +272,19 @@ See \textbf{Theorem 5.5} of \cite{braverman2016coresetsota} for an improved boun
 
 \section{Improving concentration with DPP}
 
-\cite{bardenet2021sgddpp} show the existence of a DPP kernel $\tilde{\boldsymbol K}$, independant of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 	
-					\note{explain how the estimator is built}
+\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\tilde{\boldsymbol K}_m)$, independant of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 	
+					\note{}{explain how the estimator is built}
 equation (S14) yields that 
 \begin{equation}
 	\Var[\frac{\hat L_{\textrm{DPP}}(\theta)}{L(\theta)}] = M_\theta \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
 \end{equation}
-where $M_\theta$ is the Lipschitz constant of $x \mapsto f_\theta(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\theta \in \Theta}M_\theta$.
+where $\sqrt{M_\theta}$ is the Lipschitz constant of $x \mapsto f_\theta(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\theta \in \Theta}M_\theta$.
 
 Bienaym\'e-Tchebychev inequality then gives
 \begin{equation}
 	\PP \left[|L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \frac{\Var[ \hat L_{\textrm{DPP}}(\theta) ] }{L(\theta)^{2}\varepsilon ^{2}} = \frac {1} {\epsilon^2}(M_\theta \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
 \end{equation}
-Hence, $\mathcal{S} \sim \mathcal{DPP}(\tilde{\boldsymbol K})$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{coresetprop} for
-\begin{tcolorbox}
-	\begin{align}
-		m^{1+\frac 1 d} &\gtrsim \frac{1}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac 1 {\delta\epsilon^2} (1 +  \OO(n^{-1/2})) \\
-		\iff m &\gtrsim (\delta\epsilon^2)^{\frac{-1}{1+\frac 1 d}} (1 +  \OO(n^{-1/2})) 
-	\end{align} 
-\end{tcolorbox}
-
-
+Hence, $\mathcal{S} \sim \mathcal{DPP}(\tilde{\boldsymbol K}_m)$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} for
 \begin{align}
 	m^{1+\frac 1 d} &\gtrsim \frac{M_\theta}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {M_\theta} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
 \end{align} 
@@ -295,11 +292,111 @@ where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is low
 Then this means that for sufficiently large $n$ (potentialy $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 \begin{equation}
 	\boxed{m \gtrsim \left(\frac{M_\theta}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
+	\label{eqn_fixedtheta}
 \end{equation}
+\note{}{make that a Lemma}
+\begin{lemma}
+	\begin{equation}
+		\sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}}} - \EE{f} \rvert \geq \epsilon} \leq \delta
+	\end{equation}
+\end{lemma}
 
 
 \subsection{Extension to all queries}
-In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{coresetprop} must holds for all queries, thus the previous result must be generalized to all $\theta \in \Theta$.
+In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\theta \in \Theta$.
+
+For every function $f \in \mathcal{F}$ and multiset $\mathcal{S}$, let the restriction of the function $f$ to the multiset $\mathcal{S}$ be denoted by $f_{\mathcal{S}} := (f(x))_{x \in \mathcal{S}} \in \RR^{|\mathcal{S} |}$, and let its mean be denoted by $\EE f_\mathcal{S} := \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} f(x)$.
+
+\begin{corollary}
+	Let be $\mathcal{S} \sim  \mathcal{DPP}(K_m)$. Taking $\delta = 1/2$ in precedent result \ref{eqn_fixedtheta}, we know it exists some constant we denote $c_{1/2}$ such that $\forall \epsilon>0$ it holds that
+	\begin{equation}
+		m \geq c_{1/2} \left(\frac{M_{\mathcal{F}}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall f\in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}}} - \EE f \rvert \leq \epsilon} \geq \frac 1 2
+	\end{equation} 
+\end{corollary}
+
+We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemma 12. and 13., getting rid of independancy hypothesis, and making intermediary results more flexible to further improvements.
+\note{}{state of the art slightly better than haussler, cf. Li, but strongly? require independancy}
+
+\begin{lemma}
+	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Assume that for a given $\epsilon>0$ we can control uniformly on $f$ the concentration $1/2$-surely, formally $\forall f \in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}_1}} - \EE f \rvert \leq \epsilon/2} \geq \frac 1 2$. Then
+
+   \begin{equation}
+	   \PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon} \leq 2\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+   \end{equation}
+\end{lemma}
+
+\begin{proof}
+	Let be $\mathcal{S}_1$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE f| \geq \epsilon$. This obviously happends with probability $\PPP{}{\exists f \in \mathcal{F}, |\EE{f_{\mathcal{S}_1}} - \EE f| \geq \epsilon }$.
+
+	For such an $f$, we then sample $\mathcal{S}_2$ such that $|\EE {f_{\mathcal{S}_2}} -  \EE f| \leq \epsilon/2$. By hypothesis, this happends with probability greater than $1/2$, and we thus have
+	\begin{align*}
+		\PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon}
+		\frac 1 2 
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon \wedge \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq \epsilon/2 } \\
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+	\end{align*}
+	where we lastly used the triangular inequality $ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert - \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq   \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert  $
+\end{proof}
+
+
+
+\begin{lemma}
+	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. 
+	
+
+	\begin{equation}
+		\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }
+	\end{equation}
+
+\end{lemma}
+
+\note{}{recall cover}
+
+\begin{proof}
+	For every two multisets $\mathcal{S}_1, \mathcal{S}_2$ of size $m$, we denote their multiset union $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \subseteq \mathcal{X}^{2m}$.
+
+	Let be $\mathcal{S}$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2$. 
+	
+	Let then be taken $\mathcal{F^*_\mathcal{S}}$, an $\epsilon/8$-cover of $\mathcal{F}$ for the $\EE \cdot_{\mathcal{S}}$ topology, such that $|\mathcal{F^*_\mathcal{S}}| = N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}})$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\EE |f-f^*|_{\mathcal{S}} \leq \epsilon/8$.
+
+	Applying some triangular inequalities yields that
+	\begin{align*}
+		|\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| &\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + |\EE{f_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_1}}| + |\EE{f_{\mathcal{S}_2}} - \EE{f^*_{\mathcal{S}_2}}|  \\
+		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + \EE|f-f^*|_{\mathcal{S}_1} + \EE|f-f^*|_{\mathcal{S}_2} \\
+		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + 2  \EE|f-f^*|_{\mathcal{S}}\\
+		\iff |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| &\geq |\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| - 2  \EE|f-f^*|_{\mathcal{S}} \geq \epsilon/4 
+	\end{align*}
+	Therefore
+	\begin{equation}
+		\PPP{}{\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2} \leq \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
+	\end{equation}
+	by the law of total expectation
+	\begin{align*}
+		\PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
+		&=\EEE{}{ \1 \{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \} }\\
+		&=\EEE{}{ \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
+		&\leq \EEE{}{|\mathcal{F^*_\mathcal{S}}| \sup_{f \in \mathcal{F}} \PPP{}{|\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 }}
+	\end{align*}
+
+\end{proof}
+
+
+\vspace{5cm}
+
+
+Let be $d_{L^1}(x ,y) = \frac 1 m \sum_{i=1}^m |x_i - y_i| = \frac{1}{m} \lVert x- y \rVert$
+$\mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2} = \left\{(f_\theta(x))_{x\in \mathcal{S}_1 \uplus \mathcal{S}_2} | \theta \in \Theta \right\} \subseteq \RR^{2m}$	
+
+For all $x \in \RR^{2m}$, let be defined $\EE_1[x] = \frac{1}{m} \sum_{i=1}^{m} x_i$ and $\EE_2[x] = \frac{1}{m} \sum_{i=m+1}^{2m} x_i$, the empiric mean on the vector first and second half respectively.
+
+$\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{S}_2}(\theta)|>\epsilon \iff \exists f \in \mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2}, |\EE_1[f] - \EE_2[f]| > \epsilon$
+\begin{lemma}
+	\begin{align*}
+		&\PP_{\mathcal{S}_1} \left[ \exists \theta \in \Theta,  \frac 1 m |\hat L_{\mathcal{S}_1}(\theta)- L(\theta)|>\epsilon \right] \leq
+		2 \PP_{\mathcal{S}_1, \mathcal{S}_2} \left[ \exists \theta \in \Theta,  \frac 1 m |L(\theta)-\hat L_{\mathcal{S}_1}(\theta)|\right] 
+	\end{align*}
+\end{lemma}
+
 \begin{align*}
 	&\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \\
 	\leq \,&\PP \left[ \exists \theta \in \Theta^*,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\frac{\epsilon}{2} L(\theta)\right] \\
@@ -309,7 +406,7 @@ In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{c
 \end{align*}
 
 
-For the $\epsilon$-coreset property \ref{coresetprop} to hold $1-\delta$-surely or equivalently  
+For the $\epsilon$-coreset property \ref{def_coresetprop} to hold $1-\delta$-surely or equivalently  
 \begin{equation}
 	\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \delta
 \end{equation}
