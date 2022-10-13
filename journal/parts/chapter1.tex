@@ -1,0 +1,27 @@
+\section{Introduction}
+	
+	Let $\mathcal{X}=\begin{Bmatrix}
+		x_{i} \mid i\in \intint{1}{n}
+	\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ datapoints. Let $\Theta$ be a space of parameters, or queries, and $\theta$ an element of $\Theta$. We consider cost functions of the form
+	$$
+	L(\theta)=\sum_{x \in \mathcal{X}} f_\theta(x)
+	$$
+	
+	Let $\mathcal{S}=\begin{Bmatrix}
+		x_{i} \mid i\in \intint{1}{m}
+	\end{Bmatrix}$ be a submultiset of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted submultiset $\mathcal{S}$ as
+	$$
+	\hat{L}(\theta)=\sum_{x \in \mathcal{S}} \omega\left(x\right) f_\theta(x)
+	$$
+	\begin{definition}[Coreset]
+			Let $\epsilon \in {]}0,1{[}$. $\mathcal{S}$ is a $\epsilon$-coreset for $L$ if, for any query $\theta$, the estimated cost is equal to the exact cost up to a relative error, i.e. for all $\theta \in \Theta$
+		\begin{equation}
+			\left|\frac{\hat{L}(\theta)}{L(\theta)}-1\right| \le \epsilon 
+		\label{def_coresetprop}
+		\end{equation}
+	\end{definition}
+An important consequence of the coreset property is the following
+\begin{equation}
+	(1-\epsilon) L(\theta^{\text {opt }}) \le(1-\epsilon) L( \hat{\theta}^{\text {opt }}) \le \hat{L}( \hat{\theta}^{\text {opt }}) \le \hat{L}( \theta^{\text {opt }}) \le(1+\epsilon) L( \theta^{\text {opt }})
+\end{equation}
+See \cite{bachem2017coresetML}.

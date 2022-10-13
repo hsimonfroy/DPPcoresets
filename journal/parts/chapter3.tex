@@ -1,0 +1,271 @@
+\section{Variance arguments}
+\subsection{Multinomial case}
+
+
+In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\PP(x_i) = q(x_i)$.
+Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{iid}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{m q(x_i)}
+\end{equation*}
+Its variance is
+\begin{equation}
+	\Var_{\textrm{iid}}(\theta) :=\frac{1}{m} \Var\left[\frac {f_{\theta}(x_i)} {q(x_i)}\right] 
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2} = f_\theta\T(\frac{Q^{-1}} m - \frac{\moones} m)f_\theta
+\end{equation}
+where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
+
+For any query $\theta \in \Theta$, the variance is reduced to 0 by
+$$
+q_{\theta}(x):=\frac{ f_{\theta}(x)}{L(\theta)}
+$$
+
+
+\subsection{DPP case}
+In the DPP case, we have $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{DPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{\pi_i}
+\end{equation*}
+Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$:
+$$
+\Var_{\textrm{DPP}}(\theta)
+=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
+\quad \text{with} \quad
+\EE\left[\epsilon_{i} \epsilon_{j}\right]=
+\begin{cases}
+	\det(K_{\{i, j\}})=\pi_{i} \pi_{j}-K_{ij}^{2}, & \text{if } i \neq j \\
+	\EE\left[\epsilon_{i}\right]=\pi_{i},&\text{if } i = j
+\end{cases}
+$$
+
+
+
+Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
+
+\begin{equation}
+	\Var_{\textrm{DPP}}(\theta)=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta\T (\Pi^{-1}  - \tilde{K}) f_\theta 
+\end{equation}
+
+For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var_{\textrm{diag}}$.
+
+
+\subsection{m-DPP case}
+
+In the m-DPP case, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and the marginals $b_{i} := \mathbb{E}\left[\epsilon_{i}\right]$ have an analytic form. Then an unbiased estimator of $L$ is
+\begin{equation*}
+	\hat L_{\textrm{mDPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{b_i}
+\end{equation*}
+
+Note that we could also be interested in a biaised cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
+$$
+\tilde L(\theta) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[f_\theta(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} f_\theta\left(x_{i}\right)
+$$
+Then an unbiased estimator of $\tilde L$ is
+\begin{equation*}
+	\hat{\tilde L}_{\textrm{mDPP}}(\theta) = \frac{1}{m}\sum_{x_i\in \mathcal S} f_\theta(x_i)
+\end{equation*}
+We can switch between $L$ and $\tilde L$, substituting $f_\theta(x_i)$ by $\frac{b_i f_\theta(x_i)}{m}$.
+
+Returning to the estimation of $L$, we are interested in the variance of $\hat L_{\textrm{mDPP}}$ which is
+\begin{equation}
+	\Var_{\textrm{mDPP}}(\theta)=\sum_{i}\left(\frac{1}{b_i}-1\right) f_\theta(x_i)^2
+	+ \sum_{i \neq j} C_{ij}f_\theta(x_i) f_\theta(x_j)
+\end{equation}
+where $C_{ij}=\frac{\mathbb{E}\left[\left(\epsilon_{i}-b_{i}\right)\left(\epsilon_{j}-b_{j}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]}{b_{i} b_{j}}-1
+$
+
+Observe that if the m-DPP kernel is reduced to its diagonal ($C_{ij} = 0$), we recover $\Var_{\textrm{diag}}$, the variance of a Bernoulli process with same marginals ($\pi_i = b_i$), though here the number of elements sampled is fixed to $m$.
+
+In order to benefit from some variance reduction, one should want $\forall i\neq j \,,\, C_{ij}f_\theta(x_i) f_\theta(x_j) <0$ for a given m-DPP.
+\cite{zhang2017dppminibatch} discuss that intuitively, if the m-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{ij}<0$) and their value have positive scalar product ($f_\theta(x_i) f_\theta(x_j) > 0$). Reversely, it is argued that 2 dissimilar points should have positive correlation 
+										\note{}{contradiction with property of strong Rayleigh measures}
+, and their value show "no tendency to align" hinting $f_\theta(x_i) f_\theta(x_j) < 0$. We could more conservatively consider that the induced variance change, wether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independance.
+
+
+
+
+\subsection[]{Variance comparaison}
+In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var_{\textrm{iid}}$, $\Var_{\textrm{diag}}$ and $\Var_{\textrm{DPP}}$ are quadratic forms of $f_\theta$ associated with respective matrices
+$$\begin{cases}
+	\Var_{\textrm{iid}} \equiv \Pi^{-1} - \frac{\moones}{m} \\
+	\Var_{\textrm{diag}} \equiv \Pi^{-1} - I \\
+	\Var_{\textrm{DPP}} \equiv \Pi^{-1} - \tilde K
+\end{cases}$$
+
+\subsubsection{DPP versus diag?}
+The DPP variance strictly beats uniformly the Bernoulli process variance if $\tilde K$ strictly dominates identity i.e. 
+\begin{equation}
+	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{diag}} \iff \tilde K \succ I
+\end{equation}
+But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
+
+\subsubsection{DPP versus i.i.d.?}
+The DPP variance strictly beats uniformly the multinomial variance if $\tilde K$ strictly dominates $\frac{\moones}{m}$ i.e. 
+\begin{equation}
+	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{iid}} \iff \tilde K \succ \frac{\moones}{m}
+\end{equation}
+$K$ being positive of rank $r \in \intint{0}{n}$, it exists $V = \begin{pmatrix}
+	V_i \mid i\in \intint{1}{n}
+\end{pmatrix} \in \mathcal{M}_{r,n}$ such that $K = V\T V$.
+
+For any vector $v \in \RR^{r}$, \cite{copenhaver2013diagramvectors} define its diagram vector 
+$$\tilde v :=
+ \frac{1}{\sqrt{r-1}} ((v_k^{2}-v_l^{2} , \sqrt{2 r} v_k v_l ) \mid k<l)\T \in \RR^{r(r-1)}$$
+concatenating all the differences of squares and products.
+
+Then introducing $\tilde V = \begin{pmatrix}\tilde V_i \mid i\in\intint{1}{n}\end{pmatrix}
+$ allows us to rewritte $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. For having $\tilde K - \frac{\moones}{m}\succeq 0$, it is sufficiant to have $m \geq r$. This is exactly the case for a projective DPP with rank $r = m$, because $m \leq r$ holds for every DPP. Therefore, for every multinomial sampling, we have a projective DPP which always beats it uniformly.
+
+
+\section{State of the art}
+\begin{definition}[Sensitivity]
+	The sensitivity $\sigma_i$ of a datapoint $x_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
+	$$
+	\begin{cases}
+		\sigma_{i}=\sup_{\theta \in \Theta} q_{\theta}(x_i) = \sup _{\theta \in \Theta} \frac{f_{\theta}\left(x_{i}\right)}{L(\theta)} \quad \in[0,1]\\
+		\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
+	\end{cases}
+	$$
+\end{definition} 
+
+\subsection{Main proof}
+Let be $s$ an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\theta(x_i) := \frac{q_\theta(x_i)}{s_i} = \frac{f_{\theta(x_i)}}{s_i L(\theta)}  \, \in[0,1]$
+
+By Hoeffding's inequality, we thus have for any $\theta \in \Theta$ and $\epsilon^{\prime}>0$
+\begin{equation}
+	\mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\theta}(x) - \mathbb{E}\left[g_{\theta}(x)\right]\right|>\epsilon^{\prime}\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
+\end{equation}
+and by definition, $\mathbb{E}\left[g_{\theta}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\theta}(x)=\frac{\hat L_{\textrm{iid}}(\theta)}{S L(\theta)}$, thus
+\begin{equation*}
+	\mathbb{P}\left[|\hat L_{\textrm{iid}}(\theta) - L(\theta)|>\epsilon^{\prime} S L(\theta)\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
+\end{equation*}
+Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset property \ref{def_coresetprop} for any single query $\theta \in \Theta$ with probability at least $1-\delta$, if we choose
+\begin{equation}
+	m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
+\end{equation}
+
+
+\subsection{Extension to all queries}
+\note{}{developp sota}
+See \textbf{Uniform guarantee for all queries} in \cite{bachem2017coresetML}. Introducing the pseudo-dimension $d'$, it gives
+\begin{equation}
+	m \geq \OO(\frac{S^{2}}{2 \epsilon^{2}} (d' + \log \frac{2}{\delta}))
+\end{equation}
+
+See \textbf{Theorem 5.5} of \cite{braverman2016coresetsota} for an improved bound.
+\begin{equation}
+	m \geq \OO(\frac{S}{2 \epsilon^{2}} (d' \log S + \log \frac{2}{\delta}))
+\end{equation}
+
+
+
+
+\section{Improving concentration with DPP}
+
+\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\tilde{\boldsymbol K}_m)$, independant of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 	
+					\note{}{explain how the estimator is built}
+equation (S14) yields that 
+\begin{equation}
+	\Var[\frac{\hat L_{\textrm{DPP}}(\theta)}{L(\theta)}] = M_\theta \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+\end{equation}
+where $\sqrt{M_\theta}$ is the Lipschitz constant of $x \mapsto f_\theta(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\theta \in \Theta}M_\theta$.
+
+Bienaym\'e-Tchebychev inequality then gives
+\begin{equation}
+	\PP \left[|L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \frac{\Var[ \hat L_{\textrm{DPP}}(\theta) ] }{L(\theta)^{2}\varepsilon ^{2}} = \frac {1} {\epsilon^2}(M_\theta \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
+\end{equation}
+Hence, $\mathcal{S} \sim \mathcal{DPP}(\tilde{\boldsymbol K}_m)$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} for
+\begin{align}
+	m^{1+\frac 1 d} &\gtrsim \frac{M_\theta}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {M_\theta} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+\end{align} 
+where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
+Then this means that for sufficiently large $n$ (potentialy $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
+\begin{equation}
+	\boxed{m \gtrsim \left(\frac{M_\theta}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
+	\label{eqn_fixedtheta}
+\end{equation}
+\note{}{make that a Lemma}
+\begin{lemma}
+	\begin{equation}
+		\sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}}} - \EE{f} \rvert \geq \epsilon} \leq \delta
+	\end{equation}
+\end{lemma}
+
+
+\subsection{Extension to all queries}
+In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\theta \in \Theta$.
+
+For every function $f \in \mathcal{F}$ and multiset $\mathcal{S}$, let the restriction of the function $f$ to the multiset $\mathcal{S}$ be denoted by $f_{\mathcal{S}} := (f(x))_{x \in \mathcal{S}} \in \RR^{|\mathcal{S} |}$, and let its mean be denoted by $\EE f_\mathcal{S} := \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} f(x)$.
+
+\begin{corollary}
+	Let be $\mathcal{S} \sim  \mathcal{DPP}(K_m)$. Taking $\delta = 1/2$ in precedent result \ref{eqn_fixedtheta}, we know it exists some constant we denote $c_{1/2}$ such that $\forall \epsilon>0$ it holds that
+	\begin{equation}
+		m \geq c_{1/2} \left(\frac{M_{\mathcal{F}}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall f\in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}}} - \EE f \rvert \leq \epsilon} \geq \frac 1 2
+	\end{equation} 
+\end{corollary}
+
+We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemma 12. and 13., getting rid of independancy hypothesis, and making intermediary results more flexible to further improvements.
+\note{}{state of the art slightly better than haussler, cf. Li, but strongly? require independancy}
+
+\begin{lemma}
+	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Assume that for a given $\epsilon>0$ we can control uniformly on $f$ the concentration $1/2$-surely, formally $\forall f \in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}_1}} - \EE f \rvert \leq \epsilon/2} \geq \frac 1 2$. Then
+
+   \begin{equation}
+	   \PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon} \leq 2\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+   \end{equation}
+\end{lemma}
+
+\begin{proof}
+	Let be $\mathcal{S}_1$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE f| \geq \epsilon$. This obviously happends with probability $\PPP{}{\exists f \in \mathcal{F}, |\EE{f_{\mathcal{S}_1}} - \EE f| \geq \epsilon }$.
+
+	For such an $f$, we then sample $\mathcal{S}_2$ such that $|\EE {f_{\mathcal{S}_2}} -  \EE f| \leq \epsilon/2$. By hypothesis, this happends with probability greater than $1/2$, and we thus have
+	\begin{align*}
+		\PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon}
+		\frac 1 2 
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon \wedge \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq \epsilon/2 } \\
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+	\end{align*}
+	where we lastly used the triangular inequality $ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert - \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq   \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert  $
+\end{proof}
+
+
+
+\begin{lemma}
+	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. 
+	
+
+	\begin{equation}
+		\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }
+	\end{equation}
+
+\end{lemma}
+
+\note{}{recall cover}
+
+\begin{proof}[Draft of Proof]
+	For every two multisets $\mathcal{S}_1, \mathcal{S}_2$ of size $m$, we denote their multiset union $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \subseteq \mathcal{X}^{2m}$.
+
+	Let be $\mathcal{S}$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2$. 
+	
+	Let then be taken $\mathcal{F^*_\mathcal{S}}$, an $\epsilon/8$-cover of $\mathcal{F}$ for the $\EE \cdot_{\mathcal{S}}$ topology, such that $|\mathcal{F^*_\mathcal{S}}| = N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}})$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\EE |f-f^*|_{\mathcal{S}} \leq \epsilon/8$.
+
+	Applying some triangular inequalities yields that
+	\begin{align*}
+		|\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| &\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + |\EE{f_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_1}}| + |\EE{f_{\mathcal{S}_2}} - \EE{f^*_{\mathcal{S}_2}}|  \\
+		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + \EE|f-f^*|_{\mathcal{S}_1} + \EE|f-f^*|_{\mathcal{S}_2} \\
+		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + 2  \EE|f-f^*|_{\mathcal{S}}\\
+		\iff |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| &\geq |\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| - 2  \EE|f-f^*|_{\mathcal{S}} \geq \epsilon/4 
+	\end{align*}
+	Therefore
+	\begin{equation}
+		\PPP{}{\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2} \leq \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
+	\end{equation}
+	By the law of total expectation, we obtain
+	\begin{align*}
+		\PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
+		&=\EEE{}{ \1 \{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \} }\\
+		&=\EEE{}{ \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
+        &\leq \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }\\
+		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }
+	\end{align*}
+
+\end{proof}
