@@ -190,3 +190,155 @@ abstract = {We describe a generalization of the PAC learning model that is based
 }
 
 
+
+@article{valiant1984learnable,
+author = {Valiant, L. G.},
+title = {A Theory of the Learnable},
+year = {1984},
+issue_date = {Nov. 1984},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {27},
+number = {11},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/1968.1972},
+doi = {10.1145/1968.1972},
+journal = {Commun. ACM},
+month = {nov},
+pages = {1134–1142},
+numpages = {9},
+keywords = {inductive inference, propositional expressions, probabilistic models of learning}
+}
+
+
+
+@article{macchi1975dpp, title={The coincidence approach to stochastic point processes}, volume={7}, DOI={10.2307/1425855}, number={1}, journal={Advances in Applied Probability}, publisher={Cambridge University Press}, author={Macchi, Odile}, year={1975}, pages={83–122}}
+
+
+
+@article{hough2006_hkpv,
+	doi = {10.1214/154957806000000078},
+  
+	url = {https://doi.org/10.1214%2F154957806000000078},
+  
+	year = 2006,
+	month = {jan},
+  
+	publisher = {Institute of Mathematical Statistics},
+  
+	volume = {3},
+  
+	number = {none},
+  
+	author = {J. Ben Hough and Manjunath Krishnapur and Yuval Peres and B{\'{a}
+}lint Vir{\'{a}}g},
+  
+	title = {Determinantal Processes and Independence},
+  
+	journal = {Probability Surveys}
+}
+
+
+@article{poulson2020_high_performance_DPP_sampling,
+	doi = {10.1098/rsta.2019.0059},
+  
+	url = {https://doi.org/10.1098%2Frsta.2019.0059},
+  
+	year = 2020,
+	month = {jan},
+  
+	publisher = {The Royal Society},
+  
+	volume = {378},
+  
+	number = {2166},
+  
+	pages = {20190059},
+  
+	author = {Jack Poulson},
+  
+	title = {High-performance sampling of generic determinantal point processes},
+  
+	journal = {Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engineering Sciences}
+}
+
+
+
+@article{launay2020_dpp_sampling_without_eigendecomposition,
+	doi = {10.1017/jpr.2020.56},
+  
+	url = {https://doi.org/10.1017%2Fjpr.2020.56},
+  
+	year = 2020,
+	month = {nov},
+  
+	publisher = {Cambridge University Press ({CUP})},
+  
+	volume = {57},
+  
+	number = {4},
+  
+	pages = {1198--1221},
+  
+	author = {Claire Launay and Bruno Galerne and Agn{\`{e}
+}s Desolneux},
+  
+	title = {Exact sampling of determinantal point processes without eigendecomposition},
+  
+	journal = {Journal of Applied Probability}
+}
+
+
+
+
+@InProceedings{gillenwater2019_treebased_fast_dpp_sampling,
+  title = 	 {A Tree-Based Method for Fast Repeated Sampling of Determinantal Point Processes},
+  author =       {Gillenwater, Jennifer and Kulesza, Alex and Mariet, Zelda and Vassilvtiskii, Sergei},
+  booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+  pages = 	 {2260--2268},
+  year = 	 {2019},
+  editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+  volume = 	 {97},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {09--15 Jun},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v97/gillenwater19a/gillenwater19a.pdf},
+  url = 	 {https://proceedings.mlr.press/v97/gillenwater19a.html},
+  abstract = 	 {It is often desirable in recommender systems and other information retrieval applications to provide diverse results, and determinantal point processes (DPPs) have become a popular way to capture the trade-off between the quality of individual results and the diversity of the overall set. However, sampling from a DPP is inherently expensive: if the underlying collection contains N items, then generating each DPP sample requires time linear in N following a one-time preprocessing phase. Additionally, results often need to be personalized to a user, but standard approaches to personalization invalidate the preprocessing, making personalized samples especially expensive. In this work we address both of these shortcomings. First, we propose a new algorithm for generating DPP samples in time logarithmic in N, following a slightly more expensive preprocessing phase. We then extend the algorithm to support arbitrary query-time feature weights, allowing us to generate samples customized to individual users while still retaining logarithmic runtime; experiments show our approach runs over 300 times faster than traditional DPP sampling on collections of 100,000 items for samples of size 10.}
+}
+
+
+
+
+@article{kulesza2012_dpp_for_ml,
+url = {http://dx.doi.org/10.1561/2200000044},
+year = {2012},
+volume = {5},
+journal = {Foundations and Trends® in Machine Learning},
+title = {Determinantal Point Processes for Machine Learning},
+doi = {10.1561/2200000044},
+issn = {1935-8237},
+number = {2–3},
+pages = {123-286},
+author = {Alex Kulesza and Ben Taskar}
+}
+
+
+
+
+
+@InProceedings{gautier2017_zonotope_for_dpp_sampling,
+  title = 	 {Zonotope Hit-and-run for Efficient Sampling from Projection {DPP}s},
+  author =       {Guillaume Gautier and R{\'e}mi Bardenet and Michal Valko},
+  booktitle = 	 {Proceedings of the 34th International Conference on Machine Learning},
+  pages = 	 {1223--1232},
+  year = 	 {2017},
+  editor = 	 {Precup, Doina and Teh, Yee Whye},
+  volume = 	 {70},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {06--11 Aug},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v70/gautier17a/gautier17a.pdf},
+  url = 	 {https://proceedings.mlr.press/v70/gautier17a.html},
+  abstract = 	 {Determinantal point processes (DPPs) are distributions over sets of items that model diversity using kernels. Their applications in machine learning include summary extraction and recommendation systems. Yet, the cost of sampling from a DPP is prohibitive in large-scale applications, which has triggered an effort towards efficient approximate samplers. We build a novel MCMC sampler that combines ideas from combinatorial geometry, linear programming, and Monte Carlo methods to sample from DPPs with a fixed sample cardinality, also called projection DPPs. Our sampler leverages the ability of the hit-and-run MCMC kernel to efficiently move across convex bodies. Previous theoretical results yield a fast mixing time of our chain when targeting a distribution that is close to a projection DPP, but not a DPP in general. Our empirical results demonstrate that this extends to sampling projection DPPs, i.e., our sampler is more sample-efficient than previous approaches which in turn translates to faster convergence when dealing with costly-to-evaluate functions, such as summary extraction in our experiments.}
+}

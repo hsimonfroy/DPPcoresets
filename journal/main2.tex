@@ -1,0 +1,164 @@
+\documentclass{article} % [fleqn, leqno]: flush left equations, left equation numbers
+
+
+% book example for classicthesis.sty
+% \documentclass[11pt,a5paper,footinclude=true,headinclude=true]{scrbook} % KOMA-Script book
+\usepackage[T1]{fontenc}                
+\usepackage{lipsum}
+\usepackage[linedheaders,parts,pdfspacing]{classicthesis} % ,manychapters
+%\usepackage[osf]{libertine}
+\usepackage{amsthm}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+\usepackage{amsmath} % most maths
+\usepackage{graphicx} % figures 
+\usepackage{subcaption} % subfigures
+\usepackage{dsfont} % \mathds
+\usepackage{amsthm} % \theoremstyle
+\usepackage{amssymb} % \nsucc
+\usepackage{stmaryrd} % \llbracket
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
+\usepackage{tcolorbox}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\PPP}[2]{\mathbb{P}_{#1}\left[#2\right]}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\EEE}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\Var}{\operatorname{\mathbb V ar}}
+\newcommand{\Cov}{\operatorname{\mathbb C ov}}
+\newcommand{\T}{^\top}  % or ^\intercal
+\newcommand{\1}{\mathds{1}} % indicator
+\newcommand{\voones}{\boldsymbol{j}} % vector of ones
+\newcommand{\moones}{\boldsymbol{J}} % matrix of ones
+\newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
+\newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
+
+
+
+
+
+
+% Show fontsize: \fontname\font\ at \the\fontdimen6\font 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition} % no italics in definition
+\newtheorem{definition}{Definition}[section]
+
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
+\addbibresource{biblio.bib}
+
+
+
+
+\title{Journal}
+
+
+
+
+\begin{document}
+	
+\maketitle
+\tableofcontents
+	
+\input{parts/chapter1.tex}
+\input{parts/chapter2.tex}
+\input{parts/chapter3.tex}
+
+
+	
+	\printbibliography
+%	 \bibliographystyle{chicago}
+%	 \bibliography{biblio.bib}
+	
+\end{document}
+
+
+
+
+
+
+% \begin{document}
+% %	\pagestyle{scrheadings}
+% %	\manualmark
+% %	\markboth{\spacedlowsmallcaps{\contentsname}}{\spacedlowsmallcaps{\contentsname}}
+	
+% 	\tableofcontents 
+
+% %	\automark[section]{chapter}
+% %	\renewcommand{\chaptermark}[1]{\markboth{\spacedlowsmallcaps{#1}}{\spacedlowsmallcaps{#1}}}
+% %	\renewcommand{\sectionmark}[1]{\markright{\thesection\enspace\spacedlowsmallcaps{#1}}}
+
+%     % use \cleardoublepage here to avoid problems with pdfbookmark
+%     \cleardoublepage\part{Test Part}
+%     \chapter{Some Math Testing}
+% 		\newtheoremstyle{note}% hnamei 
+% 		{3pt}% hSpace abovei 
+% 		{3pt}% hSpace belowi note
+% 		{}% hBody fonti 
+% 		{}% hIndent amounti1
+% 		{\itshape}% hTheorem head fonti 
+% %		{\spacedlowsmallcaps}%
+% 		{:}% hPunctuation after theorem headi 
+% 		{.5em}% hSpace after theorem headi2
+% 		{}%
+% 		\theoremstyle{note}
+%     \newtheorem{note}{Definition}
+% 		\begin{note}
+% 		Here is a new definition
+% 		\end{note}
+
+    
+% 		\begin{proof}
+% 		Here is my proof:
+% 		\[
+% 		a^2 + b^2 = c^2 \qedhere
+% 		\]
+% 		\end{proof}    
+    
+    
+    
+%     \chapter{Test Chapter}
+%     \lipsum[1]
+
+%     \section{A Section}
+%     \lipsum[1]
+    
+%     \chapter{Test Chapter}
+%     \lipsum[1]
+    
+%     \section{A Section}
+%     \lipsum[1]
+
+% %	\include{multiToC}
+
+%     \appendix
+%     \cleardoublepage\part{Appendix}
+%     \chapter{Appendix Chapter}
+%     \lipsum[1]
+    
+%     \section{A Section}
+%     \lipsum[1]
+
+% \end{document}
+
+
+

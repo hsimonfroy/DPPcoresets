@@ -1,0 +1,199 @@
+\documentclass{article} % [fleqn, leqno]: flush left equations, left equation numbers
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2021
+
+% ready for submission
+% \usepackage{style}
+\usepackage[nonatbib]{style_nips}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2021}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2021}
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2021}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+\usepackage{amsmath} % most maths
+\usepackage{graphicx} % figures 
+\usepackage{subcaption} % subfigures
+\usepackage{dsfont} % \mathds
+\usepackage{amsthm} % \theoremstyle
+\usepackage{amssymb} % \nsucc
+\usepackage{stmaryrd} % \llbracket
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
+\usepackage{tcolorbox}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\PPP}[2]{\mathbb{P}_{#1}\left[#2\right]}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\EEE}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\Var}{\operatorname{\mathbb V ar}}
+\newcommand{\Cov}{\operatorname{\mathbb C ov}}
+\newcommand{\T}{^\top}  % or ^\intercal
+\newcommand{\1}{\mathds{1}} % indicator
+\newcommand{\voones}{\boldsymbol{j}} % vector of ones
+\newcommand{\moones}{\boldsymbol{J}} % matrix of ones
+\newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
+\newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
+
+% Show fontsize: \fontname\font\ at \the\fontdimen6\font 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition} % no italics in definition
+\newtheorem{definition}{Definition}[section]
+
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
+\addbibresource{biblio.bib}
+
+
+
+
+\title{Journal}
+\begin{document}
+	
+\maketitle
+\tableofcontents
+	
+\input{parts/chapter1.tex}
+\input{parts/chapter2.tex}
+\input{parts/chapter3.tex}
+
+
+\vspace{5cm}
+
+
+Let be $d_{L^1}(x ,y) = \frac 1 m \sum_{i=1}^m |x_i - y_i| = \frac{1}{m} \lVert x- y \rVert$
+$\mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2} = \left\{(f_\theta(x))_{x\in \mathcal{S}_1 \uplus \mathcal{S}_2} | \theta \in \Theta \right\} \subseteq \RR^{2m}$	
+
+For all $x \in \RR^{2m}$, let be defined $\EE_1[x] = \frac{1}{m} \sum_{i=1}^{m} x_i$ and $\EE_2[x] = \frac{1}{m} \sum_{i=m+1}^{2m} x_i$, the empiric mean on the vector first and second half respectively.
+
+$\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{S}_2}(\theta)|>\epsilon \iff \exists f \in \mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2}, |\EE_1[f] - \EE_2[f]| > \epsilon$
+\begin{lemma}
+	\begin{align*}
+		&\PP_{\mathcal{S}_1} \left[ \exists \theta \in \Theta,  \frac 1 m |\hat L_{\mathcal{S}_1}(\theta)- L(\theta)|>\epsilon \right] \leq
+		2 \PP_{\mathcal{S}_1, \mathcal{S}_2} \left[ \exists \theta \in \Theta,  \frac 1 m |L(\theta)-\hat L_{\mathcal{S}_1}(\theta)|\right] 
+	\end{align*}
+\end{lemma}
+
+\begin{align*}
+	&\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \\
+	\leq \,&\PP \left[ \exists \theta \in \Theta^*,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\frac{\epsilon}{2} L(\theta)\right] \\
+	\leq &\sum_{\theta \in \Theta^*} \frac{4}{\epsilon^2} \Var[\frac{\hat L(\theta)}{L(\theta)}] \\
+	\lesssim &\sum_{\theta \in \Theta^*} \frac{1}{\epsilon^2}( M_\theta \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2})) \\
+	\leq &\frac{|\Theta^*|}{\epsilon^2} (M \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2}))
+\end{align*}
+
+
+For the $\epsilon$-coreset property \ref{def_coresetprop} to hold $1-\delta$-surely or equivalently  
+\begin{equation}
+	\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \delta
+\end{equation}
+it suffices to have
+\begin{align}
+	\delta &\geq \frac{|\Theta^*|}{\epsilon^2} (M \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2})) \\
+	\iff m^{1+\frac 1 d} &\gtrsim \frac{M}{\frac{\delta \epsilon^2}{|\Theta^*|} + \OO(n^{-1/2})} = \frac{M |\Theta^*|}{\delta \epsilon^2} \frac{1}{1 + \frac{|\Theta^*|}{\delta \epsilon^2}\OO(n^{-1/2})}
+\end{align}
+This means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4} |\Theta^*|^2$), we can control the second factor and thus obtain the bound
+\begin{equation}
+	\boxed{m \gtrsim \left(\frac{M |\Theta^*|}{\delta \epsilon^2}\right) ^{\frac{1}{1+\frac 1 d}} }
+\end{equation}
+
+
+
+
+\begin{tcolorbox}
+	Assume better variance with DPP, can we improve concentration?
+\begin{itemize}
+	\item Can we use the $\sqrt {N^{1 + \frac 1 d}}$ rate from the SGD paper?
+	\item Concentration inequality for a sum of \textbf{dependant} variables?
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Theorem 3.4.} from \cite{pemantle2011rayleighconcentration}: Let $\mathbb{P}$ be a k-homogeneous probability measure on $\mathcal{B}_{n}$ satisfying the Stochastic Covering Property (SCP). Let $f$ be a 1-Lipschitz function on $\mathcal{B}_{n}$. Then
+$$
+\mathbb{P}(\lvert f-\mathbb{E} f \rvert \geq a) \leq 2 \exp \left(-\frac{a^{2}}{8 k}\right)
+$$
+
+Bennett inequality: Let be $(X_i)_{i\in \intint{1}{n}}$ independent and centered real-valued random variables, and $\sigma^2 = \frac{1}{n}\sum_i \Var[X_i]$, then for any $t>0$
+$$
+\mathbb{P}\left(\sum_{i=1}^{n} X_{i}>t\right) \leq \exp \left(-n \sigma^{2} h\left(\frac{t}{n \sigma^{2}}\right)\right)
+$$
+where $h(u)=(1+u) \log (1+u)-u$ for $u \geq 0$.
+
+
+From \cite{breuer2013nevai} $$\PP\left(\left|X_f-\mathbb{E} X_f\right| \geq \epsilon\right) \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var X_f}\right), & \text { if } \epsilon<\frac{2 A \Var X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var X_f}{3\|f\|_{\infty}}\end{cases}$$
+
+
+ $$P( |L -\hat L| \geq L\epsilon ) \leq 2e^{\frac{-L^2\epsilon ^{2}}{4A \Var} }$$
+
+
+
+$$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\right) \left( 1+O\left( n^{-\frac{1}{2}}\right) \right) \right) ^{\frac{1}{1+\frac{1}{d}}}$$
+
+\section{Discrete OPE}
+\begin{tcolorbox}
+	Can we bypass the Kernel Density Estimate (KDE) in SGD paper by using discrete OPE? See \cite{gautschi2004ope}.
+	
+\end{tcolorbox}
+
+
+
+
+\section{Holydays questions}
+\begin{itemize}
+	\item Variance for formula for k-DPP, in \cite{zhang2017dppminibatch}.
+	\item How $\tilde K$ eigenspaces look like ? When $n \xrightarrow[]{} \infty$ ?
+	\begin{itemize}
+		\item How does it compare to \cite{bardenet2020mcdpp} ?
+		\item If $f$ is given, can I find a $K$ for which $f$ is in "good" eigenspaces (eigenvalue $\geq$ 1).
+	\end{itemize}
+	\item Defining discrete OPE, because discretized continuous OPE is probably not a DPP. See Gautschi Orthogonal Polynomials, 2004.
+	\begin{itemize}
+		\item For making links with SGD paper \cite{bardenet2021sgddpp}
+		\item Look at the limit e.g. for Jacobi ensembles. 
+	\end{itemize}
+\end{itemize}
+\begin{itemize}
+	\item Take a Bernoulli and beat it with a DPP.
+	\item Focus on metric we could have advantages on, e.g. look how variance decay with coreset size. 
+	\item Better with direct applications e.g. on k-means or linear regression.
+\end{itemize}
+\begin{itemize}
+	\item Strong raylegh measure positive correlation ?
+	\item $\Var f = \Var f_+ + \Var f_- + 2 (\EE f_+ f_- - \EE f_+ \EE f_-)\leq \Var f_+ + \Var f_-$
+	\item Pemantle only for kDPP?
+	\item Hoefding/Benett like proof for $\sum_{x_i \in \mathcal S} \epsilon_i f(x_i)$ using maybe recurisve property of HKPV sampling.
+\end{itemize}
+
+	\vfill
+	
+	
+	\printbibliography
+%	 \bibliographystyle{chicago}
+%	 \bibliography{biblio.bib}
+	
+\end{document}
