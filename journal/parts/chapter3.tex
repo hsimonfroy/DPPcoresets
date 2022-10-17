@@ -1,4 +1,7 @@
 \chapter{Improving}
+\section{Tremblay}
+
+
 \section{Variance arguments}
 \subsection{Three sampling cases}
 \subsubsection{Multinomial case}
@@ -7,30 +10,30 @@
 In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\PP(x_i) = q(x_i)$.
 Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{iid}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{m q(x_i)}
+	\hat L_{\textrm{iid}}(\query) := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{m q(x_i)}
 \end{equation*}
 Its variance is
 \begin{equation}
-	\Var_{\textrm{iid}}(\theta) :=\frac{1}{m} \Var\left[\frac {f_{\theta}(x_i)} {q(x_i)}\right] 
-	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{f_{\theta}(x)^{2}}{q(x)} -\frac{1}{m} L(\theta)^{2} = f_\theta\T(\frac{Q^{-1}} m - \frac{\moones} m)f_\theta
+	\Var_{\textrm{iid}}(\query) :=\frac{1}{m} \Var\left[\frac {\query(x_i)} {q(x_i)}\right] 
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} L(\query)^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
 \end{equation}
 where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
-For any query $\theta \in \Theta$, the variance is reduced to 0 by
+For any query $\query \in \queryset$, the variance is reduced to 0 by
 $$
-q_{\theta}(x):=\frac{ f_{\theta}(x)}{L(\theta)}
+q_{\query}(x):=\frac{ \query(x)}{L(\query)}
 $$
 
 
 \subsubsection{DPP case}
 In the DPP case, we have $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{DPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{\pi_i}
+	\hat L_{\textrm{DPP}}(\query) := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{\pi_i}
 \end{equation*}
 Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$
 \begin{align*}
-	\Var_{\textrm{DPP}}(\theta)
-=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}\\
+	\Var_{\textrm{DPP}}(\query)
+:=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{\query(x_{i}) \query(x_{j})} {\pi_{i} \pi_{j}}  - L(\query)^{2}\\
 \quad \text{with} \quad
 \EE\left[\epsilon_{i} \epsilon_{j}\right]=
 \begin{cases}
@@ -44,7 +47,7 @@ Its variance can be computed using $\epsilon_i$ as the counting variable for $x_
 Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
 
 \begin{equation}
-	\Var_{\textrm{DPP}}(\theta)=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) f_\theta(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} f_\theta(x_{i}) f_\theta(x_{j}) =  f_\theta\T (\Pi^{-1}  - \tilde{K}) f_\theta 
+	\Var_{\textrm{DPP}}(\query)=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) \query(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} \query(x_{i}) \query(x_{j}) =  \query\T (\Pi^{-1}  - \tilde{K}) \query 
 \end{equation}
 
 For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var_{\textrm{diag}}$.
@@ -54,39 +57,50 @@ For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, t
 
 In the m-DPP case, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and the marginals $b_{i} := \mathbb{E}\left[\epsilon_{i}\right]$ have an analytic form. Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{mDPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{b_i}
+	\hat L_{\textrm{mDPP}}(\query) = \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{b_i}
 \end{equation*}
 
 Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
 $$
-\tilde L(\theta) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[f_\theta(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} f_\theta\left(x_{i}\right)
+\tilde L(\query) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
 $$
 Then an unbiased estimator of $\tilde L$ is
 \begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}(\theta) = \frac{1}{m}\sum_{x_i\in \mathcal S} f_\theta(x_i)
+	\hat{\tilde L}_{\textrm{mDPP}}(\query) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
 \end{equation*}
-We can switch between $L$ and $\tilde L$, substituting $f_\theta(x_i)$ by $\frac{b_i f_\theta(x_i)}{m}$.
+We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
 
 Returning to the estimation of $L$, we are interested in the variance of $\hat L_{\textrm{mDPP}}$ which is
 \begin{equation}
-	\Var_{\textrm{mDPP}}(\theta)=\sum_{i}\left(\frac{1}{b_i}-1\right) f_\theta(x_i)^2
-	+ \sum_{i \neq j} C_{ij}f_\theta(x_i) f_\theta(x_j)
+	\Var_{\textrm{mDPP}}(\query)=\sum_{i}\left(\frac{1}{b_i}-1\right) \query(x_i)^2
+	+ \sum_{i \neq j} C_{ij}\query(x_i) \query(x_j)
 \end{equation}
 where $C_{ij}=\frac{\mathbb{E}\left[\left(\epsilon_{i}-b_{i}\right)\left(\epsilon_{j}-b_{j}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]}{b_{i} b_{j}}-1
 $
 
 Observe that if the m-DPP kernel is reduced to its diagonal ($C_{ij} = 0$), we recover $\Var_{\textrm{diag}}$, the variance of a Bernoulli process with same marginals ($\pi_i = b_i$), though here the number of elements sampled is fixed to $m$.
 
-In order to benefit from some variance reduction, one should want $\forall i\neq j \,,\, C_{ij}f_\theta(x_i) f_\theta(x_j) <0$ for a given m-DPP.
-\cite{zhang2017dppminibatch} discuss that intuitively, if the m-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{ij}<0$) and their value have positive scalar product ($f_\theta(x_i) f_\theta(x_j) > 0$). Reversely, it is argued that 2 dissimilar points should have positive correlation 
+In order to benefit from some variance reduction, one should want $\forall i\neq j \,,\, C_{ij}\query(x_i) \query(x_j) <0$ for a given m-DPP.
+\cite{zhang2017dppminibatch} discuss that intuitively, if the m-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{ij}<0$) and their value have positive scalar product ($\query(x_i) \query(x_j) > 0$). Reversely, it is argued that 2 dissimilar points should have positive correlation 
 										\note{}{contradiction with property of strong Rayleigh measures}
-, and their value show "no tendency to align" hinting $f_\theta(x_i) f_\theta(x_j) < 0$. We could more conservatively consider that the induced variance change, whether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independence.
+, and their value show "no tendency to align" hinting $\query(x_i) \query(x_j) < 0$. We could more conservatively consider that the induced variance change, whether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independence.
 
 
+
+Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
+$$
+\tilde L(\query) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
+$$
+Then an unbiased estimator of $\tilde L$ is
+\begin{equation*}
+	\hat{\tilde L}_{\textrm{mDPP}}(\query) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
+\end{equation*}
+We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
+\note{}{complete}
 
 
 \subsection{Variance comparison}
-In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var_{\textrm{iid}}$, $\Var_{\textrm{diag}}$ and $\Var_{\textrm{DPP}}$ are quadratic forms of $f_\theta$ associated with respective matrices
+In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var_{\textrm{iid}}$, $\Var_{\textrm{diag}}$ and $\Var_{\textrm{DPP}}$ are quadratic forms of $\query$ associated with respective matrices
 $$\begin{cases}
 	\Var_{\textrm{iid}} \equiv \Pi^{-1} - \frac{\moones}{m} \\
 	\Var_{\textrm{diag}} \equiv \Pi^{-1} - I \\
@@ -96,14 +110,14 @@ $$\begin{cases}
 \subsubsection{Comparing DPP versus diag}
 The DPP variance strictly beats uniformly the Bernoulli process variance if $\tilde K$ strictly dominates identity i.e. 
 \begin{equation}
-	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{diag}} \iff \tilde K \succ I
+	\forall \query, \, \Var_{\textrm{DPP}} < \Var_{\textrm{diag}} \iff \tilde K \succ I
 \end{equation}
 But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
 
 \subsubsection{Comparing DPP versus i.i.d.}
 The DPP variance strictly beats uniformly the multinomial variance if $\tilde K$ strictly dominates $\frac{\moones}{m}$ i.e. 
 \begin{equation}
-	\forall f_\theta, \, \Var_{\textrm{DPP}} < \Var_{\textrm{iid}} \iff \tilde K \succ \frac{\moones}{m}
+	\forall \query, \, \Var_{\textrm{DPP}} < \Var_{\textrm{iid}} \iff \tilde K \succ \frac{\moones}{m}
 \end{equation}
 $K$ being symmetric positive of rank $r \in \intint{0}{n}$, it exists $V \in \RR^{r \times n}$ such that $K = V\T V$, and we denote by $V_i$ its colons, for $i \in \intint{1}{n}$.
 
@@ -125,41 +139,41 @@ $ allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T 
 					\note{}{explain how the estimator is built}
 equation (S14) yields that 
 \begin{equation}
-	\Var[\frac{\hat L_{\textrm{DPP}}(\theta)}{L(\theta)}] = M_\theta \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+	\Var[\frac{\hat L_{\textrm{DPP}}(\query)}{L(\query)}] = M_\query \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
 \end{equation}
-where $\sqrt{M_\theta}$ is the Lipschitz constant of $x \mapsto f_\theta(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\theta \in \Theta}M_\theta$.
+where $\sqrt{M_\query}$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\query \in \queryset}M_\query$.
 
 Bienaym\'e-Tchebychev inequality then gives
 \begin{equation}
-	\PP \left[|L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \frac{\Var[ \hat L_{\textrm{DPP}}(\theta) ] }{L(\theta)^{2}\varepsilon ^{2}} = \frac {1} {\epsilon^2}(M_\theta \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
+	\PP \left[|L(\query)-\hat L_{\textrm{DPP}}(\query)|>\epsilon L(\query)\right] \leq \frac{\Var[ \hat L_{\textrm{DPP}}(\query) ] }{L(\query)^{2}\varepsilon ^{2}} = \frac {1} {\epsilon^2}(M_\query \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
 \end{equation}
 Hence, $\mathcal{S} \sim \mathcal{DPP}(\tilde{\boldsymbol K}_m)$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} for
 \begin{align}
-	m^{1+\frac 1 d} &\gtrsim \frac{M_\theta}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {M_\theta} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+	m^{1+\frac 1 d} &\gtrsim \frac{M_\query}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {M_\query} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
 \end{align} 
 where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
 Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 \begin{equation}
-	\boxed{m \gtrsim \left(\frac{M_\theta}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
+	\boxed{m \gtrsim \left(\frac{M_\query}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
 	\label{eqn_fixedtheta}
 \end{equation}
 \note{}{make that a Lemma}
 \begin{lemma}
 	\begin{equation}
-		\sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}}} - \EE{f} \rvert \geq \epsilon} \leq \delta
+		\sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}}(\query) - \loss(\query) \rvert \geq \epsilon} \leq \delta
 	\end{equation}
 \end{lemma}
 
 
 \subsection{Extension to all queries}
-In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\theta \in \Theta$.
+In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\query \in \queryset$.
 
-For every function $f \in \mathcal{F}$ and multiset $\mathcal{S}$, let the restriction of the function $f$ to the multiset $\mathcal{S}$ be denoted by $f_{\mathcal{S}} := (f(x))_{x \in \mathcal{S}} \in \RR^{|\mathcal{S} |}$, and let its mean be denoted by $\EE f_\mathcal{S} := \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} f(x)$.
+For every function $f \in \mathcal{F}$ and multiset $\mathcal{S}$, let the restriction of the function $f$ to the multiset $\mathcal{S}$ be denoted by $f_{\mathcal{S}} := (f(x))_{x \in \mathcal{S}} \in \RR^{|\mathcal{S} |}$, and let its mean be denoted by $\estloss{\mathcal{S}}(\query) := \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} f(x)$.
 
 \begin{corollary}
 	Let be $\mathcal{S} \sim  \mathcal{DPP}(K_m)$. Taking $\delta = 1/2$ in precedent result \ref{eqn_fixedtheta}, we know it exists some constant we denote $c_{1/2}$ such that $\forall \epsilon>0$ it holds that
 	\begin{equation}
-		m \geq c_{1/2} \left(\frac{M_{\mathcal{F}}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall f\in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}}} - \EE f \rvert \leq \epsilon} \geq \frac 1 2
+		m \geq c_{1/2} \left(\frac{M_{\mathcal{F}}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall f\in \mathcal{F},\ \PPP{}{ \lvert \estloss{\mathcal{S}}(\query) - \loss(\query)\rvert \leq \epsilon} \geq \frac 1 2
 	\end{equation} 
 \end{corollary}
 
@@ -167,34 +181,34 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 \note{}{state of the art slightly better than haussler, cf. Li, but strongly? require independancy}
 
 \begin{lemma}
-	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Assume that for a given $\epsilon>0$ we can control uniformly on $f$ the concentration $1/2$-surely, formally $\forall f \in \mathcal{F},\ \PPP{}{ \lvert \EE {f_{\mathcal{S}_1}} - \EE f \rvert \leq \epsilon/2} \geq \frac 1 2$. Then
+	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Assume that for a given $\epsilon>0$ we can control uniformly on $f$ the concentration $1/2$-surely, formally $\forall f \in \mathcal{F},\ \PPP{}{ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \leq \epsilon/2} \geq \frac 1 2$. Then
 
    \begin{equation}
-	   \PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon} \leq 2\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+	   \PPP{}{ \exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon} \leq 2\PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/2 }
    \end{equation}
 \end{lemma}
 
 \begin{proof}
-	Let be $\mathcal{S}_1$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE f| \geq \epsilon$. This obviously happens with probability $\PPP{}{\exists f \in \mathcal{F}, |\EE{f_{\mathcal{S}_1}} - \EE f| \geq \epsilon }$.
+	Let be $\mathcal{S}_1$ sampled such that $\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \loss(\query)| \geq \epsilon$. This obviously happens with probability $\PPP{}{\exists f \in \mathcal{F}, |\estloss{\mathcal{S}_1}(\query) - \loss(\query)| \geq \epsilon }$.
 
-	For such an $f$, we then sample $\mathcal{S}_2$ such that $|\EE {f_{\mathcal{S}_2}} -  \EE f| \leq \epsilon/2$. By hypothesis, this happens with probability greater than $1/2$, and we thus have
+	For such an $f$, we then sample $\mathcal{S}_2$ such that $|\estloss{\mathcal{S}_2}(\query) -  \loss(\query)| \leq \epsilon/2$. By hypothesis, this happens with probability greater than $1/2$, and we thus have
 	\begin{align*}
-		\PPP{}{ \exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon}
+		\PPP{}{ \exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon}
 		\frac 1 2 
-		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert \geq \epsilon \wedge \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq \epsilon/2 } \\
-		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/2 }
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon \wedge \lvert\estloss{\mathcal{S}_2}(\query) - \loss(\query)\rvert \leq \epsilon/2 } \\
+		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/2 }
 	\end{align*}
-	where we lastly used the triangular inequality $ \lvert \EE{f_{\mathcal{S}_1}} - \EE f \rvert - \lvert\EE{f_{\mathcal{S}_2}} - \EE f \rvert \leq   \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert  $
+	where we lastly used the triangular inequality $ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert - \lvert\estloss{\mathcal{S}_2}(\query) - \loss(\query)\rvert \leq   \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert  $
 \end{proof}
 
 
 
-\begin{lemma}
+\begin{lemma}[Conjecture ]
 	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. 
 	
 
 	\begin{equation}
-		\PPP{}{\exists f \in \mathcal{F},\ \lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }
+		\PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }
 	\end{equation}
 
 \end{lemma}
@@ -204,28 +218,28 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 \begin{proof}[Draft of Proof]
 	For every two multisets $\mathcal{S}_1, \mathcal{S}_2$ of size $m$, we denote their multiset union $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \subseteq \mathcal{X}^{2m}$.
 
-	Let be $\mathcal{S}$ sampled such that $\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2$. 
+	Let be $\mathcal{S}$ sampled such that $\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/2$. 
 	
-	Let then be taken $\mathcal{F^*_\mathcal{S}}$, an $\epsilon/8$-cover of $\mathcal{F}$ for the $\EE \cdot_{\mathcal{S}}$ topology, such that $|\mathcal{F^*_\mathcal{S}}| = N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}})$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\EE |f-f^*|_{\mathcal{S}} \leq \epsilon/8$.
+	Let then be taken $\mathcal{F^*_\mathcal{S}}$, an $\epsilon/8$-cover of $\mathcal{F}$ for the $\estloss{\mathcal{S}}$ topology, such that $|\mathcal{F^*_\mathcal{S}}| = N(\epsilon/8, \mathcal{F}, \estloss{\mathcal{S}})$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\estloss{\mathcal{S}}(|f-f^*|)_{\mathcal{S}} \leq \epsilon/8$.
 
 	Applying some triangular inequalities yields that
 	\begin{align*}
-		|\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| &\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + |\EE{f_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_1}}| + |\EE{f_{\mathcal{S}_2}} - \EE{f^*_{\mathcal{S}_2}}|  \\
-		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + \EE|f-f^*|_{\mathcal{S}_1} + \EE|f-f^*|_{\mathcal{S}_2} \\
-		&\leq |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| + 2  \EE|f-f^*|_{\mathcal{S}}\\
-		\iff |\EE{f^*_{\mathcal{S}_1}} - \EE{f^*_{\mathcal{S}_2}}| &\geq |\EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}}| - 2  \EE|f-f^*|_{\mathcal{S}} \geq \epsilon/4 
+		|\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| &\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_1}(\query^*)| + |\estloss{\mathcal{S}_2}(\query) - \estloss{\mathcal{S}_2}(\query^*)|  \\
+		&\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + \estloss{\mathcal{S}_1}(|\query - \query^*|) + \estloss{\mathcal{S}_2}(|\query - \query^*|) \\
+		&\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + 2  \estloss{\mathcal{S}}(|\query - \query^*|)\\
+		\iff |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| &\geq |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| - 2  \estloss{\mathcal{S}}(|\query - \query^*|) \geq \epsilon/4 
 	\end{align*}
 	Therefore
 	\begin{equation}
-		\PPP{}{\exists f \in \mathcal{F},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/2} \leq \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
+		\PPP{}{\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/2} \leq \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4}
 	\end{equation}
 	By the law of total expectation, we obtain
 	\begin{align*}
-		\PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4}
-		&=\EEE{}{ \1 \{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \} }\\
-		&=\EEE{}{ \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\EE {f_{\mathcal{S}_1}} - \EE {f_{\mathcal{S}_2}}| \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
-        &\leq \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }\\
-		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \EE{f_{\mathcal{S}_1}} - \EE{f_{\mathcal{S}_2}} \rvert \geq \epsilon/4 }
+		\PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4}
+		&=\EEE{}{ \1 \{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4 \} }\\
+		&=\EEE{}{ \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
+        &\leq \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }\\
+		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }
 	\end{align*}
 
 \end{proof}

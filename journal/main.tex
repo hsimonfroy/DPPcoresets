@@ -29,8 +29,8 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 
-\usepackage{setspace} %%%%%%%%%%%%%%%
-\usepackage{longtable}
+\usepackage{setspace} % spacing
+\usepackage{longtable} % longtables
 
 \usepackage{amsmath} % most maths
 \usepackage{graphicx} % figures 
@@ -73,6 +73,15 @@
 \addbibresource{biblio.bib}
 
 
+% #################
+% specifics commands for this report
+\newcommand{\query}{f}
+\newcommand{\queryset}{\mathcal{F}}
+\newcommand{\loss}{L}
+\newcommand{\estloss}[1]{\hat{L}_{#1}}
+% #################
+
+
 
 
 \title{Journal}
@@ -82,9 +91,6 @@
 
 \begin{titlepage}
     \begin{center}
-    
-            
-    
         \vspace*{25pt} {
         \begin{spacing}{0.05}
             \rule{400pt}{2pt}\\
@@ -113,8 +119,8 @@
         \textbf{Hugo Simon}\\%
         \end{Large}
     
-        \begin{large}
-        \vspace*{6cm}
+    \begin{large}
+        \vspace*{5cm}
         \textbf{
         A Master MVA internship report }
         \vspace*{6pt}\\
@@ -129,7 +135,7 @@
     \end{large}
     
     
-        \vspace*{2cm}
+        \vspace*{1cm}
     
     
         \begin{figure}[!ht]
@@ -143,7 +149,6 @@
                 \includegraphics[width=0.6\linewidth]{pics/logoENS_PS.jpg}
             \end{subfigure}
         \end{figure}
-    
     \end{center}
     \end{titlepage}
 
