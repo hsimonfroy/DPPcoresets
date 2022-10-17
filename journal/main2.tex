@@ -1,0 +1,209 @@
+
+
+% #######################################
+
+\documentclass[12pt, a4paper]{report}
+
+% all the other includes etc. are done in the thesis.sty file.
+\usepackage{style}
+\usepackage{ifthen}
+\usepackage{datetime}
+
+
+\renewcommand{\dateseparator}{-} % The ISO standard uses hyphens
+
+% Document title and type
+\newcommand{\doctitle}{Thesis Title} % The title of the thesis
+\newcommand{\doctype}{Master's Thesis} 
+% PhD Thesis
+% Master's Thesis
+% Bachelor's Thesis
+% Thesis
+% Dissertation
+% End of Studies Project Report
+% Graduation Project Report
+% ...
+
+% Info about university
+\newcommand{\department}{Computer Science and Communication Department} % department
+\newcommand{\degree}{Research Master} % your degree (Licence, Bachelor, Applied Master, PhD, etc)
+\newcommand{\major}{Computer Science} % your major (Mathematics, Chemistry, Biology, etc)
+\newcommand{\defenseDate}{July 2020} % defence date
+
+% Thesis author
+\newcommand{\authorName}{Hugo Simon}
+
+% Main supervisor
+\newcommand{\supervisor}{R\'emi Bardenet}
+
+% Co-supervisor. If you have only one supervisor, leave it as it is
+\newcommand{\cosupervisor}{Subhroshekhar Ghosh}
+
+% Committee members
+\newcommand{\president}{Truc}
+\newcommand{\reviewer}{Ms. Reviewer's Name}
+\newcommand{\secondReviewer}{Mr. Second Reviewer's Name}
+\newcommand{\thirdReviewer}{Mr. Third Reviewer's Name}
+
+% Dates. Default to current current date. 
+\newcommand{\Year}{\the\year{}}
+
+% Signature date (defaults to today).
+\newcommand{\signatureDate}{\ddmmyyyydate\today}
+
+% PDF Metadata
+\newcommand{\keywords}{Important, comma, separated, keywords, applicable, to, your, thesis}
+
+\newcommand{\university}{University of Sfax}
+\newcommand{\school}{Faculty of Sciences of Sfax}
+
+% PDF settings
+\hypersetup
+{
+    pdfauthor={\authorName},
+    pdfsubject={\doctitle},
+    pdfkeywords={\keywords}
+}
+
+
+% #######################################
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+
+
+\usepackage{amsmath} % most maths
+\usepackage{graphicx} % figures 
+\usepackage{subcaption} % subfigures
+\usepackage{dsfont} % \mathds
+\usepackage{amsthm} % \theoremstyle
+\usepackage{amssymb} % \nsucc
+\usepackage{stmaryrd} % \llbracket
+\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
+\usepackage{tcolorbox}
+\usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
+
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\phi}{\varphi}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\PPP}[2]{\mathbb{P}_{#1}\left[#2\right]}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\EEE}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\Var}{\operatorname{\mathbb V ar}}
+\newcommand{\Cov}{\operatorname{\mathbb C ov}}
+\newcommand{\T}{^\top}  % or ^\intercal
+\newcommand{\1}{\mathds{1}} % indicator
+\newcommand{\voones}{\boldsymbol{j}} % vector of ones
+\newcommand{\moones}{\boldsymbol{J}} % matrix of ones
+\newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
+\newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
+
+% Show fontsize: \fontname\font\ at \the\fontdimen6\font 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition} % no italics in definition
+\newtheorem{definition}{Definition}[section]
+
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
+\addbibresource{biblio.bib}
+
+
+
+
+\title{Journal}
+\begin{document}
+	
+\begin{titlepage}
+\begin{center}
+
+		
+
+	\vspace*{25pt} {
+	\begin{spacing}{0.05}
+		\rule{400pt}{2pt}\\
+		\rule{400pt}{0.75pt}\\
+	\end{spacing}
+	\vspace{20pt}
+	\begin{spacing}{0.9}
+		\fontsize{26pt}{26pt}\selectfont%
+		\textsc{\textbf{Improving Coreset Sampling Bounds with Determinental Point Processes}}\\%
+	\end{spacing}
+	\vspace{5pt}
+	\begin{spacing}{0.05}
+		\rule{400pt}{0.75pt}\\
+		\rule{400pt}{2pt}\\
+	\end{spacing}
+	}
+
+	\vspace*{1cm}
+	\begin{large}
+	\textit{By}\\%
+	\end{large}
+
+
+	\vspace*{4pt}
+	\begin{Large}
+	\textbf{\authorName}\\%
+	\end{Large}
+
+	\begin{large}
+	\vspace*{6cm}
+	\textbf{
+	A Master MVA internship report }
+	\vspace*{6pt}\\
+	under the supervision of
+	\vspace*{20pt}\\
+
+	\begin{longtable*}{ p{0.4\textwidth} p{0.5\textwidth} }
+		\supervisor & CNRS \& Université de Lille
+		\tabularnewline\cosupervisor & National University of Singapore
+		\tabularnewline
+	\end{longtable*}
+\end{large}
+
+
+	\vspace*{2cm}
+
+
+	\begin{figure}[!ht]
+	    \centering
+		\begin{subfigure}[t]{.5\linewidth}
+			\centering
+			\includegraphics[width=\linewidth]{pics/logoCRIStAL.png}
+		\end{subfigure}
+		\begin{subfigure}[t]{.4\linewidth}
+			\centering
+			\includegraphics[width=0.6\linewidth]{pics/logoENS_PS.jpg}
+		\end{subfigure}
+    \end{figure}
+
+\end{center}
+\end{titlepage}
+
+
+
+
+
+% \maketitle
+\tableofcontents
+	
+\input{parts/chapter1.tex}
+\input{parts/chapter2.tex}
+\input{parts/chapter3.tex}
+
+\printbibliography
+%	 \bibliographystyle{chicago}
+%	 \bibliography{biblio.bib}
+\end{document}

@@ -27,17 +27,17 @@ In the DPP case, we have $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}
 \begin{equation*}
 	\hat L_{\textrm{DPP}}(\theta) = \sum_{x_i\in \mathcal S} \frac{f_\theta(x_i)}{\pi_i}
 \end{equation*}
-Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$:
-\begin{equation*}
+Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$
+\begin{align*}
 	\Var_{\textrm{DPP}}(\theta)
-=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}
+=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{f_\theta(x_{i}) f_\theta(x_{j})} {\pi_{i} \pi_{j}}  - L(\theta)^{2}\\
 \quad \text{with} \quad
 \EE\left[\epsilon_{i} \epsilon_{j}\right]=
 \begin{cases}
 	\det(K_{\{i, j\}})=\pi_{i} \pi_{j}-K_{ij}^{2}, & \text{if } i \neq j \\
 	\EE\left[\epsilon_{i}\right]=\pi_{i},&\text{if } i = j
 \end{cases}
-\end{equation*}
+\end{align*}
 
 
 
