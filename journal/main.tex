@@ -18,7 +18,7 @@
 
 % to avoid loading the natbib package, add option nonatbib:
 %    \usepackage[nonatbib]{neurips_2021}
-
+% neurips
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
 \usepackage{hyperref}       % hyperlinks
@@ -28,10 +28,10 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
-
+% title page
 \usepackage{setspace} % spacing
 \usepackage{longtable} % longtables
-
+% writing
 \usepackage{amsmath} % most maths
 \usepackage{graphicx} % figures 
 \usepackage{subcaption} % subfigures
@@ -40,18 +40,20 @@
 \usepackage{amssymb} % \nsucc
 \usepackage{stmaryrd} % \llbracket
 \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
-\usepackage{tcolorbox}
+\usepackage{tcolorbox} % \begin{tcolorbox}[colframe=red!25,colback=blue!10,title=blue!60!black,title= More Test]\end{tcolorbox} red!25!black means 25% red, 75%black
 \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
+\addbibresource{biblio.bib}
 
+% ###################
+% general commands
 \renewcommand{\epsilon}{\varepsilon}
 \renewcommand{\phi}{\varphi}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\CC}{\mathbb{C}}
-\newcommand{\PP}{\mathbb{P}}
-\newcommand{\PPP}[2]{\mathbb{P}_{#1}\left[#2\right]}
-\newcommand{\EE}{\mathbb{E}}
-\newcommand{\EEE}[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\PP}[2]{\mathbb{P} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+\newcommand{\EE}[2]{\mathbb{E} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
 \newcommand{\OO}{\mathcal{O}}
 \newcommand{\Var}{\operatorname{\mathbb V ar}}
 \newcommand{\Cov}{\operatorname{\mathbb C ov}}
@@ -61,24 +63,40 @@
 \newcommand{\moones}{\boldsymbol{J}} % matrix of ones
 \newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
 \newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
-
 % Show fontsize: \fontname\font\ at \the\fontdimen6\font 
+
+% ##################
+% amsthm package settings
+\renewcommand{\baselinestretch}{1.1} 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
 \theoremstyle{definition} % no italics in definition
-\newtheorem{definition}{Definition}[section]
+\newtheorem{definition}{Definition} % [section] for reset counting in each sections 
+% \numberwithin{equation}{chapter} % chapter already by default
+% TO DO: automaticly add "Theorem \ref{}"
 
-\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
-\addbibresource{biblio.bib}
 
 
 % #################
 % specifics commands for this report
 \newcommand{\query}{f}
 \newcommand{\queryset}{\mathcal{F}}
-\newcommand{\loss}{L}
-\newcommand{\estloss}[1]{\hat{L}_{#1}}
+\newcommand{\loss}[1]{L \ifstrempty{#1}{}{(#1)}}
+\newcommand{\estloss}[2]{\hat{L}_{#1} \ifstrempty{#2}{}{(#2)}}
+\newcommand{\empdistr}[2]{\mu_{#1} \ifstrempty{#2}{}{(#2)}}
+\newcommand{\meanempdistr}[1]{\mu \ifstrempty{#1}{}{(#1)}}
+\newcommand{\dnu}[3]{d_{#1}  \ifstrempty{#2#3}{}{(#2,#3)}}
+\newcommand{\dnude}[3]{\lvert\ifstrempty{#2#3}{\cdot}{#2-#3}\rvert}
+\newcommand{\dlone}[3]{d_{L^1(#1)} \ifstrempty{#2#3}{}{(#2,#3)}}
+\newcommand{\lipschitz}{\boldsymbol\ell}
+\newcommand{\bound}{M}
+\newcommand{\boundrate}{\mathcal{R}}
+\newcommand{\covering}{\mathbf{C}}
+\newcommand{\packing}{\mathbf{P}}
+\newcommand{\pdim}{{d^{\prime}}}
+\newcommand{\opekernel}[1]{\tilde{\boldsymbol K}_{#1}}
 % #################
 
 
@@ -88,7 +106,6 @@
 \begin{document}
 
 % \maketitle
-
 \begin{titlepage}
     \begin{center}
         \vspace*{25pt} {
@@ -166,22 +183,22 @@
 \vspace{5cm}
 
 
-Let be $d_{L^1}(x ,y) = \frac 1 m \sum_{i=1}^m |x_i - y_i| = \frac{1}{m} \lVert x- y \rVert$
-$\mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2} = \left\{(f_\theta(x))_{x\in \mathcal{S}_1 \uplus \mathcal{S}_2} | \theta \in \Theta \right\} \subseteq \RR^{2m}$	
+% Let be $d_{L^1}(x ,y) = \frac 1 m \sum_{i=1}^m |x_i - y_i| = \frac{1}{m} \lVert x- y \rVert$
+% $\mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2} = \left\{(f_\theta(x))_{x\in \mathcal{S}_1 \uplus \mathcal{S}_2} | \theta \in \Theta \right\} \subseteq \RR^{2m}$	
 
-For all $x \in \RR^{2m}$, let be defined $\EE_1[x] = \frac{1}{m} \sum_{i=1}^{m} x_i$ and $\EE_2[x] = \frac{1}{m} \sum_{i=m+1}^{2m} x_i$, the empiric mean on the vector first and second half respectively.
+% For all $x \in \RR^{2m}$, let be defined $\EE_1[x] = \frac{1}{m} \sum_{i=1}^{m} x_i$ and $\EE_2[x] = \frac{1}{m} \sum_{i=m+1}^{2m} x_i$, the empiric mean on the vector first and second half respectively.
 
-$\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{S}_2}(\theta)|>\epsilon \iff \exists f \in \mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2}, |\EE_1[f] - \EE_2[f]| > \epsilon$
+% $\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{S}_2}(\theta)|>\epsilon \iff \exists f \in \mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2}, |\EE_1[f] - \EE_2[f]| > \epsilon$
 \begin{lemma}
 	\begin{align*}
-		&\PP_{\mathcal{S}_1} \left[ \exists \theta \in \Theta,  \frac 1 m |\hat L_{\mathcal{S}_1}(\theta)- L(\theta)|>\epsilon \right] \leq
-		2 \PP_{\mathcal{S}_1, \mathcal{S}_2} \left[ \exists \theta \in \Theta,  \frac 1 m |L(\theta)-\hat L_{\mathcal{S}_1}(\theta)|\right] 
+		&\PP{\mathcal{S}_1}{\exists \theta \in \Theta,  \frac 1 m |\hat L_{\mathcal{S}_1}(\theta)- L(\theta)|>\epsilon} \leq
+		2 \PP{\mathcal{S}_1, \mathcal{S}_2}{\exists \theta \in \Theta,  \frac 1 m |L(\theta)-\hat L_{\mathcal{S}_1}(\theta)|} 
 	\end{align*}
 \end{lemma}
 
 \begin{align*}
-	&\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \\
-	\leq \,&\PP \left[ \exists \theta \in \Theta^*,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\frac{\epsilon}{2} L(\theta)\right] \\
+	&\PP{}{\exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)} \\
+	\leq \,&\PP{}{\exists \theta \in \Theta^*,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\frac{\epsilon}{2} L(\theta)} \\
 	\leq &\sum_{\theta \in \Theta^*} \frac{4}{\epsilon^2} \Var[\frac{\hat L(\theta)}{L(\theta)}] \\
 	\lesssim &\sum_{\theta \in \Theta^*} \frac{1}{\epsilon^2}( M_\theta \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2})) \\
 	\leq &\frac{|\Theta^*|}{\epsilon^2} (M \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2}))
@@ -190,7 +207,7 @@ $\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{
 
 For the $\epsilon$-coreset property \ref{def_coresetprop} to hold $1-\delta$-surely or equivalently  
 \begin{equation}
-	\PP \left[ \exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)\right] \leq \delta
+	\PP{}{\exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)} \leq \delta
 \end{equation}
 it suffices to have
 \begin{align}
@@ -225,7 +242,7 @@ $$
 where $h(u)=(1+u) \log (1+u)-u$ for $u \geq 0$.
 
 
-From \cite{breuer2013nevai} $$\PP\left(\left|X_f-\mathbb{E} X_f\right| \geq \epsilon\right) \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var X_f}\right), & \text { if } \epsilon<\frac{2 A \Var X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var X_f}{3\|f\|_{\infty}}\end{cases}$$
+From \cite{breuer2013nevai} $$\PP{}{\left|X_f-\mathbb{E} X_f\right| \geq \epsilon} \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var X_f}\right), & \text { if } \epsilon<\frac{2 A \Var X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var X_f}{3\|f\|_{\infty}}\end{cases}$$
 
 
  $$P( |L -\hat L| \geq L\epsilon ) \leq 2e^{\frac{-L^2\epsilon ^{2}}{4A \Var} }$$
@@ -264,7 +281,7 @@ $$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\rig
 \end{itemize}
 \begin{itemize}
 	\item Strong raylegh measure positive correlation ?
-	\item $\Var f = \Var f_+ + \Var f_- + 2 (\EE f_+ f_- - \EE f_+ \EE f_-)\leq \Var f_+ + \Var f_-$
+	\item $\Var f = \Var f_+ + \Var f_- + 2 (\EE{}{}f_+ f_- - \EE{}{} f_+ \EE{}{} f_-)\leq \Var f_+ + \Var f_-$
 	\item Pemantle only for kDPP?
 	\item Hoefding/Benett like proof for $\sum_{x_i \in \mathcal S} \epsilon_i f(x_i)$ using maybe recurisve property of HKPV sampling.
 \end{itemize}

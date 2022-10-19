@@ -10,35 +10,35 @@
 In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\PP(x_i) = q(x_i)$.
 Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{iid}}(\query) := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{m q(x_i)}
+	\estloss{\textrm{iid}}{\query} := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{m q(x_i)}
 \end{equation*}
 Its variance is
 \begin{equation}
-	\Var_{\textrm{iid}}(\query) :=\frac{1}{m} \Var\left[\frac {\query(x_i)} {q(x_i)}\right] 
-	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} L(\query)^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
+	\Var_{\textrm{iid}}{\query} :=\frac{1}{m} \Var\left[\frac {\query(x_i)} {q(x_i)}\right] 
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
 \end{equation}
 where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
 For any query $\query \in \queryset$, the variance is reduced to 0 by
 $$
-q_{\query}(x):=\frac{ \query(x)}{L(\query)}
+q_{\query}(x):=\frac{ \query(x)}{\loss{\query}}
 $$
 
 
 \subsubsection{DPP case}
 In the DPP case, we have $ \mathcal S \sim \mathcal{DPP}(K)$, \,$\pi_i := K_{ii}$. Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{DPP}}(\query) := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{\pi_i}
+	\estloss{\textrm{DPP}}{\query} := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{\pi_i}
 \end{equation*}
 Its variance can be computed using $\epsilon_i$ as the counting variable for $x_i$
 \begin{align*}
-	\Var_{\textrm{DPP}}(\query)
-:=\sum_{i, j}\EE\left[\epsilon_{i} \epsilon_{j}\right] \frac{\query(x_{i}) \query(x_{j})} {\pi_{i} \pi_{j}}  - L(\query)^{2}\\
+	\Var_{\textrm{DPP}}({\query})
+:=\sum_{i, j}\EE{}{\epsilon_{i} \epsilon_{j}} \frac{\query(x_{i}) \query(x_{j})} {\pi_{i} \pi_{j}}  - \loss{\query}^{2}\\
 \quad \text{with} \quad
-\EE\left[\epsilon_{i} \epsilon_{j}\right]=
+\EE{}{\epsilon_{i} \epsilon_{j}}=
 \begin{cases}
 	\det(K_{\{i, j\}})=\pi_{i} \pi_{j}-K_{ij}^{2}, & \text{if } i \neq j \\
-	\EE\left[\epsilon_{i}\right]=\pi_{i},&\text{if } i = j
+	\EE{}{\epsilon_{i}}=\pi_{i},&\text{if } i = j
 \end{cases}
 \end{align*}
 
@@ -47,7 +47,7 @@ Its variance can be computed using $\epsilon_i$ as the counting variable for $x_
 Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
 
 \begin{equation}
-	\Var_{\textrm{DPP}}(\query)=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) \query(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} \query(x_{i}) \query(x_{j}) =  \query\T (\Pi^{-1}  - \tilde{K}) \query 
+	\Var_{\textrm{DPP}}({\query})=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) \query(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} \query(x_{i}) \query(x_{j}) =  \query\T (\Pi^{-1}  - \tilde{K}) \query 
 \end{equation}
 
 For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var_{\textrm{diag}}$.
@@ -57,22 +57,22 @@ For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, t
 
 In the m-DPP case, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and the marginals $b_{i} := \mathbb{E}\left[\epsilon_{i}\right]$ have an analytic form. Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\hat L_{\textrm{mDPP}}(\query) = \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{b_i}
+	\estloss{\textrm{mDPP}}{\query} = \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{b_i}
 \end{equation*}
 
 Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
 $$
-\tilde L(\query) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
+\tilde L({\query}) =\frac{1}{m}\EE{}{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
 $$
 Then an unbiased estimator of $\tilde L$ is
 \begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}(\query) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
+	\hat{\tilde L}_{\textrm{mDPP}}({\query}) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
 \end{equation*}
 We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
 
 Returning to the estimation of $L$, we are interested in the variance of $\hat L_{\textrm{mDPP}}$ which is
 \begin{equation}
-	\Var_{\textrm{mDPP}}(\query)=\sum_{i}\left(\frac{1}{b_i}-1\right) \query(x_i)^2
+	\Var_{\textrm{mDPP}}{\query}=\sum_{i}\left(\frac{1}{b_i}-1\right) \query(x_i)^2
 	+ \sum_{i \neq j} C_{ij}\query(x_i) \query(x_j)
 \end{equation}
 where $C_{ij}=\frac{\mathbb{E}\left[\left(\epsilon_{i}-b_{i}\right)\left(\epsilon_{j}-b_{j}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]}{b_{i} b_{j}}-1
@@ -89,11 +89,11 @@ In order to benefit from some variance reduction, one should want $\forall i\neq
 
 Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
 $$
-\tilde L(\query) =\frac{1}{m}\EE_{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
+\tilde L{\query} =\frac{1}{m}\EE{}{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
 $$
 Then an unbiased estimator of $\tilde L$ is
 \begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}(\query) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
+	\hat{\tilde L}_{\textrm{mDPP}}{\query} = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
 \end{equation*}
 We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
 \note{}{complete}
@@ -135,111 +135,320 @@ $ allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T 
 
 \section{Improving concentration with DPP}
 
-\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\tilde{\boldsymbol K}_m)$, independent of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 	
+\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\opekernel{m})$, independent of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 
+
+$\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$
+\begin{equation}
+	\estloss{\mathcal{S}, \textrm{DPP}}{\query} := \sum_{x \in \mathcal{S}} \frac{f(x)}{\opekernel{m}(x,x)}
+\end{equation}
 					\note{}{explain how the estimator is built}
 equation (S14) yields that 
 \begin{equation}
-	\Var[\frac{\hat L_{\textrm{DPP}}(\query)}{L(\query)}] = M_\query \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+	\Var[\estloss{\textrm{DPP}}{\query}] = \lipschitz_\query \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
 \end{equation}
-where $\sqrt{M_\query}$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $M := \sup_{\query \in \queryset}M_\query$.
+where $\sqrt{\lipschitz_\query}$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose a bound we denote by $\lipschitz_{\queryset} := \sup_{\query \in \queryset}\lipschitz_\query$.
 
 Bienaym\'e-Tchebychev inequality then gives
 \begin{equation}
-	\PP \left[|L(\query)-\hat L_{\textrm{DPP}}(\query)|>\epsilon L(\query)\right] \leq \frac{\Var[ \hat L_{\textrm{DPP}}(\query) ] }{L(\query)^{2}\varepsilon ^{2}} = \frac {1} {\epsilon^2}(M_\query \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
+ 	\PP{}{|\loss{\query}-\estloss{\textrm{DPP}}{\query}|>\epsilon} \leq \frac{\Var[ \estloss{\textrm{DPP}}{\query} ] }{\varepsilon ^{2}} = \frac {1} {\epsilon^2}(\lipschitz_\query \OO( m ^{-(1+\frac 1 d)}) + \OO( n^{-1/2}))
 \end{equation}
-Hence, $\mathcal{S} \sim \mathcal{DPP}(\tilde{\boldsymbol K}_m)$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} for
+Hence, $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ satisfies $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} for
 \begin{align}
-	m^{1+\frac 1 d} &\gtrsim \frac{M_\query}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {M_\query} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+	m^{1+\frac 1 d} &\gtrsim \frac{\lipschitz_\query}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz_\query} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
 \end{align} 
 where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
 Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 \begin{equation}
-	\boxed{m \gtrsim \left(\frac{M_\query}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
+	\boxed{m \gtrsim \left(\frac{\lipschitz_\query}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} }
 	\label{eqn_fixedtheta}
 \end{equation}
 \note{}{make that a Lemma}
 \begin{lemma}
 	\begin{equation}
-		\sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}}(\query) - \loss(\query) \rvert \geq \epsilon} \leq \delta
+		\sup_{\query \in \queryset} \PP{}{\lvert \estloss{\mathcal{S}}{\query} - \loss{\query} \rvert \geq \epsilon\loss{\query}} \leq \delta
 	\end{equation}
 \end{lemma}
+
+
+
+
+
+We further obtain a corollary that will be useful for what follows
+\begin{corollary}
+	\label{coro_dnu}
+	Let be $\mathcal{S} \sim  \mathcal{DPP}(K_m)$. Then $\forall \delta, \epsilon, \nu>0$ it holds that
+	\begin{equation}
+		m \gtrsim \left(\frac{\lipschitz_\queryset}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall \query \in \queryset,\ \PP{}{ 
+		\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  \geq \epsilon} \leq \delta
+	\end{equation} 
+\end{corollary}
+\begin{proof}
+	Proposition \ref{prop_dnu} and Equation \ref{eqn_fixedtheta}
+\end{proof}
+Furthermore, by taking $\delta = 1/2$ in precedent Corollary \ref{coro_dnu}, we know it exists some constant we denote $c_{1/2}$ such that $\forall \epsilon, \nu>0$ it holds that
+\begin{equation}
+	m \geq c_{1/2} \left(\frac{\lipschitz_\queryset}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall \query \in \queryset,\ \PP{}{ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  \leq \epsilon} \geq \frac 1 2
+\end{equation} 
 
 
 \subsection{Extension to all queries}
 In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\query \in \queryset$.
 
-For every function $f \in \mathcal{F}$ and multiset $\mathcal{S}$, let the restriction of the function $f$ to the multiset $\mathcal{S}$ be denoted by $f_{\mathcal{S}} := (f(x))_{x \in \mathcal{S}} \in \RR^{|\mathcal{S} |}$, and let its mean be denoted by $\estloss{\mathcal{S}}(\query) := \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} f(x)$.
+We first recall some classical notations.
+\begin{itemize}
+	\item We denote by $\empdistr{\mathcal{S}}{}:=\frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}}$ the empirical measure based on sample $\mathcal{S}  \subseteq \mathcal{X}$. 
+	\item Hence $\forall \query \in \queryset$, we denote by $\empdistr{\mathcal{S}}{\query}:=\int_{\mathcal{X}} \query(x) d\empdistr{\mathcal{S}}{x} = \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} \query(x)$ the expectation of $f$ with respect to $\empdistr{\mathcal{S}}{}$. Furthermore, given a distribution $\PP{}{}$ on $\mathcal{S}$, we denote by $\meanempdistr{f}:=\EE{}{\empdistr{\mathcal{S}}{\query}}$, its expectation with respect to $\PP{}{}$. 
+	\item Finally, the induced $L^1(\empdistr{\mathcal{S}}{})$ distance between two functions $\query$ and $\query'$ would be denoted by $\dlone{\empdistr{\mathcal{S}}{}}{\query}{\query'}:=\empdistr{\mathcal{S}}{|\query - \query'|}$.
+\end{itemize}  
 
-\begin{corollary}
-	Let be $\mathcal{S} \sim  \mathcal{DPP}(K_m)$. Taking $\delta = 1/2$ in precedent result \ref{eqn_fixedtheta}, we know it exists some constant we denote $c_{1/2}$ such that $\forall \epsilon>0$ it holds that
+
+\begin{tcolorbox}
+	\begin{definition}[pseudo-dimension]
+		The pseudo-dimension of a set $\queryset$ of functions defined on $\mathcal{X}$, denoted by $\operatorname{pdim}\queryset$, is the largest $\pdim$ such that 
+	\begin{itemize}
+		\item there exists $(x_{i})_{i\in \intint{1}{\pdim}} \subseteq \mathcal{X}^\pdim$, a sequence of $\pdim$ elements from $\mathcal{X}$,
+		\item there exists $(t_i)_{i\in \intint{1}{\pdim}} \subseteq  \RR^\pdim$ a sequence of $\pdim$ real thresholds,
+		\item such that for each $(b_i)_{i\in \intint{1}{\pdim}} \subseteq \{0,1\}^\pdim$
+		\item there is an $\query \in \queryset$ such that $\forall i \in \intint{1}{\pdim}$, we have $\query(x_i) \geq r_i \iff b_i = 1$. 
+	\end{itemize}
+	Put differently it always exists functions in $\queryset$ to have values above or below some threshold for every $2^\pdim$ combinations of above/below.
+\end{definition}
+Pseudo-dimension can also be defined through VC-dimension. Indeed, considering the function
+\begin{align*}
+	h_\query \colon \mathcal{X} \times \RR &\to \{0,1\}\\
+	(x,r) &\mapsto \1\{f(x) \geq r\}
+\end{align*}
+we have
+\begin{equation}
+	\operatorname{pdim}\queryset := \operatorname{VCdim}\{h_\query \mid \query \in \queryset\}
+\end{equation}
+\end{tcolorbox}
+
+
+
+
+\begin{tcolorbox}[colback=red!10,title= Useless?]
+	We define $\forall a,b \geq 0$ and $\forall \nu >0$
 	\begin{equation}
-		m \geq c_{1/2} \left(\frac{M_{\mathcal{F}}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall f\in \mathcal{F},\ \PPP{}{ \lvert \estloss{\mathcal{S}}(\query) - \loss(\query)\rvert \leq \epsilon} \geq \frac 1 2
-	\end{equation} 
-\end{corollary}
+		\dnu{\nu}{a}{b} := \frac{|a-b|}{a+b+\nu}
+	\end{equation}
+	
+	From that definition, one can easily check
+	\begin{proposition}
+		\label{prop_dnu}
+		For all $\nu>0$, the function $d_\nu$ verifies the following properties
+		\begin{itemize}
+			\item $d_\nu$ is a distance i.e. it verifies positivity, separation, symmetry and triangular inequality.
+			\item $\forall a,b \geq 0,\ 0\leq \dnu{\nu}{a}{b} < \min( \frac{|a-b|}{a}, 1)$
+			\item Moreover, if $\exists \bound\geq 0$ such that $a,b \le \bound$, then 
+			\begin{equation*}
+				\frac{|a-b|}{\nu + 2\bound} \le \dnu{\nu}{a}{b} \le \frac{|a-b|}{\nu}
+			\end{equation*}
+		\end{itemize}
+	\end{proposition}
+	\end{tcolorbox}
+
+
+
+
+	\begin{tcolorbox}
+		\begin{definition}[Covering and Packing]
+			Let be $(\queryset, d)$ a metric space. 
+			\begin{itemize}
+				\item For any $\epsilon> 0$, a subset $\queryset^* \subseteq \queryset$ is said to be $\epsilon$-separated if for all distinct $\query, \query' \in \queryset^*$, $d(\query, \query') \geq \epsilon$.
+				\item The $\epsilon$-packing number on $(\queryset, d)$, denoted by $\packing(\epsilon, \queryset, d)$, is then defined as cardinality of the largest $\epsilon$-separated subset $\queryset^*$ of $\queryset$.
+			\end{itemize}
+			Intuitively, the $\epsilon$-packing number is the maximal number of balls of radius $\epsilon/2$ that can fit into $\queryset$ without intersecting.
+			\begin{itemize}
+				\item For any $\epsilon> 0$, a subset $\queryset^*$ of $\queryset$ is said to be an $\epsilon$-cover of $\queryset$ if for all $\query \in \queryset$, it exists $\query^* \in \queryset^*$ with $d(\query, \query') \leq \epsilon$.
+				\item The $\epsilon$-covering number on $(\queryset, d)$, denoted by $\covering(\epsilon, \queryset, d)$, is then defined as cardinality of the smallest $\epsilon$-cover of $\queryset$.
+			\end{itemize}
+			Intuitively, the $\epsilon$-covering number is the minimal number of balls of radius $\epsilon$ than can fill $\queryset$, with possible overlaps.
+		\end{definition}
+	
+		One can easily check that for all $\epsilon>0$
+		\begin{equation}
+			\packing(2\epsilon, \queryset, d) \leq \covering(\epsilon, \queryset, d) \leq \packing(\epsilon, \queryset, d)
+		\end{equation}
+	\end{tcolorbox}
+	
+	
+	
+	
+	
+	\begin{tcolorbox}
+		\begin{theorem}[From \cite{haussler1995spherepacking}]
+			\label{thm_pack}
+			For any set $\mathcal{X}$, any probability distribution $\mu$ on $\mathcal{X}$, any
+			set $\queryset \subseteq [0,\bound]^{\mathcal{X}}$ of $\mu$-measurable positive functions on $\mathcal{X}$ bounded by some real $\bound$, and any $\epsilon>0$, one have
+			\begin{equation}
+				\packing(\epsilon, \queryset, \dlone{\mu}{}{}) \le e(\pdim+1) \left(\frac{2e \bound}{\epsilon}\right)^\pdim
+			\end{equation}
+			where $\pdim=\operatorname{pdim}\queryset$ is the pseudo-dimension of $\queryset$.
+		\end{theorem}
+	\end{tcolorbox}
+
+
+
+
+
+\begin{tcolorbox}
+	\begin{theorem}
+		\label{thm_infi_union_bound}
+		Let be $\queryset \subseteq [0,\bound]^{\mathcal{X}}$ a set of bounded functions defined on a base set $\mathcal{X}$, with $\pdim := \operatorname{pdim}\queryset$ its pseudo-dimension. Let moreover be $(\PP{m}{})_{m\in \NN}$ a sequence of distributions supported on $\binom{\mathcal{X}}{m}$.\\
+
+		Assume it exists a bounding function $\boundrate$ such that for all $\epsilon, \nu >0$, function $\query \in \queryset$, integer $m \in \NN$, and multiset $\mathcal{S} \sim \PP{m}{}$, we have the bound
+		\begin{equation}
+			\label{eqn_hypo1}
+			\PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}}{f}}{\meanempdistr{f}} \geq \epsilon} \leq \boundrate(\queryset, \epsilon, m)
+		\end{equation}
+
+		and such that for all $\epsilon>0$, it exists some $m_{\epsilon}$ such that
+		\begin{equation}
+			\label{eqn_hypo2}
+			m \geq m_{\epsilon} \implies \boundrate(\queryset, \epsilon, m) \leq 1/2
+		\end{equation}
+		Then for all $\epsilon,\nu >0$ and $m \geq m_{\epsilon}$
+		\begin{equation}
+			\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{f}}{\meanempdistr{f}} \geq \epsilon} \leq 12(\pdim+1) \left(\frac{6 \bound}{\epsilon}\right)^\pdim \boundrate(\queryset, \epsilon, m)
+		\end{equation}
+	\end{theorem}
+\end{tcolorbox}
+\note{}{adapt epsilon and nu}
+
+
+
+
+\subsection{Proof of Theorem \ref{thm_infi_union_bound}}
+
 
 We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemma 12. and 13., getting rid of independency hypothesis, and making intermediary results more flexible to further improvements.
 \note{}{state of the art slightly better than haussler, cf. Li, but strongly? require independancy}
 
-\begin{lemma}
-	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Assume that for a given $\epsilon>0$ we can control uniformly on $f$ the concentration $1/2$-surely, formally $\forall f \in \mathcal{F},\ \PPP{}{ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \leq \epsilon/2} \geq \frac 1 2$. Then
+\begin{tcolorbox}
+	\begin{lemma}[Symmetrisation]
+		\label{lem_symm}
+		Assume the hypothesis of \ref{thm_infi_union_bound}.
+		Let furthermore be $\epsilon>0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{m}{}$, two multisets of size $m$ independently sampled from the same distribution.\\
+		  
+		Then for all $m \geq m_{\epsilon/2}$
+		\begin{equation*}
+			\PP{m}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon} \leq 2\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/2 }
+		\end{equation*}
+	\end{lemma}
+\end{tcolorbox}
 
-   \begin{equation}
-	   \PPP{}{ \exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon} \leq 2\PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/2 }
-   \end{equation}
-\end{lemma}
 
 \begin{proof}
-	Let be $\mathcal{S}_1$ sampled such that $\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \loss(\query)| \geq \epsilon$. This obviously happens with probability $\PPP{}{\exists f \in \mathcal{F}, |\estloss{\mathcal{S}_1}(\query) - \loss(\query)| \geq \epsilon }$.
+	Take $m \geq m_{\epsilon/2}$. Then let be $\mathcal{S}_1$ sampled such that $\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon$. This obviously happens with probability $\PP{m}{\exists \query \in \queryset, \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon }$.
 
-	For such an $f$, we then sample $\mathcal{S}_2$ such that $|\estloss{\mathcal{S}_2}(\query) -  \loss(\query)| \leq \epsilon/2$. By hypothesis, this happens with probability greater than $1/2$, and we thus have
+	For such an $f$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq \epsilon/2$. Because $m \geq m_{\epsilon/2}$, we know this happens with probability greater than $1/2$, and we thus have
 	\begin{align*}
-		\PPP{}{ \exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon}
-		\frac 1 2 
-		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert \geq \epsilon \wedge \lvert\estloss{\mathcal{S}_2}(\query) - \loss(\query)\rvert \leq \epsilon/2 } \\
-		&\leq \PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/2 }
+		&\PP{m}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon}
+		\frac 1 2 \\
+		\leq\ &\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon \wedge \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq \epsilon/2 } \\
+		\leq\ &\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/2 }
 	\end{align*}
-	where we lastly used the triangular inequality $ \lvert \estloss{\mathcal{S}_1}(\query) - \loss(\query)\rvert - \lvert\estloss{\mathcal{S}_2}(\query) - \loss(\query)\rvert \leq   \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert  $
+	where we lastly used the triangular inequality 
+	\begin{equation*}
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} - \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq   \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}}
+	\end{equation*} 
 \end{proof}
 
 
 
-\begin{lemma}[Conjecture ]
-	Let be $\mathcal{S}_1, \mathcal{S}_2$ two multisets of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. 
-	
 
-	\begin{equation}
-		\PPP{}{\exists f \in \mathcal{F},\ \lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }
-	\end{equation}
 
-\end{lemma}
 
-\note{}{recall cover}
+
+\begin{tcolorbox}
+	\begin{lemma}[Conjectured]
+		\label{lem_infi_union_bound}
+		Let be $\epsilon >0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two multisets of size $m$ independently sampled from the same distribution. We denote their multiset union by $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \in \binom{\mathcal{X}}{2m}$. Then
+		
+		\begin{equation}
+			\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 }
+		\end{equation}
+	\end{lemma}
+\end{tcolorbox}
+
+
 
 \begin{proof}[Draft of Proof]
-	For every two multisets $\mathcal{S}_1, \mathcal{S}_2$ of size $m$, we denote their multiset union $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \subseteq \mathcal{X}^{2m}$.
-
-	Let be $\mathcal{S}$ sampled such that $\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/2$. 
+	Let be $\mathcal{S}$ sampled such that $\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon$. 
 	
-	Let then be taken $\mathcal{F^*_\mathcal{S}}$, an $\epsilon/8$-cover of $\mathcal{F}$ for the $\estloss{\mathcal{S}}$ topology, such that $|\mathcal{F^*_\mathcal{S}}| = N(\epsilon/8, \mathcal{F}, \estloss{\mathcal{S}})$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\estloss{\mathcal{S}}(|f-f^*|)_{\mathcal{S}} \leq \epsilon/8$.
+	Let then be taken $\mathcal{F^*_\mathcal{S}}$, a minimal $\epsilon/4$-cover of $\queryset$ for the $\dlone{\empdistr{\mathcal{S}}{}}{}{}$ topology, then $|\mathcal{F^*_\mathcal{S}}| = \covering(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*} \leq \epsilon/4$.
 
-	Applying some triangular inequalities yields that
+
+	\begin{tcolorbox}[colback=red!10,title= Useless?]
+		Using properties \ref{prop_dnu} of $\dnude{\nu}{}{}$ distance yields that
+		\begin{align*}
+			\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_1}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\empdistr{\mathcal{S}_2}{\query^*}}
+			&\le \frac{\lvert \empdistr{\mathcal{S}_1}{\query-\query^*}\rvert}{\nu} + \frac{\lvert \empdistr{\mathcal{S}_2}{\query-\query^*}\rvert}{\nu} \\
+			&\le \frac{2}{\nu}  \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*}
+		\end{align*}
+	\end{tcolorbox}
+
+
+	Then triangular inequalities yields that
 	\begin{align*}
-		|\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| &\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_1}(\query^*)| + |\estloss{\mathcal{S}_2}(\query) - \estloss{\mathcal{S}_2}(\query^*)|  \\
-		&\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + \estloss{\mathcal{S}_1}(|\query - \query^*|) + \estloss{\mathcal{S}_2}(|\query - \query^*|) \\
-		&\leq |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| + 2  \estloss{\mathcal{S}}(|\query - \query^*|)\\
-		\iff |\estloss{\mathcal{S}_1}(\query^*) - \estloss{\mathcal{S}_2}(\query^*)| &\geq |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| - 2  \estloss{\mathcal{S}}(|\query - \query^*|) \geq \epsilon/4 
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} &\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_1}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\empdistr{\mathcal{S}_2}{\query^*}}  \\
+		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}}  + \empdistr{\mathcal{S}_1}{\lvert \query-\query^*\rvert} + \empdistr{\mathcal{S}_2}{\lvert\query-\query^*\rvert}\\
+		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} + 2 \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*}\\
+		\iff \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} &\geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} - 2  \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*} \geq \epsilon/2 
 	\end{align*}
 	Therefore
-	\begin{equation}
-		\PPP{}{\exists f \in \mathcal{F},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/2} \leq \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4}
-	\end{equation}
+	\begin{equation*}
+		\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon} \leq \PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4}
+	\end{equation*}
 	By the law of total expectation, we obtain
 	\begin{align*}
-		\PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4}
-		&=\EEE{}{ \1 \{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4 \} }\\
-		&=\EEE{}{ \PPP{}{\exists f \in \mathcal{F^*_\mathcal{S}},\ |\estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query)| \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
-        &\leq \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }\\
-		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/8, \mathcal{F}, \EE \cdot_{\mathcal{S}}) \sup_{f \in \mathcal{F}} \PPP{}{\lvert \estloss{\mathcal{S}_1}(\query) - \estloss{\mathcal{S}_2}(\query) \rvert \geq \epsilon/4 }
+		\PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4}
+		&=\EE{}{ \1 \{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 \} }\\
+		&=\EE{}{ \PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
+		&=\EE{}{ \PP{}{\bigcup_{\query \in \mathcal{F^*_\mathcal{S}}} \{ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}\} }  }\\		
+        &\leq \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 }\\
+		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/4 }
 	\end{align*}
 
 \end{proof}
+
+
+Then we can prove Theorem \ref{thm_infi_union_bound}. 
+\begin{proof}
+	Let be $\epsilon>0$ and take $m \geq m_{\epsilon/2}$. Combining Lemmas \ref{lem_symm} and \ref{lem_infi_union_bound} gives
+	\begin{align*}
+		\PP{m}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon} 
+		&\leq 2\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/2 }\\
+		&\leq 2 \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/8 }
+	\end{align*}
+
+Applying the union bound
+	\begin{align*}
+		\PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} \geq \epsilon/8 } 
+		&\leq \PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} + \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}\geq \epsilon/8 }\\
+		&\leq \PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}\geq \epsilon/16 }\\
+		&\leq \PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}\geq \epsilon/16 }\\
+		&\leq 2\PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} \geq \epsilon/16 }\\
+		&\leq 2 \boundrate(\queryset, \epsilon/16, m)
+	\end{align*}
+From Theorem \ref{thm_pack}
+\begin{align*}
+	\covering(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
+	\leq \packing(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
+	\leq e(\pdim+1) \left(\frac{16e \bound}{\epsilon}\right)^\pdim
+\end{align*}
+
+The two precedent bound does not depend on $\mathcal{S}$ and $f$
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
