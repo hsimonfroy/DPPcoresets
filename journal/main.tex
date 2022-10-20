@@ -55,8 +55,8 @@
 \newcommand{\PP}[2]{\mathbb{P} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
 \newcommand{\EE}[2]{\mathbb{E} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
 \newcommand{\OO}{\mathcal{O}}
-\newcommand{\Var}{\operatorname{\mathbb V ar}}
-\newcommand{\Cov}{\operatorname{\mathbb C ov}}
+\newcommand{\Var}[2]{\operatorname{\mathbb{V}ar} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+\newcommand{\Cov}[2]{\operatorname{\mathbb{C}ov} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
 \newcommand{\T}{^\top}  % or ^\intercal
 \newcommand{\1}{\mathds{1}} % indicator
 \newcommand{\voones}{\boldsymbol{j}} % vector of ones
@@ -82,7 +82,9 @@
 % #################
 % specifics commands for this report
 \newcommand{\query}{f}
+\newcommand{\querytwo}{g}
 \newcommand{\queryset}{\mathcal{F}}
+\newcommand{\querysettwo}{\mathcal{G}}
 \newcommand{\loss}[1]{L \ifstrempty{#1}{}{(#1)}}
 \newcommand{\estloss}[2]{\hat{L}_{#1} \ifstrempty{#2}{}{(#2)}}
 \newcommand{\empdistr}[2]{\mu_{#1} \ifstrempty{#2}{}{(#2)}}
@@ -178,17 +180,17 @@
 \input{parts/chapter1.tex}
 \input{parts/chapter2.tex}
 \input{parts/chapter3.tex}
+\input{parts/chapter4.tex}
 
 
 \vspace{5cm}
 
 
-% Let be $d_{L^1}(x ,y) = \frac 1 m \sum_{i=1}^m |x_i - y_i| = \frac{1}{m} \lVert x- y \rVert$
-% $\mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2} = \left\{(f_\theta(x))_{x\in \mathcal{S}_1 \uplus \mathcal{S}_2} | \theta \in \Theta \right\} \subseteq \RR^{2m}$	
 
-% For all $x \in \RR^{2m}$, let be defined $\EE_1[x] = \frac{1}{m} \sum_{i=1}^{m} x_i$ and $\EE_2[x] = \frac{1}{m} \sum_{i=m+1}^{2m} x_i$, the empiric mean on the vector first and second half respectively.
+\newpage
+\
+\newpage
 
-% $\exists \theta \in \Theta,  \frac 1 m | L_{\mathcal{S}_1}(\theta)- L_{\mathcal{S}_2}(\theta)|>\epsilon \iff \exists f \in \mathcal{F}_{\mathcal{S}_1, \mathcal{S}_2}, |\EE_1[f] - \EE_2[f]| > \epsilon$
 \begin{lemma}
 	\begin{align*}
 		&\PP{\mathcal{S}_1}{\exists \theta \in \Theta,  \frac 1 m |\hat L_{\mathcal{S}_1}(\theta)- L(\theta)|>\epsilon} \leq
@@ -199,7 +201,7 @@
 \begin{align*}
 	&\PP{}{\exists \theta \in \Theta,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\epsilon L(\theta)} \\
 	\leq \,&\PP{}{\exists \theta \in \Theta^*,  |L(\theta)-\hat L_{\textrm{DPP}}(\theta)|>\frac{\epsilon}{2} L(\theta)} \\
-	\leq &\sum_{\theta \in \Theta^*} \frac{4}{\epsilon^2} \Var[\frac{\hat L(\theta)}{L(\theta)}] \\
+	\leq &\sum_{\theta \in \Theta^*} \frac{4}{\epsilon^2} \Var{}{\frac{\hat L(\theta)}{L(\theta)}} \\
 	\lesssim &\sum_{\theta \in \Theta^*} \frac{1}{\epsilon^2}( M_\theta \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2})) \\
 	\leq &\frac{|\Theta^*|}{\epsilon^2} (M \OO(m^{-(1+\frac 1 d)}) + \OO(n^{-1/2}))
 \end{align*}
@@ -235,17 +237,17 @@ $$
 \mathbb{P}(\lvert f-\mathbb{E} f \rvert \geq a) \leq 2 \exp \left(-\frac{a^{2}}{8 k}\right)
 $$
 
-Bennett inequality: Let be $(X_i)_{i\in \intint{1}{n}}$ independent and centered real-valued random variables, and $\sigma^2 = \frac{1}{n}\sum_i \Var[X_i]$, then for any $t>0$
+Bennett inequality: Let be $(X_i)_{i\in \intint{1}{n}}$ independent and centered real-valued random variables, and $\sigma^2 = \frac{1}{n}\sum_i \Var{}{X_i}$, then for any $t>0$
 $$
 \mathbb{P}\left(\sum_{i=1}^{n} X_{i}>t\right) \leq \exp \left(-n \sigma^{2} h\left(\frac{t}{n \sigma^{2}}\right)\right)
 $$
 where $h(u)=(1+u) \log (1+u)-u$ for $u \geq 0$.
 
 
-From \cite{breuer2013nevai} $$\PP{}{\left|X_f-\mathbb{E} X_f\right| \geq \epsilon} \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var X_f}\right), & \text { if } \epsilon<\frac{2 A \Var X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var X_f}{3\|f\|_{\infty}}\end{cases}$$
+% From \cite{breuer2013nevai} $$\PP{}{\left|X_f-\mathbb{E} X_f\right| \geq \epsilon} \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var X_f}\right), & \text { if } \epsilon<\frac{2 A \Var X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var X_f}{3\|f\|_{\infty}}\end{cases}$$
 
 
- $$P( |L -\hat L| \geq L\epsilon ) \leq 2e^{\frac{-L^2\epsilon ^{2}}{4A \Var} }$$
+%  $$P( |L -\hat L| \geq L\epsilon ) \leq 2e^{\frac{-L^2\epsilon ^{2}}{4A \Var} }$$
 
 
 
@@ -281,7 +283,7 @@ $$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\rig
 \end{itemize}
 \begin{itemize}
 	\item Strong raylegh measure positive correlation ?
-	\item $\Var f = \Var f_+ + \Var f_- + 2 (\EE{}{}f_+ f_- - \EE{}{} f_+ \EE{}{} f_-)\leq \Var f_+ + \Var f_-$
+	\item $\Var{}{f} = \Var{}{f_+} + \Var{}{f_-} + 2 (\EE{}{f_+} \EE{}{f_-} - \EE{}{f_+}  \EE{}{f_-} )\leq \Var{}{f_+} + \Var{}{f_-}$
 	\item Pemantle only for kDPP?
 	\item Hoefding/Benett like proof for $\sum_{x_i \in \mathcal S} \epsilon_i f(x_i)$ using maybe recurisve property of HKPV sampling.
 \end{itemize}
