@@ -15,7 +15,7 @@
 		\begin{equation}
 			\Var{}{\estloss{\mathcal{S}}{\query}} = \lipschitz^2_\query \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
 		\end{equation}
-		where $\lipschitz_\query$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded and whose bound we denote by $\lipschitz_{\queryset} := \sup_{\query \in \queryset}\lipschitz_\query$.
+		where $\lipschitz_\query$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded in $\queryset$ and whose bound we denote by $\lipschitz_{\queryset} := \sup_{\query \in \queryset}\lipschitz_\query$.
 	\end{theorem}
 \end{tcolorbox}
 \note{}{explain how the estimator is built\\
@@ -24,8 +24,9 @@ $\mathcal{X} \subseteq \RR^d$}
 
 \subsection{Chebyshov bound}
 
-We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\epsilon>0$
+We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\epsilon>0$, the Chebyshov concentration bound
 \begin{equation*}
+	\label{def_boundratecheb}
 	\boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m) := \frac{1}{\epsilon^2} \sup_{\query \in \queryset} \Var{}{\estloss{\mathcal{S}}{\query}}
 \end{equation*}
 
@@ -50,14 +51,17 @@ We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\ep
 	Applying Bienaym\'e-Chebyshov inequality on the probability of $\mathcal{S}$ being a coreset yields 
 	\begin{align*}
 		 \PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
-		 &\leq \frac{1}{\varepsilon ^{2}}\Var{}{\estloss{\mathcal{S}}{\frac{\query}{\loss{\query}}} }\\
+		 &\leq \frac{1}{\varepsilon ^{2}}\Var{}{\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} }
+		 = \frac{1}{\varepsilon ^{2}}\Var{}{\estloss{\mathcal{S}}{\frac{\query}{\loss{\query}}} }\\
 		 &\leq \boundrate_{\textrm{Cheb}}(\queryset', \epsilon, m)\\
 		 &=\frac {1} {\epsilon^2}\left(\lipschitz^2_{\queryset'} \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)
 	\end{align*}
 	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} is to have
-	\begin{align*}
-		m^{1+\frac 1 d} &\gtrsim \frac{\lipschitz^2_{\queryset'}}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2_{\queryset'}} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
-	\end{align*} 
+	\begin{gather*}
+		\boundrate_{\textrm{Cheb}}(\queryset', \epsilon, m) \leq \delta\\
+		\iff\\
+		m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2_{\queryset'}}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2_{\queryset'}} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+	\end{gather*} 
 	Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 	\begin{equation*}
 		m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
@@ -82,30 +86,58 @@ We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\ep
 
 % \begin{tcolorbox}
 %     \begin{theorem}[From \cite{breuer2013nevai}]
-%         $$\PP{}{\left|X_f-\mathbb{E} X_f\right| > \epsilon} \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{X_f}}\right), & \text { if } \epsilon<\frac{2 A \Var{}{X_f]}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var{}{X_f}}{3\|f\|_{\infty}}\end{cases}$$
-
-
-%         $$P( |L -\hat L| \geq L\epsilon ) \leq 2e^{\frac{-L^2\epsilon ^{2}}{4A \Var} }$$
-       
-       
-       
-%        $$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\right) \left( 1+O\left( n^{-\frac{1}{2}}\right) \right) \right) ^{\frac{1}{1+\frac{1}{d}}}$$
-%     \end{theorem} 
+%         $$\PP{}{\left|X_f-\mathbb{E} X_f\right| > \epsilon} \leq \begin{cases}2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{X_f}}\right), & \text { if } \epsilon<\frac{2 A \Var{}{X_f}{3\|f\|_{\infty}} \\ 2 \exp \left(-\frac{\epsilon}{6\|f\|_{\infty}}\right), & \text { if } \epsilon \geq \frac{2 A \Var{}{X_f}}{3\|f\|_{\infty}}\end{cases}$$
 % \end{tcolorbox}
 
 
-if $\epsilon<\frac{2 A \Var{}{X_f}}{3\|f\|_{\infty}} $
+\begin{tcolorbox}
+	\begin{theorem}[From \cite{breuer2013nevai}]
+		\label{thm_breuer}
+		Let be any $\epsilon>0$, any bounded function $\query$, any projective DPP kernel $K$, and let $\mathcal{S} \sim  \mathcal{DPP}(K)$.\\
 
-\begin{equation*}
-    2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{\estloss{\mathcal{S}}{\frac{\query}{\loss{\query}}} }}\right) \leq 2 \exp \left(-\frac{1}{4 A \boundrate_{\textrm{Cheb}}(\queryset', \epsilon, m)}\right)
-\end{equation*}
+		Then for any linear statistics $X_f := \sum_{x\in\mathcal{S}}\query(x)$
+		\begin{equation*}
+			\PP{}{\dnude{}{X_f}{\EE{}{X_f}} > \epsilon} \leq	
+			\begin{cases}
+				2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{X_f}}\right) 
+				& \text { if } \epsilon<\frac{2 A \Var{}{X_f}}{3\|\query\|_{\infty}}\\
+				2 \exp \left(-\frac{\epsilon}{6\|\query\|_{\infty}}\right) 
+				& \text { otherwise }
+			\end{cases}
+		\end{equation*}	
+		where $A > 0$ is a constant that does not depend on $\query$, $K$ or $\epsilon$.
+	\end{theorem}
+\end{tcolorbox}
 
+
+We apply Theorem \ref{thm_breuer} for $\estloss{\mathcal{S}}{\query} = X_{\nicefrac{\query}{\opekernel{m}}}$. We define the Breuer concentration bound $\boundrate_{\textrm{Breuer}}$ such that
+\begin{align*}
+	\PP{}{ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  > \epsilon} 
+	&\leq 2 \exp \left(
+	\begin{cases}
+		\frac{-\epsilon^2}{4 A \Var{}{\estloss{\mathcal{S}}{\query} }}
+		& \text { if } \epsilon<\epsilon_{\query, m}\\
+		\frac{-\epsilon}{6\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}} 
+		& \text { otherwise }
+	\end{cases}
+	\right)\\
+	&\leq 2 \exp \left(
+		\begin{cases}
+			\left(-4 A \boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m)\right)^{-1}
+			& \text { if } \epsilon<\epsilon_{\query, m}\\
+			\left(-\epsilon^{-1} 6\sup_{\query}\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}\right)^{-1}
+			& \text { otherwise }
+		\end{cases}
+		\right)\\
+	& := \boundrate_{\textrm{Breuer}}(\queryset, \epsilon,m)
+\end{align*}
+where we lastly used the definition \ref{def_boundratecheb} of $\boundrate_{\textrm{Cheb}}$, and where $\epsilon_{\query, m} := \frac{2 A \Var{}{\estloss{\mathcal{S}}{\query} }}{3\|\nicefrac{\query}{\opekernel{m}}  \|_{\infty}}$.
 
 
 
 \begin{tcolorbox}[title=Breuer]
-	\begin{theorem}[Chebyshov bound for fixed query]
-		\label{thm_fixedtheta}
+	\begin{theorem}[Breuer bound for fixed query]
+		\label{thm_breuerfixedtheta}
 		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
 		Define $\queryset':=\frac{\queryset}{\loss{\queryset}}=\left\{\frac{\query}{\loss{\query}}\mid \query \in \queryset\right\}$ and $\lipschitz_{\queryset'}$ its Lipschitz constant bound.\\
 
@@ -117,6 +149,43 @@ if $\epsilon<\frac{2 A \Var{}{X_f}}{3\|f\|_{\infty}} $
 	\end{theorem}
 \end{tcolorbox}
 
+
+
+
+
+
+\begin{proof}
+	
+	
+	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} is to have
+	\begin{gather*}
+		\boundrate_{\textrm{Breuer}}(\queryset', \epsilon,m) \leq \delta\\
+		\iff \\
+		\left(\log \left( \frac{2}{\delta }\right)\right)^{-1} \geq
+		\begin{cases}
+			4 A \boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m)
+			& \text { if } \epsilon<\epsilon_{\nicefrac{\query}{\loss{\query}}, m}\\
+			\frac{1}{\epsilon} 6\sup_{\query}\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}
+			& \text { otherwise }
+		\end{cases}
+	\end{gather*}
+	If $\epsilon<\epsilon_{\nicefrac{\query}{\loss{\query}}, m}$, we know by \ref{thm_fixedtheta} a sufficient condition is that for $n$ sufficiently large 
+	\begin{equation*}
+		m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{A\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+	\end{equation*}
+	If $\epsilon\geq\epsilon_{\nicefrac{\query}{\loss{\query}}, m}$
+	\begin{equation*}
+		la
+	\end{equation*}
+
+
+\end{proof}
+	
+		 
+		 
+		 
+	  $$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\right) \left( 1+O\left( n^{-\frac{1}{2}}\right) \right) \right) ^{\frac{1}{1+\frac{1}{d}}}$$
+	
 
 
 \section{Extension to all queries}
