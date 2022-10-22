@@ -19,7 +19,7 @@ Its variance is
 \end{equation}
 where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
-For any query $\query \in \queryset$, the variance is reduced to 0 by
+For any query $\query \in \qset$, the variance is reduced to 0 by
 $$
 q_{\query}(x):=\frac{ \query(x)}{\loss{\query}}
 $$
@@ -127,7 +127,7 @@ $$\tilde v :=
 concatenating all the differences of squares and products.
 
 Then introducing $\tilde V = \begin{pmatrix}\tilde V_i \mid i\in\intint{1}{n}\end{pmatrix}
-$ allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. For having $\tilde K - \frac{\moones}{m}\succeq 0$, it is sufficient to have $m \geq r$. This is exactly the case for a projective DPP with rank $r = m$, because $m \leq r$ holds for every DPP. Therefore, for every multinomial sampling, we have a projective DPP which always beats it uniformly.
+$ allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. In order to have $\tilde K - \frac{\moones}{m}\succeq 0$, it is sufficient to have $m \geq r$. This is exactly the case for a projective DPP with rank $r = m$, because $m \leq r$ holds for every DPP. Therefore, for every multinomial sampling, we have a projective DPP which always beats it uniformly.
 
 
 

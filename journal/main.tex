@@ -75,16 +75,18 @@
 \theoremstyle{definition} % no italics in definition
 \newtheorem{definition}{Definition} % [section] for reset counting in each sections 
 % \numberwithin{equation}{chapter} % chapter already by default
-% TO DO: automaticly add "Theorem \ref{}"
+% TO DO: automatically add "Theorem \ref{}"
 
 
 
 % #################
 % specifics commands for this report
 \newcommand{\query}{f}
-\newcommand{\querytwo}{g}
-\newcommand{\queryset}{\mathcal{F}}
-\newcommand{\querysettwo}{\mathcal{G}}
+\newcommand{\twoquery}{g}
+\newcommand{\threequery}{h}
+\newcommand{\qset}{\mathcal{F}}
+\newcommand{\twoqset}{\mathcal{G}}
+\newcommand{\threeqset}{\mathcal{H}}
 \newcommand{\loss}[1]{L \ifstrempty{#1}{}{(#1)}}
 \newcommand{\estloss}[2]{\hat{L}_{#1} \ifstrempty{#2}{}{(#2)}}
 \newcommand{\empdistr}[2]{\mu_{#1} \ifstrempty{#2}{}{(#2)}}
@@ -97,7 +99,7 @@
 \newcommand{\boundrate}{\mathcal{R}}
 \newcommand{\covering}{\mathbf{C}}
 \newcommand{\packing}{\mathbf{P}}
-\newcommand{\pdim}{{d^{\prime}}}
+\newcommand{\pdim}{{d'}}
 \newcommand{\opekernel}[1]{\tilde{\boldsymbol K}_{#1}}
 % #################
 
@@ -118,7 +120,7 @@
         \vspace{20pt}
         \begin{spacing}{0.9}
             \fontsize{26pt}{26pt}\selectfont%
-            \textsc{\textbf{Improving Coreset Sampling Bounds with Determinental Point Processes}}\\%
+            \textsc{\textbf{Improving Coreset Sampling Bounds with Determinantal Point Processes}}\\%
         \end{spacing}
         \vspace{5pt}
         \begin{spacing}{0.05}

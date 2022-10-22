@@ -5,7 +5,7 @@
 
 % Let $\mathcal{X}=\begin{Bmatrix}
 %     x_{i} \mid i\in \intint{1}{n}
-% \end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\queryset$ be a space of parameters, or queries, and $f$ an element of $\queryset$. We consider cost functions of the form
+% \end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\qset$ be a space of parameters, or queries, and $f$ an element of $\qset$. We consider cost functions of the form
 % \begin{equation*}
 %     \loss(\query = \frac{1}{|\mathcal{X}|}\sum_{x \in \mathcal{X}} f(x)    
 % \end{equation*}
@@ -23,17 +23,17 @@ is to formulate learning problems as optimization problems.
 
 Let $\mathcal{X}=\begin{Bmatrix}
 x_{i} \mid i\in \intint{1}{n}
-\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\queryset$ be a space of query functions defined on $\mathcal{X}$, and $\query$ an element of $\queryset$. Classical learning problem aims to find a solution $\query ^*$ in $\queryset$ that minimizes a cost function $\loss{}$ over the given data $\mathcal{X}$. In this work, we focus on cost functions that are positive and additively decomposable, i.e. we consider cost functions of the form
+\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\qset$ be a space of query functions defined on $\mathcal{X}$, and $\query$ an element of $\qset$. Classical learning problem aims to find a solution $\query ^*$ in $\qset$ that minimizes a cost function $\loss{}$ over the given data $\mathcal{X}$. In this work, we focus on cost functions that are positive and additively decomposable, i.e. we consider cost functions of the form
 \begin{equation*}
 \loss{\query}:=\sum_{x \in \mathcal{X}} \query (x)
 \end{equation*}
-where the queries $\query \in \queryset \subseteq \RR_+^{\mathcal{X}}$ are positive functions defined on $\mathcal{X}$.
+where the queries $\query \in \qset \subseteq \RR_+^{\mathcal{X}}$ are positive functions defined on $\mathcal{X}$.
 
 A large amount of machine learning problems falls into that framework, including support vector machines, logistic regression, linear regression and k-means clustering. For example, the goal of the euclidean $k$-means clustering is to find a set of $k$ cluster centers in $\RR^d$ minimizing the quantization error
 \begin{equation*}
 \loss{\query} = \sum_{x \in \mathcal{X}} \min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2
 \end{equation*}
-In this case, $\query$ is the squared distance to the nearest cluster center $q$ in a set of cluster centers $\mathcal{C}$. Formally, $\query  \in \queryset = \left\{\min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \forall \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}  $, where $\binom{\mathcal{X}}{k}$ denotes ``from $\mathcal{X}$ choose $k$'', the set of all subsets of $\mathcal{X}$ of size $k$.
+In this case, $\query$ is the squared distance to the nearest cluster center $q$ in a set of cluster centers $\mathcal{C}$. Formally, $\query  \in \qset = \left\{\min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \forall \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}  $, where $\binom{\mathcal{X}}{k}$ denotes ``from $\mathcal{X}$ choose $k$'', the set of all subsets of $\mathcal{X}$ of size $k$.
 
 In many machine learning applications, the induced optimization problem can be hard to solve. Given a learning task, if an algorithm is too slow on large datasets, one can either speed up the algorithm or reduce the amount of data.
 The second alternative is theoretically guaranteed by the "coresets" idea.
@@ -49,21 +49,27 @@ set $\mathcal{X}$ by a weighted set $\mathcal{S}$ which satisfies the coreset pr
 
 Let $\mathcal{S}=\begin{Bmatrix}
 x_{i} \mid i\in \intint{1}{m}
-\end{Bmatrix}$ be a submultiset of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost associated to the weighted submultiset $\mathcal{S}$ as
+\end{Bmatrix}$ be a submultiset of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost based on the weighted submultiset $\mathcal{S}$ as
 $$
 \estloss{\mathcal{S}}{\query}:=\sum_{x \in \mathcal{S}} \omega\left(x\right) \query(x)
 $$
 \begin{definition}[Coreset]
     \label{def_coresetprop}
-    Let $\epsilon \in {]}0,1{[}$. $\mathcal{S}$ is an $\epsilon$-coreset for $\queryset$ if, for any query $\query \in \queryset$, the estimated cost is equal to the exact cost up to a relative error $\epsilon$. Formally
+    Let $\epsilon \in {]}0,1{[}$ and $\query \in \qset$. We say $\mathcal{S}$ is an $\epsilon$-coreset for $\query$ if the estimated cost based on $\mathcal{S}$ is equal to the exact cost up to a relative error $\epsilon$. Formally
     \begin{equation}
-        \forall  \query \in \queryset,\ \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon 
+        \label{eqn_querycoresetprop}
+        \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon 
+    \end{equation}
+    We say $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ if it is a $\epsilon$-coreset for any $\query \in \qset$. Formally
+    \begin{equation}
+        \label{eqn_qsetcoresetprop}
+        \forall \query \in \qset,\ \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon 
     \end{equation}
 \end{definition}
 An important consequence of the coreset property is the following
 
 \begin{theorem}
-    Let be $\mathcal{S}$, an $\epsilon$-coreset for $\queryset$. Define $\query^*:=\min_{\query \in \queryset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \queryset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
+    Let be $\mathcal{S}$, an $\epsilon$-coreset for $\qset$. Define $\query^*:=\min_{\query \in \qset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \qset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
 
     \begin{equation*}
         \loss{\query^*} \le {L}( \hat\query^*)\leq (1+ 3 \epsilon)\loss{\query^*}
@@ -71,9 +77,9 @@ An important consequence of the coreset property is the following
     \label{thm_optcoreset}
 \end{theorem}
 \begin{proof}
-    If $\mathcal{S}$ is a $\epsilon$-coreset for $\queryset$, we have from Definition \ref{def_coresetprop} that 
+    If $\mathcal{S}$ is a $\epsilon$-coreset for $\qset$, we have from Equation \ref{eqn_qsetcoresetprop} that 
     \begin{equation*}
-        \forall \query \in \queryset ,\ (1-\epsilon) \loss{\query} \le \estloss{\mathcal{S}}{\query} \le(1+\epsilon) \loss{\query}
+        \forall \query \in \qset ,\ (1-\epsilon) \loss{\query} \le \estloss{\mathcal{S}}{\query} \le(1+\epsilon) \loss{\query}
     \end{equation*}
     In particular, this is true for $\query^*$ and $\hat \query^*$ thus
     \begin{equation}
@@ -102,7 +108,7 @@ However, a learning problem is generally not separable into these three issues. 
 
 \subsection{Link with coresets}
 
-Let us see how coresets can naturally intervene into the PAC framework. Formally, let be given a probability distribution $\PP{}{}$ generating the data $\mathcal{S}$, and let be $\queryset$ a family of loss functions. Minimizing the expected loss is equivalent to finding $\query^*:= \arg \min_{\query \in \queryset} \loss{\query}$. Because we are only given $\mathcal{S}$ and not the full distribution, we have to approximate $\loss{\query}$ by some estimate $\estloss{\mathcal{S}}{\query}$ based on the data, and then minimizing it with $\hat{\query}^* := \arg \min_{\query\in \queryset} \estloss{\mathcal{S}}{\query}$. 
+Let us see how coresets can naturally intervene into the PAC framework. Formally, let be given a probability distribution $\PP{}{}$ generating the data $\mathcal{S}$, and let be $\qset$ a family of loss functions. Minimizing the expected loss is equivalent to finding $\query^*:= \arg \min_{\query \in \qset} \loss{\query}$. Because we are only given $\mathcal{S}$ and not the full distribution, we have to approximate $\loss{\query}$ by some estimate $\estloss{\mathcal{S}}{\query}$ based on the data, and then minimizing it with $\hat{\query}^* := \arg \min_{\query\in \qset} \estloss{\mathcal{S}}{\query}$. 
 
 
 In order to evaluate this scheme, we fix some $\epsilon>0$, and we want with the highest probability as possible that the relative error of $\loss{\hat\query^*}$ against $\loss{\query^*}$ is less than $\epsilon$. Put differently we want
@@ -111,9 +117,9 @@ In order to evaluate this scheme, we fix some $\epsilon>0$, and we want with the
 \end{equation*}
 for the smallest $\delta$ as possible.
 
-But we know a sufficient condition to control this error, that's the coreset property! Indeed, suppose we sample a data set $\mathcal{S}$ such that $\mathcal{S}$ is an $\epsilon/3$-coreset for $\queryset$ with probability at least $1-\delta$. Formally
+But we know a sufficient condition to control this error, that's the coreset property! Indeed, suppose we sample a data set $\mathcal{S}$ such that $\mathcal{S}$ is an $\epsilon/3$-coreset for $\qset$ with probability at least $1-\delta$. Formally
 \begin{equation*}
-    \PP{}{\forall f \in \queryset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta
+    \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta
 \end{equation*}
 Then by Theorem \ref{thm_optcoreset} we have $1-\delta$-surely, i.e. with probability at least $1-\delta$, that
 \begin{equation*}
@@ -136,7 +142,7 @@ On another hand, the use of coresets leverage one of the three issues that occur
 	The sensitivity $\sigma_i$ of a data point $x_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
 	$$
 	\begin{cases}
-		\sigma_{i}= \sup _{\query \in \queryset} \frac{{\query}\left(x_{i}\right)}{L(\query)} \quad \in[0,1]\\
+		\sigma_{i}= \sup _{\query \in \qset} \frac{{\query}\left(x_{i}\right)}{L(\query)} \quad \in[0,1]\\
 		\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
 	\end{cases}
 	$$
@@ -145,7 +151,7 @@ On another hand, the use of coresets leverage one of the three issues that occur
 \subsection{Main proof}
 Let be $s$ an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\query(x_i) :=  \frac{f_{\query(x_i)}}{s_i L(\query)}  \, \in[0,1]$
 
-By Hoeffding's inequality, we thus have for any $\query \in \queryset$ and $\epsilon^{\prime}>0$
+By Hoeffding's inequality, we thus have for any $\query \in \qset$ and $\epsilon^{\prime}>0$
 \begin{equation}
 	\mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x) - \mathbb{E}\left[g_{\query}(x)\right]\right|>\epsilon^{\prime}\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
 \end{equation}
@@ -153,13 +159,42 @@ and by definition, $\mathbb{E}\left[g_{\query}(x)\right]=\frac{1}{S}$ and $\frac
 \begin{equation*}
 	\mathbb{P}\left[|\estloss{\textrm{iid}}{\query} - L(\query)|>\epsilon^{\prime} S L(\query)\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
 \end{equation*}
-Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset property \ref{def_coresetprop} for any single query $\query \in \queryset$ with probability at least $1-\delta$, if we choose
+Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} with probability at least $1-\delta$, if we choose
 \begin{equation}
 	m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
 \end{equation}
 
 
 \subsection{Extension to all queries}
+
+
+
+\begin{tcolorbox}
+	\begin{definition}[pseudo-dimension]
+		The pseudo-dimension of a set $\threeqset$ of functions defined on $\mathcal{X}$, denoted by $\operatorname{pdim}\threeqset$, is the largest $\pdim$ such that 
+	\begin{itemize}
+		\item there exists $(x_{i})_{i\in \intint{1}{\pdim}} \subseteq \mathcal{X}^\pdim$, a sequence of $\pdim$ elements from $\mathcal{X}$,
+		\item there exists $(t_i)_{i\in \intint{1}{\pdim}} \subseteq  \RR^\pdim$ a sequence of $\pdim$ real thresholds,
+		\item such that for each $(b_i)_{i\in \intint{1}{\pdim}} \subseteq \{0,1\}^\pdim$
+		\item there is an $\query \in \threeqset$ such that $\forall i \in \intint{1}{\pdim}$, we have $\query(x_i) \geq r_i \iff b_i = 1$. 
+	\end{itemize}
+	Put differently it always exists functions in $\threeqset$ to have values above or below some threshold for every $2^\pdim$ combinations of above/below.
+\end{definition}
+Pseudo-dimension can also be defined through VC-dimension. Indeed, considering the function
+\begin{align*}
+	\operatorname{above}_\query \colon \mathcal{X} \times \RR &\to \{0,1\}\\
+	(x,r) &\mapsto \1\{f(x) \geq r\}
+\end{align*}
+we have
+\begin{equation}
+	\operatorname{pdim}\threeqset := \operatorname{VCdim}\{\operatorname{above}_\query \mid \query \in \threeqset\}
+\end{equation}
+\end{tcolorbox}
+
+
+
+
+
 \note{}{developp sota}
 See \textbf{Uniform guarantee for all queries} in \cite{bachem2017coresetML}. Introducing the pseudo-dimension $d'$, it gives
 \begin{equation}

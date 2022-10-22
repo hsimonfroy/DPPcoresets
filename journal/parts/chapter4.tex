@@ -1,88 +1,169 @@
 
 
 \chapter{Improving concentration with DPP}
-\section{Concentration for fixed query}
+\section{A ???? result}
 
-\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\opekernel{m})$, independent of $f$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 
+
+\cite{bardenet2021sgddpp} show the existence of a sequence of DPP kernels $(\opekernel{m})$, independent of $\threequery$, whose induced estimator has asymptotic variance $\OO( m ^{-(1+\frac 1 d)})$. More precisely, 
 
 \begin{tcolorbox}
 	\begin{theorem}[From \cite{bardenet2021sgddpp}]
-		$\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$
+		\label{thm_sgdpaper}
+		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$.
 		\begin{equation}
-			\estloss{\mathcal{S}}{\query} := \sum_{x \in \mathcal{S}} \frac{f(x)}{\opekernel{m}(x,x)}
+			\estloss{\mathcal{S}}{\threequery} := \sum_{x \in \mathcal{S}} \frac{\threequery(x)}{\opekernel{m}(x,x)}
 		\end{equation}
 		Equation (S14) yields that 
 		\begin{equation}
-			\Var{}{\estloss{\mathcal{S}}{\query}} = \lipschitz^2_\query \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+			\Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
 		\end{equation}
-		where $\lipschitz_\query$ is the Lipschitz constant of $x \mapsto \query(x) (\frac{1}{m} K^{(m)}_{q, \tilde \gamma}(x,x))^{-1}$, supposedly bounded in $\queryset$ and whose bound we denote by $\lipschitz_{\queryset} := \sup_{\query \in \queryset}\lipschitz_\query$.
+		where $\lipschitz_\threequery := \operatorname{Lip}\left\{\frac{m\threequery}{K^{(m)}_{q, \tilde \gamma}} \right\}$ is the Lipschitz constant of $x \mapsto \frac{m\threequery(x)}{K^{(m)}_{q, \tilde \gamma}(x,x)}$.
 	\end{theorem}
 \end{tcolorbox}
-\note{}{explain how the estimator is built\\
-$\mathcal{X} \subseteq \RR^d$}
+\note{}{
+	explain how the estimator is built\\
+	$\mathcal{X} \subseteq \RR^d$\\
+	bounded condition?
+}
+
+
+
+We first recall some classical notations.
+\begin{itemize}
+	\item We denote by $\empdistr{\mathcal{S}}{}:=\frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}}$ the empirical measure based on sample $\mathcal{S}  \subseteq \mathcal{X}$. 
+	\item Hence for all function $\threequery$, we denote by $\empdistr{\mathcal{S}}{\threequery}:=\int_{\mathcal{X}} \threequery(x) d\empdistr{\mathcal{S}}{x} = \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} \threequery(x)$ the expectation of $\threequery$ with respect to $\empdistr{\mathcal{S}}{}$. Furthermore, given a distribution $\PP{}{}$ on $\mathcal{S}$, we denote by $\meanempdistr{\threequery}:=\EE{}{\empdistr{\mathcal{S}}{\threequery}}$, its expectation with respect to $\PP{}{}$. 
+	\item Finally, the induced $L^1(\empdistr{\mathcal{S}}{})$ distance between two functions $\threequery$ and $\threequery'$ would be denoted by $\dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'}:=\empdistr{\mathcal{S}}{|\threequery - \threequery'|}$.
+\end{itemize}  
+
+
+We can then reformulate the result from Theorem \ref{thm_sgdpaper} into the following corollary.
+\begin{tcolorbox}
+	\begin{corollary}
+		\label{cor_sgdpaper}
+		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$.
+		For all function $\twoquery$, we have
+		\begin{equation*}
+			\Var{}{\empdistr{\mathcal{S}}{\twoquery}} = \lipschitz^2_\twoquery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+		\end{equation*}
+		where $\lipschitz_\twoquery := \operatorname{Lip}\left\{\frac{\opekernel{m}}{K^{(m)}_{q, \tilde \gamma}} \twoquery \right\}$ is the Lipschitz constant of $x \mapsto\frac{\opekernel{m}(x,x)}{K^{(m)}_{q, \tilde \gamma}(x,x)} \twoquery(x) $.
+	\end{corollary}
+\end{tcolorbox}
+
+\begin{proof}
+	We simply apply Theorem \ref{thm_sgdpaper} with $\threequery = \frac{\opekernel{m}g}{m}$, such that
+	\begin{align*}
+		\Var{}{\empdistr{\mathcal{S}}{\twoquery}} = \Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+	\end{align*}
+	where $\lipschitz_\threequery$ is the Lipschitz constant of $x \mapsto \frac{m\threequery(x)}{K^{(m)}_{q, \tilde \gamma}(x,x)} = \frac{\opekernel{m}(x,x)}{K^{(m)}_{q, \tilde \gamma}(x,x)} \twoquery(x) $.
+
+\end{proof}
+
+
+
+
+
+\section{Concentration for fixed query}
+\subsection{Main assumption}
+
+Let $\qset$ be the function space on which we want the coreset property to hold.
+Then let define the following function space defined on $\mathcal{X}$
+		\begin{equation}
+		\twoqset_m := \frac{m\qset}{\opekernel{m}\loss{\qset}} = \left\{x \mapsto \frac{m\query(x)}{\opekernel{m}(x,x)\loss{\query}} \mid \query \in \qset\right\}
+	\end{equation}
+We have that for any $\query \in \qset$, we have $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ such that
+	\begin{equation}
+		\label{def_ftog}
+		\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} = \empdistr{\mathcal{S}}{g}
+		\quad \text{ and }\quad 
+		\meanempdistr{g} = \EE{}{\empdistr{\mathcal{S}}{g}} = \frac{\EE{}{\estloss{\mathcal{S}}{\query}}}{\loss{\query}} = 1
+	\end{equation}
+
+
+
+
+In the following sections, we crucially assume the functions sets $\twoqset_m$ verify boundedness in Lipschitz constant, infinite norm, and pseudo-dimension.
+Formally, we assume it exists positive reals $\lipschitz, \bound \in \RR_+$ and natural integer $\pdim \in \NN$, that all three only depends on $\qset$, such that for all $m \in \NN$
+\begin{itemize}
+	\label{asm_gm}
+	\item  $\sup_{\twoquery \in \twoqset_m} \operatorname{Lip}\left\{\frac{\opekernel{m}}{K^{(m)}_{q, \tilde \gamma}}\twoquery \right\} =: \lipschitz < +\infty$
+	\item $\sup_{\twoquery \in \twoqset_m} \|\twoquery\|_{\infty} =: \bound  < +\infty$
+	\item $\operatorname{pdim}\twoqset_m \leq \pdim$
+\end{itemize}
+We further discuss to what extend these assumptions are relevant.
+\note{}{discuss}
+
+
 
 
 \subsection{Chebyshov bound}
 
-We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\epsilon>0$, the Chebyshov concentration bound
-\begin{equation*}
+Let define for any $\epsilon>0$ and $m\in \NN$, the Chebyshov concentration bound
+\begin{equation}
 	\label{def_boundratecheb}
-	\boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m) := \frac{1}{\epsilon^2} \sup_{\query \in \queryset} \Var{}{\estloss{\mathcal{S}}{\query}}
-\end{equation*}
+	\boundrate_{\textrm{Cheb}}(\epsilon, m) := \frac{1}{\epsilon^2} \sup_{\twoqset \in \{\twoqset_m \mid m \in \NN\}} \sup_{\twoquery \in \twoqset} \Var{}{\empdistr{\mathcal{S}}{\twoquery}}
+\end{equation}
+We know from Corollary \ref{cor_sgdpaper} and assumption on Lipschitz constant boundedness \ref{asm_gm} that $\boundrate_{\textrm{Cheb}}(\epsilon, m) = \frac {1} {\epsilon^2}\left(\lipschitz^2 \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)$.
+
 
 
 \begin{tcolorbox}
 	\begin{theorem}[Chebyshov bound for fixed query]
-		\label{thm_fixedtheta}
+		\label{thm_chebfixedtheta} 
 		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
-		Define $\queryset':=\frac{\queryset}{\loss{\queryset}}=\left\{\frac{\query}{\loss{\query}}\mid \query \in \queryset\right\}$ and $\lipschitz_{\queryset'}$ its Lipschitz constant bound.\\
 
-		Then for all $\epsilon, \delta >0$, all $\query \in \queryset$, and $n$ sufficiently large
-		\begin{equation}
-			m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\queryset$ }
-		\end{equation}
+		Then for all $\epsilon >0$ and all $\query \in \qset$
+		\begin{equation*}
+			\PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq \boundrate_{\textrm{Cheb}}(\epsilon, m)
+		\end{equation*}
+		
+		
+		Moreover, for all $\delta>0$ and for $n$ sufficiently large
+		\begin{equation*}
+			m \gtrsim \left(\frac{\lipschitz^2}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
+			\implies 
+			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$ }
+		\end{equation*}
 		where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
 	\end{theorem}
 \end{tcolorbox}
-\note{}{lipschitz constant of?}
+
+
+
 
 
 \begin{proof}
-	Applying Bienaym\'e-Chebyshov inequality on the probability of $\mathcal{S}$ being a coreset yields 
+	Let $\query \in \qset$, thus we know $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ verifies \ref{def_ftog}.
+
+	Then applying Bienaym\'e-Chebyshov inequality on the probability of $\mathcal{S}$ being an $\epsilon$-coreset for $\query$ yields 
 	\begin{align*}
-		 \PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
-		 &\leq \frac{1}{\varepsilon ^{2}}\Var{}{\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} }
-		 = \frac{1}{\varepsilon ^{2}}\Var{}{\estloss{\mathcal{S}}{\frac{\query}{\loss{\query}}} }\\
-		 &\leq \boundrate_{\textrm{Cheb}}(\queryset', \epsilon, m)\\
-		 &=\frac {1} {\epsilon^2}\left(\lipschitz^2_{\queryset'} \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)
+		\PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}}
+		&= \PP{}{\dnude{\nu}{\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}}{1}>\epsilon}
+		= \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}}>\epsilon}\\ 
+		&\leq \frac{1}{\varepsilon ^{2}}\Var{}{\empdistr{\mathcal{S}}{\twoquery}}\\
+		&\leq \boundrate_{\textrm{Cheb}}(\epsilon, m)
+		=\frac {1} {\epsilon^2}\left(\lipschitz^2 \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)
 	\end{align*}
-	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} is to have
+	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset for $\query$  property \ref{eqn_querycoresetprop} is to have
 	\begin{gather*}
-		\boundrate_{\textrm{Cheb}}(\queryset', \epsilon, m) \leq \delta\\
-		\iff\\
-		m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2_{\queryset'}}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2_{\queryset'}} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+		\boundrate_{\textrm{Cheb}}(\epsilon, m) \leq \delta 
+		\iff
+		m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
 	\end{gather*} 
 	Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 	\begin{equation*}
-		m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
+		m \gtrsim \left(\frac{\lipschitz^2}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
 	\end{equation*}
 \end{proof}
 
 
 
-\begin{tcolorbox}
-	\begin{corollary}
-		By taking $\delta = 1/2$ in previous Theorem \ref{thm_fixedtheta}, we know it exists some constant we denote $c_{1/2}$ such that for all $\epsilon >0$ it holds that
-		\begin{equation*}
-			m \geq c_{1/2} \left(\frac{\lipschitz^2_{\queryset'}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \forall \query \in \queryset,\ \PP{}{ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  \leq \epsilon \loss{\query}} \geq \frac 1 2
-		\end{equation*}
-		For all $\epsilon$, we note $m_{\textrm{Cheb}}(\epsilon, \queryset') := c_{1/2} \left(\frac{\lipschitz^2_{\queryset'}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}$
-	\end{corollary}
-\end{tcolorbox}
 
 
 
-\subsection{Breuer bound}
+
+
+
+\subsection{Breuer and Duits bound}
 
 % \begin{tcolorbox}
 %     \begin{theorem}[From \cite{breuer2013nevai}]
@@ -93,133 +174,134 @@ We can thus define for any set of function $\queryset$, any $m\in \NN$, and $\ep
 \begin{tcolorbox}
 	\begin{theorem}[From \cite{breuer2013nevai}]
 		\label{thm_breuer}
-		Let be any $\epsilon>0$, any bounded function $\query$, any projective DPP kernel $K$, and let $\mathcal{S} \sim  \mathcal{DPP}(K)$.\\
+		Let be any $\epsilon>0$, any bounded function $\threequery$, any projective DPP kernel $K$, and let $\mathcal{S} \sim  \mathcal{DPP}(K)$.\\
 
-		Then for any linear statistics $X_f := \sum_{x\in\mathcal{S}}\query(x)$
+		Then for any linear statistics $X_\threequery := \sum_{x\in\mathcal{S}}\query(x)$
 		\begin{equation*}
-			\PP{}{\dnude{}{X_f}{\EE{}{X_f}} > \epsilon} \leq	
+			\PP{}{\dnude{}{X_f}{\EE{}{X_\threequery}} > \epsilon} \leq	
 			\begin{cases}
-				2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{X_f}}\right) 
-				& \text { if } \epsilon<\frac{2 A \Var{}{X_f}}{3\|\query\|_{\infty}}\\
-				2 \exp \left(-\frac{\epsilon}{6\|\query\|_{\infty}}\right) 
+				2 \exp \left(-\frac{\epsilon^2}{4 A \Var{}{X_\threequery}}\right) 
+				& \text { if } \epsilon<\frac{2 A \Var{}{X_\threequery}}{3\|\threequery\|_{\infty}}\\
+				2 \exp \left(-\frac{\epsilon}{6\|\threequery\|_{\infty}}\right) 
 				& \text { otherwise }
 			\end{cases}
 		\end{equation*}	
-		where $A > 0$ is a constant that does not depend on $\query$, $K$ or $\epsilon$.
+		where $A \simeq 7819$ and thus does not depend on $\threequery$, $K$ or $\epsilon$.
+	\end{theorem}
+\end{tcolorbox}
+
+Let define for any $\epsilon>0$ and $m\in \NN$, 
+\begin{equation*}
+	\boundrate_{\textrm{BD}}(\epsilon,m) := 2 \exp \left( -\left(\max\left\{
+			4 A \boundrate_{\textrm{Cheb}}(\epsilon, m),\
+			\frac{6 \bound}{\epsilon m}\right\}\right)^{-1}
+			\right)
+\end{equation*}
+
+
+
+
+
+
+
+
+
+
+\begin{tcolorbox}
+	\begin{theorem}[Breuer and Duits bound for fixed query]
+		\label{thm_breuerfixedtheta}
+		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
+
+		Then for all $\epsilon >0$ and all $\query \in \qset$
+		\begin{equation*}
+			\PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq \boundrate_{\textrm{BD}}(\epsilon, m)
+		\end{equation*}
+		
+		Moreover, for all $\delta>0$ and for $n$ sufficiently large
+		\begin{equation*}
+			m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+			\implies 
+			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$ }
+		\end{equation*}
 	\end{theorem}
 \end{tcolorbox}
 
 
-We apply Theorem \ref{thm_breuer} for $\estloss{\mathcal{S}}{\query} = X_{\nicefrac{\query}{\opekernel{m}}}$. We define the Breuer concentration bound $\boundrate_{\textrm{Breuer}}$ such that
-\begin{align*}
-	\PP{}{ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  > \epsilon} 
-	&\leq 2 \exp \left(
-	\begin{cases}
-		\frac{-\epsilon^2}{4 A \Var{}{\estloss{\mathcal{S}}{\query} }}
-		& \text { if } \epsilon<\epsilon_{\query, m}\\
-		\frac{-\epsilon}{6\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}} 
-		& \text { otherwise }
-	\end{cases}
-	\right)\\
-	&\leq 2 \exp \left(
+
+
+
+\begin{proof}
+	Let $\query \in \qset$, thus we know $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ verifies \ref{def_ftog}.
+
+	Then we apply the Breuer and Duits bound \ref{thm_breuer} taking $h = g/m$, such that $X_h = \empdistr{\mathcal{S}}{g}$.	Introducing $\epsilon_{\twoquery, m} := \frac{2 A m \Var{}{\empdistr{\mathcal{S}}{\twoquery}}}{3\|\twoquery \|_{\infty}}$ for conciseness, this gives
+	\begin{align*}
+		\PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}}
+		&= \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}}>\epsilon}\\ 
+		&\leq 2 \exp \left(
 		\begin{cases}
-			\left(-4 A \boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m)\right)^{-1}
-			& \text { if } \epsilon<\epsilon_{\query, m}\\
-			\left(-\epsilon^{-1} 6\sup_{\query}\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}\right)^{-1}
+			\frac{-\epsilon^2}{4 A \Var{}{\empdistr{\mathcal{S}}{\twoquery}}}
+			& \text { if } \epsilon<\epsilon_{\twoquery, m}\\
+			\frac{-\epsilon m}{6\|\twoquery\|_{\infty}} 
 			& \text { otherwise }
 		\end{cases}
 		\right)\\
-	& := \boundrate_{\textrm{Breuer}}(\queryset, \epsilon,m)
-\end{align*}
-where we lastly used the definition \ref{def_boundratecheb} of $\boundrate_{\textrm{Cheb}}$, and where $\epsilon_{\query, m} := \frac{2 A \Var{}{\estloss{\mathcal{S}}{\query} }}{3\|\nicefrac{\query}{\opekernel{m}}  \|_{\infty}}$.
-
-
-
-\begin{tcolorbox}[title=Breuer]
-	\begin{theorem}[Breuer bound for fixed query]
-		\label{thm_breuerfixedtheta}
-		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
-		Define $\queryset':=\frac{\queryset}{\loss{\queryset}}=\left\{\frac{\query}{\loss{\query}}\mid \query \in \queryset\right\}$ and $\lipschitz_{\queryset'}$ its Lipschitz constant bound.\\
-
-		Then for all $\epsilon, \delta >0$, all $\query \in \queryset$, and $n$ sufficiently large
-		\begin{equation}
-			m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\queryset$ }
-		\end{equation}
-		where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
-	\end{theorem}
-\end{tcolorbox}
-
-
-
-
-
-
-\begin{proof}
+		&\leq 2 \exp \left(
+			\begin{cases}
+				\left(-4 A \boundrate_{\textrm{Cheb}}(\epsilon, m)\right)^{-1}
+				& \text { if } \epsilon<\epsilon_{\twoquery, m}\\
+				\frac{-\epsilon m}{6 \bound} 
+				& \text { otherwise }
+			\end{cases}
+			\right)\\
+			&\leq 2 \exp \left(
+				\max\left\{
+				\left(-4 A \boundrate_{\textrm{Cheb}}(\epsilon, m)\right)^{-1},\
+				\frac{-\epsilon m}{6 \bound} \right\}
+				\right)
+		= \boundrate_{\textrm{Breuer}}(\epsilon,m)
+	\end{align*}
+	where we used the definition \ref{def_boundratecheb} of $\boundrate_{\textrm{Cheb}}$ and the assumption \ref{asm_gm} that $\|\twoquery\|_{\infty} \leq \bound$.
 	
 	
-	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} is to have
+	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset for $\query$  property \ref{eqn_querycoresetprop} is to have
 	\begin{gather*}
-		\boundrate_{\textrm{Breuer}}(\queryset', \epsilon,m) \leq \delta\\
-		\iff \\
+		\boundrate_{\textrm{Breuer}}(\epsilon,m) \leq \delta
+		\iff 
 		\left(\log \left( \frac{2}{\delta }\right)\right)^{-1} \geq
-		\begin{cases}
-			4 A \boundrate_{\textrm{Cheb}}(\queryset, \epsilon, m)
-			& \text { if } \epsilon<\epsilon_{\nicefrac{\query}{\loss{\query}}, m}\\
-			\frac{1}{\epsilon} 6\sup_{\query}\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}
-			& \text { otherwise }
-		\end{cases}
+		\max\left\{
+			4 A \boundrate_{\textrm{Cheb}}(\epsilon, m),\
+			\frac{6 \bound}{\epsilon m}\right\}
+		\\
+		\iff \left(\log \left( \frac{2}{\delta }\right)\right)^{-1} \text{ is greater than both }
+		4 A \boundrate_{\textrm{Cheb}}(\epsilon, m)
+		\text{ and }
+		\frac{6 \bound}{\epsilon m}
 	\end{gather*}
-	If $\epsilon<\epsilon_{\nicefrac{\query}{\loss{\query}}, m}$, we know by \ref{thm_fixedtheta} a sufficient condition is that for $n$ sufficiently large 
+	For the first inequality, we know from Theorem \ref{thm_chebfixedtheta} a sufficient condition is that for $n$ sufficiently large 
 	\begin{equation*}
-		m \gtrsim \left(\frac{\lipschitz^2_{\queryset'}}{A\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+		m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
 	\end{equation*}
-	If $\epsilon\geq\epsilon_{\nicefrac{\query}{\loss{\query}}, m}$
+	For the second inequality, a sufficient condition is that
 	\begin{equation*}
-		la
+		m \geq \frac{6 \bound}{\epsilon} \log \left( \frac{2}{\delta }\right) 
 	\end{equation*}
-
+	Combining this two cases, a sufficient condition is given by
+	\begin{equation*}
+		m \gtrsim \bound\left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+	\end{equation*}
 
 \end{proof}
-	
+	\note{}{discuss the second case}
 		 
 		 
-		 
-	  $$m \geq \left( \frac{c}{L^{2}\varepsilon ^{2}}\log \left( \frac{2}{\delta }\right) \left( 1+O\left( n^{-\frac{1}{2}}\right) \right) \right) ^{\frac{1}{1+\frac{1}{d}}}$$
-	
 
 
-\section{Extension to all queries}
-In order to obtain an $\epsilon$-coreset, the $\epsilon$-coreset property \ref{def_coresetprop} must holds for all queries, thus the previous result must be generalized to all $\query \in \queryset$.
 
-We first recall some classical notations.
-\begin{itemize}
-	\item We denote by $\empdistr{\mathcal{S}}{}:=\frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}}$ the empirical measure based on sample $\mathcal{S}  \subseteq \mathcal{X}$. 
-	\item Hence $\forall \query \in \queryset$, we denote by $\empdistr{\mathcal{S}}{\query}:=\int_{\mathcal{X}} \query(x) d\empdistr{\mathcal{S}}{x} = \frac{1}{|\mathcal{S}|} \sum_{x \in \mathcal{S}} \query(x)$ the expectation of $f$ with respect to $\empdistr{\mathcal{S}}{}$. Furthermore, given a distribution $\PP{}{}$ on $\mathcal{S}$, we denote by $\meanempdistr{f}:=\EE{}{\empdistr{\mathcal{S}}{\query}}$, its expectation with respect to $\PP{}{}$. 
-	\item Finally, the induced $L^1(\empdistr{\mathcal{S}}{})$ distance between two functions $\query$ and $\query'$ would be denoted by $\dlone{\empdistr{\mathcal{S}}{}}{\query}{\query'}:=\empdistr{\mathcal{S}}{|\query - \query'|}$.
-\end{itemize}  
+\section{Extensio
+n to all queries}
+In order to obtain an $\epsilon$-coreset for $\qset$, the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} must holds simultaneously for all queries $\query \in \qset$.
 
-
-\begin{tcolorbox}
-	\begin{definition}[pseudo-dimension]
-		The pseudo-dimension of a set $\queryset$ of functions defined on $\mathcal{X}$, denoted by $\operatorname{pdim}\queryset$, is the largest $\pdim$ such that 
-	\begin{itemize}
-		\item there exists $(x_{i})_{i\in \intint{1}{\pdim}} \subseteq \mathcal{X}^\pdim$, a sequence of $\pdim$ elements from $\mathcal{X}$,
-		\item there exists $(t_i)_{i\in \intint{1}{\pdim}} \subseteq  \RR^\pdim$ a sequence of $\pdim$ real thresholds,
-		\item such that for each $(b_i)_{i\in \intint{1}{\pdim}} \subseteq \{0,1\}^\pdim$
-		\item there is an $\query \in \queryset$ such that $\forall i \in \intint{1}{\pdim}$, we have $\query(x_i) \geq r_i \iff b_i = 1$. 
-	\end{itemize}
-	Put differently it always exists functions in $\queryset$ to have values above or below some threshold for every $2^\pdim$ combinations of above/below.
-\end{definition}
-Pseudo-dimension can also be defined through VC-dimension. Indeed, considering the function
-\begin{align*}
-	h_\query \colon \mathcal{X} \times \RR &\to \{0,1\}\\
-	(x,r) &\mapsto \1\{f(x) \geq r\}
-\end{align*}
-we have
-\begin{equation}
-	\operatorname{pdim}\queryset := \operatorname{VCdim}\{h_\query \mid \query \in \queryset\}
-\end{equation}
-\end{tcolorbox}
+\note{}{Bon Feroni blabla}
 
 
 
@@ -229,74 +311,75 @@ we have
 
 
 \begin{tcolorbox}
-	\begin{theorem}
+	\begin{theorem}[Infinite union bound]
 		\label{thm_infi_union_bound}
-		Let be $\queryset \subseteq [0,\bound]^{\mathcal{X}}$ a set of bounded functions defined on a base set $\mathcal{X}$, with $\pdim := \operatorname{pdim}\queryset$ its pseudo-dimension. Let moreover be $(\PP{m}{})_{m\in \NN}$ a sequence of distributions supported on $\binom{\mathcal{X}}{m}$.\\
+		Let $\threeqset \subseteq [0,\bound]^{\mathcal{X}}$ be a set of bounded functions defined on a base set $\mathcal{X}$, with $d'_{\threeqset} := \operatorname{pdim}\threeqset$ its pseudo-dimension. Let moreover $(\PP{m}{})_{m\in \NN}$ be a sequence of distributions supported on $\binom{\mathcal{X}}{m}$.\\
 
-		Assume it exists a bounding function $\boundrate$ such that for all $\epsilon >0$, function $\query \in \queryset$, integer $m \in \NN$, and multiset $\mathcal{S} \sim \PP{m}{}$, we have the bound
+		Assume it exists a bounding function $\boundrate$ such that for all $\epsilon >0$, function $\threequery \in \threeqset$, integer $m \in \NN$, and multiset $\mathcal{S} \sim \PP{m}{}$, we have the bound
 		\begin{equation}
-			\PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}}{f}}{\meanempdistr{f}} > \epsilon} \leq \boundrate(\queryset, \epsilon, m)
+			\PP{m}{\dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq \boundrate(\epsilon, m)
 		\end{equation}
 
-		and such that for all $\epsilon>0$, it exists some $m_{\epsilon}$ such that
+		Then for all $\epsilon >0$ and all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$, it holds
 		\begin{equation}
-			m \geq m_{\epsilon} \implies \boundrate(\queryset, \epsilon, m) \leq 1/2
-		\end{equation}
-		Then for all $\epsilon >0$ and $m \geq m_{\epsilon}$
-		\begin{equation}
-			\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{f}}{\meanempdistr{f}} > \epsilon} \leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^\pdim \boundrate(\queryset, \epsilon/16, m)
+			\PP{m}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq 12( d'_{\threeqset}+1) \left(\frac{48 \bound}{\epsilon}\right)^{ d'_{\threeqset}} \boundrate(\epsilon/16, m)
 		\end{equation}
 	\end{theorem}
 \end{tcolorbox}
 
 
-
-
+We delay the proof of Theorem \ref{thm_infi_union_bound}
 
 \begin{tcolorbox}
-	\begin{corollary}
-		\label{thm_anyboundrate}
-		Define the following space of functions defined on $\mathcal{X}$
-		\begin{equation}
-			\querysettwo_m := \frac{m\queryset}{\opekernel{m}\loss{\queryset}} = \left\{\frac{m\query}{\opekernel{m}\loss{\query}} \mid \query \in \queryset\right\}
-		\end{equation}
-		We denote its pseudo-dimension $\pdim:=\operatorname{pdim}\querysettwo_m$, and assume its functions are bounded by a constant $\bound$.\\
+	\begin{theorem}[Breuer and Duits bound for all queries]
+		\label{thm_breuerallqueries}
+		Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
 
-		Then for all $\epsilon>0$ and all $m \geq m_{\epsilon}$
-		\begin{equation}
-			\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon \loss{\query}} 
-			\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim} \boundrate(\queryset', \epsilon, m)
-		\end{equation}
-	\end{corollary}
+		Then for all $\epsilon >0$ and all $\query \in \qset$
+		\begin{equation*}
+			\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
+			\leq 12( \pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim}  \boundrate_{\textrm{BD}}(\epsilon/16, m)
+		\end{equation*}
+		
+		Moreover, for all $\delta >0$ and for $n$ sufficiently large
+		\begin{equation*}
+			m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{( \pdim+1)}{\delta } + \pdim \log \frac{\bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}
+			\implies 
+			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\qset$ }
+		\end{equation*}
+	\end{theorem}
 \end{tcolorbox}
-	
 
 
 \begin{proof}
-	Observe first that for any function $f$
-	\begin{equation*}
-		\estloss{\mathcal{S}}{f} = \empdistr{\mathcal{S}}{ \frac{m\query}{\opekernel{m}} }
-	\end{equation*}
-	Then by Theorem \ref{thm_fixedtheta}, for all $\epsilon >0$ , $m\in \NN$, and $\querytwo \in \querysettwo_m$
-	\begin{align*}
-		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\querytwo}}{\meanempdistr{\querytwo}}>\epsilon} 
-		&= \PP{}{\dnude{}{\estloss{\mathcal{S}}{\frac{\querytwo\opekernel{m}}{m}}}{\loss{\frac{\querytwo\opekernel{m}}{m}}}>\epsilon} \\
-		&\leq  \boundrate(\frac{\querysettwo_m\opekernel{m}}{m}, \epsilon, m) = \boundrate(\queryset', \epsilon, m)
-   \end{align*}
-   Moreover, we know that $\boundrate$ and $m_\epsilon$ are such that
-   \begin{equation*}
-		m \geq m_{\epsilon} \implies \boundrate(\queryset, \epsilon, m) \leq 1/2
-   \end{equation*}
-   
-   Therefore $\boundrate$ satisfies the two hypothesis of Theorem \ref{thm_infi_union_bound}, and thus for all $\epsilon >0$ and $m \geq m_\epsilon$
-   \begin{align*}
-	\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon \loss{\query}} 
-	&= \PP{}{\exists \querytwo \in \querysettwo_m,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\querytwo}}{\meanempdistr{\querytwo}} > \epsilon}\\
-	&\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim} \boundrate(\queryset', \epsilon, m)
-   \end{align*}
-\end{proof}
+	Let $\query \in \qset$, thus we know $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ verifies \ref{def_ftog}.
 
-\note{}{Conclude!}
+	We know from Theorem \ref{thm_breuerfixedtheta} that for all $\epsilon>0$ and $m \in \NN$ we have
+	\begin{equation*}
+		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} > \epsilon}  \leq \boundrate_{\textrm{BD}}(\epsilon, m)
+	\end{equation*}
+	
+	Hypothesis of Theorem \ref{thm_infi_union_bound} are thus satisfied, and we can apply it taking $\threeqset=\twoqset_m$, which yields that for all $m \in \NN$ such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$, it holds
+	\begin{align*}
+		\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
+		&= \PP{}{\exists \twoquery \in \twoqset_m,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} >  \epsilon}\\
+		&\leq  12( d'_{\twoqset_m}+1) \left(\frac{48 \bound}{\epsilon}\right)^{ d'_{\twoqset_m}}  \boundrate_{\textrm{BD}}(\epsilon/16, m)\\
+		&\leq  12( \pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim}  \boundrate_{\textrm{BD}}(\epsilon/16, m)
+	\end{align*}
+	where we used the assumption \ref{asm_gm} that for all $m \in \NN$, $\operatorname{pdim}\twoqset_m \leq \pdim$.
+
+	Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset for $\qset$ property \ref{eqn_qsetcoresetprop} is to have
+	\begin{gather*}
+		\boundrate_{\textrm{BD}}(\epsilon/16, m) \leq \frac{\delta}{12( \pdim+1)} \left(\frac{48 \bound}{\epsilon}\right)^{-\pdim}
+		\iff
+		m \gtrsim \bound \left(\frac{256\lipschitz^2}{\epsilon^2} \log \left( \frac{24( \pdim+1)}{\delta }\left(\frac{48 \bound}{\epsilon}\right)^{\pdim}\right) \right)^{\frac{1}{1+\frac 1 d}}\\
+		\iff m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{24(\pdim+1)}{\delta } + \pdim \log \frac{48 \bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}
+	\end{gather*}
+	This rate is conditioned to the fact that $m$ is such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$. But we know it holds as soon as $m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \log \left(4\right) \right)^{\frac{1}{1+\frac 1 d}}$, which is trivially implied by the obtained bound.
+
+\end{proof}
+\note{}{use the other bound onpacking, by pollard, cited in haussler}
+
 
 
 
@@ -313,27 +396,27 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 		Assume the hypothesis of \ref{thm_infi_union_bound}.
 		Let furthermore be $\epsilon>0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{m}{}$, two multisets of size $m$ independently sampled from the same distribution.\\
 		  
-		Then for all $m \geq m_{\epsilon/2}$
+		Then for all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$
 		\begin{equation*}
-			\PP{m}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon} \leq 2\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/2 }
+			\PP{m}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq 2\PP{m}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }
 		\end{equation*}
 	\end{lemma}
 \end{tcolorbox}
 
 
 \begin{proof}
-	Take $m \geq m_{\epsilon/2}$. Then let be $\mathcal{S}_1$ sampled such that $\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon$. This obviously happens with probability $\PP{m}{\exists \query \in \queryset, \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon }$.
+	Take $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$. Then let $\mathcal{S}_1$ be sampled such that $\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon$. This obviously happens with probability $\PP{m}{\exists \threequery \in \threeqset, \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon }$.
 
-	For such an $f$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq \epsilon/2$. Because $m \geq m_{\epsilon/2}$, we know this happens with probability greater than $1/2$, and we thus have
+	For such an $f$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2$. Because $\boundrate(\epsilon, m) \leq 1/2$, we know this happens with probability greater than $1-1/2 = 1/2$, and we thus have
 	\begin{align*}
-		&\PP{m}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon}
+		&\PP{m}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon}
 		\frac 1 2 \\
-		\leq\ &\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon \wedge \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq \epsilon/2 } \\
-		\leq\ &\PP{m}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/2 }
+		\leq\ &\PP{m}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon \wedge \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2 } \\
+		\leq\ &\PP{m}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }
 	\end{align*}
 	where we lastly used the triangular inequality 
 	\begin{equation*}
-		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} - \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\meanempdistr{\query}} \leq   \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}}
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} - \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq   \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}
 	\end{equation*} 
 \end{proof}
 
@@ -345,22 +428,22 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 
 \begin{tcolorbox}
     \begin{definition}[Covering and Packing]
-        Let be $(\queryset, d)$ a metric space. 
+        Let be $(\threeqset, d)$ a metric space. 
         \begin{itemize}
-            \item For any $\epsilon> 0$, a subset $\queryset^* \subseteq \queryset$ is said to be $\epsilon$-separated if for all distinct $\query, \query' \in \queryset^*$, $d(\query, \query') > \epsilon$.
-            \item The $\epsilon$-packing number on $(\queryset, d)$, denoted by $\packing(\epsilon, \queryset, d)$, is then defined as cardinality of the largest $\epsilon$-separated subset $\queryset^*$ of $\queryset$.
+            \item For any $\epsilon> 0$, a subset $\threeqset' \subseteq \threeqset$ is said to be $\epsilon$-separated if for all distinct $\threequery'_1, \threequery'_2 \in \threeqset'$, $d(\threequery'_1, \threequery'_2) > \epsilon$.
+            \item The $\epsilon$-packing number on $(\threeqset, d)$, denoted by $\packing(\epsilon, \threeqset, d)$, is then defined as cardinality of the largest $\epsilon$-separated subset $\threeqset'$ of $\threeqset$.
         \end{itemize}
-        Intuitively, the $\epsilon$-packing number is the maximal number of balls of radius $\epsilon/2$ that can fit into $\queryset$ without intersecting.
+        Intuitively, the $\epsilon$-packing number is the maximal number of balls of radius $\epsilon/2$ that can fit into $\threeqset$ without intersecting.
         \begin{itemize}
-            \item For any $\epsilon> 0$, a subset $\queryset^*$ of $\queryset$ is said to be an $\epsilon$-cover of $\queryset$ if for all $\query \in \queryset$, it exists $\query^* \in \queryset^*$ with $d(\query, \query') \leq \epsilon$.
-            \item The $\epsilon$-covering number on $(\queryset, d)$, denoted by $\covering(\epsilon, \queryset, d)$, is then defined as cardinality of the smallest $\epsilon$-cover of $\queryset$.
+            \item For any $\epsilon> 0$, a subset $\threeqset'$ of $\threeqset$ is said to be an $\epsilon$-cover of $\threeqset$ if for all $\threequery \in \threeqset$, it exists $\threequery' \in \threeqset'$ with $d(\threequery, \threequery') \leq \epsilon$.
+            \item The $\epsilon$-covering number on $(\threeqset, d)$, denoted by $\covering(\epsilon, \threeqset, d)$, is then defined as cardinality of the smallest $\epsilon$-cover of $\threeqset$.
         \end{itemize}
-        Intuitively, the $\epsilon$-covering number is the minimal number of balls of radius $\epsilon$ than can fill $\queryset$, with possible overlaps.
+        Intuitively, the $\epsilon$-covering number is the minimal number of balls of radius $\epsilon$ than can fill $\threeqset$, with possible overlaps.
     \end{definition}
 
     One can easily check that for all $\epsilon>0$
     \begin{equation}
-        \packing(2\epsilon, \queryset, d) \leq \covering(\epsilon, \queryset, d) \leq \packing(\epsilon, \queryset, d)
+        \packing(2\epsilon, \threeqset, d) \leq \covering(\epsilon, \threeqset, d) \leq \packing(\epsilon, \threeqset, d)
     \end{equation}
 \end{tcolorbox}
 
@@ -372,11 +455,11 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
     \begin{theorem}[From \cite{haussler1995spherepacking}]
         \label{thm_pack}
         For any set $\mathcal{X}$, any probability distribution $\mu$ on $\mathcal{X}$, any
-        set $\queryset \subseteq [0,\bound]^{\mathcal{X}}$ of $\mu$-measurable positive functions on $\mathcal{X}$ bounded by some real $\bound$, and any $\epsilon>0$, one have
+        set $\threeqset \subseteq [0,\bound]^{\mathcal{X}}$ of $\mu$-measurable positive functions on $\mathcal{X}$ bounded by some real $\bound$, and any $\epsilon>0$, one have
         \begin{equation*}
-            \packing(\epsilon, \queryset, \dlone{\mu}{}{}) \le e(\pdim+1) \left(\frac{2e \bound}{\epsilon}\right)^\pdim
+            \packing(\epsilon, \threeqset, \dlone{\mu}{}{}) \le e(d'_{\threeqset}+1) \left(\frac{2e \bound}{\epsilon}\right)^{d'_{\threeqset}}
         \end{equation*}
-        where $\pdim=\operatorname{pdim}\queryset$ is the pseudo-dimension of $\queryset$.
+        where $d'_{\threeqset} =\operatorname{pdim}\threeqset$ is the pseudo-dimension of $\threeqset$.
     \end{theorem}
 \end{tcolorbox}
 
@@ -392,7 +475,7 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 		Let be $\epsilon >0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two multisets of size $m$ independently sampled from the same distribution. We denote their multiset union by $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \in \binom{\mathcal{X}}{2m}$. Then
 		
 		\begin{equation*}
-			\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 }
+			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \leq \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
 		\end{equation*}
 	\end{lemma}
 \end{tcolorbox}
@@ -400,32 +483,32 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 
 
 \begin{proof}[Draft of Proof]
-	Let be $\mathcal{S}$ sampled such that $\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon$. 
+	Let be $\mathcal{S}$ sampled such that $\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon$. 
 	
-	Let then be taken $\mathcal{F^*_\mathcal{S}}$, a minimal $\epsilon/4$-cover of $\queryset$ for the $\dlone{\empdistr{\mathcal{S}}{}}{}{}$ topology, then $|\mathcal{F^*_\mathcal{S}}| = \covering(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}$. We thus know it exists $f^* \in \mathcal{F^*_\mathcal{S}}$ such that $\dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*} \leq \epsilon/4$.
+	Let then be taken $\threeqset'_{\mathcal{S}}$, a minimal $\epsilon/4$-cover of $\threeqset$ for the $\dlone{\empdistr{\mathcal{S}}{}}{}{}$ topology, then $|\threeqset'_{\mathcal{S}}| = \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{})$. We thus know it exists $\threequery' \in \threeqset'_{\mathcal{S}}$ such that $\dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} \leq \epsilon/4$.
 
 
 	Then triangular inequalities yields that
 	\begin{align*}
-		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} &\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_1}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\empdistr{\mathcal{S}_2}{\query^*}}  \\
-		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}}  + \empdistr{\mathcal{S}_1}{\lvert \query-\query^*\rvert} + \empdistr{\mathcal{S}_2}{\lvert\query-\query^*\rvert}\\
-		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} + 2 \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*}\\
-		\iff \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query^*}}{\empdistr{\mathcal{S}_2}{\query^*}} &\geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} - 2  \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*} > \epsilon/2 
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} &\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} + \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_1}{\threequery'}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery'}}  \\
+		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}}  + \empdistr{\mathcal{S}_1}{\lvert \threequery-\threequery'\rvert} + \empdistr{\mathcal{S}_2}{\lvert\threequery-\threequery'\rvert}\\
+		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} + 2 \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'}\\
+		\iff \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} &\geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} - 2  \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} > \epsilon/2 
 	\end{align*}
 	Therefore
 	\begin{equation*}
-		\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon} \leq \PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4}
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \leq \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4}
 	\end{equation*}
 	By the law of total expectation, we obtain
 	\begin{align*}
-		\PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4}
-		&=\EE{}{ \1 \{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 \} }\\
-		&=\EE{}{ \PP{}{\exists \query \in \mathcal{F^*_\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}}  }\\
-		&=\EE{}{ \PP{}{\bigcup_{\query \in \mathcal{F^*_\mathcal{S}}} \{ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 \mid \mathcal{F^*_\mathcal{S}}\} }  }\\		
-        &\overset{?}{\leq} \sup_{\mathcal{F^*_\mathcal{S}}} |\mathcal{F^*_\mathcal{S}}| \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 }\\
-		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/4, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/4 }
+		\PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4}
+		&=\EE{}{ \1 \{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \} }\\
+		&=\EE{}{ \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \mid \threeqset'_{\mathcal{S}}}  }\\
+		&=\EE{}{ \PP{}{\bigcup_{\threequery \in \threeqset'_{\mathcal{S}}} \{ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \mid \threeqset'_{\mathcal{S}}\} }  }\\		
+        &\overset{?}{\leq} \sup_{\threeqset'_{\mathcal{S}}} |\threeqset'_{\mathcal{S}}| \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }\\
+		&= \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } N(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
 	\end{align*}
-$\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists of bounding the union probability of random event other a random set. Since we can bound uniformly both, event probability, and set cardinality, it could seem intuitive this random union bound hold. However, the conditioning by $\mathcal{F^*_\mathcal{S}}$ makes this bound non trivial and require further assumptions.
+$\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists of bounding the union probability of random event other a random set. Since we can bound uniformly both, event probability, and set cardinality, it could seem intuitive this random union bound hold. However, the conditioning by $\threeqset'_{\mathcal{S}}$ makes this bound non trivial and require further assumptions.
 
 \end{proof}
 
@@ -434,34 +517,35 @@ From this we are now able to prove Theorem \ref{thm_infi_union_bound}.
 \begin{proof}
 	Let be $\epsilon>0$ and take $m \geq m_{\epsilon/2}$. Combining Lemmas \ref{lem_symm} and \ref{lem_infi_union_bound} gives
 	\begin{align*}
-		\PP{}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon} 
-		&\leq 2\PP{}{\exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/2 }\\
-		&\leq 2 \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\query \in \queryset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/8 }
+		\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
+		&\leq 2\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }\\
+		&\leq 2 \sup_{\mathcal{S} \in \binom{\mathcal{X}}{2m} } \covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 }
 	\end{align*}
 
 In order to bound the last term, first consider applying the union bound
 	\begin{align*}
-		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_2}{\query}} > \epsilon/8 } 
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} + \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}> \epsilon/8 }\\
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}> \epsilon/16 }\\
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\query}}{\empdistr{\mathcal{S}_2}{\query}}> \epsilon/16 }\\
-		&\leq 2\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon/16 }\\
-		&\leq 2 \boundrate(\queryset, \epsilon/16, m)
+		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 } 
+		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} + \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/8 }\\
+		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/16 }\\
+		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/16 }\\
+		&\leq 2\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 }\\
+		&\leq 2 \boundrate(\threeqset, \epsilon/16, m)
 	\end{align*}
 Second, we know from Theorem \ref{thm_pack}
 \begin{align*}
-	\covering(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
-	\leq \packing(\epsilon/8, \queryset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
+	\covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
+	\leq \packing(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{})
 	\leq e(\pdim+1) \left(\frac{16e \bound}{\epsilon}\right)^\pdim
 \end{align*}
 
 The two precedent bound does not depend on $\mathcal{S}$ and $f$, and therefore 
 \begin{align*}
-	\PP{}{ \exists \query \in \queryset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\meanempdistr{\query}} > \epsilon} 
-	&\leq 4e(\pdim+1) \left(\frac{16e \bound}{\epsilon}\right)^\pdim \boundrate(\queryset, \epsilon/16, m)\\
-	&\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^\pdim \boundrate(\queryset, \epsilon/16, m)\\
+	\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
+	&\leq 4e(\pdim+1) \left(\frac{16e \bound}{\epsilon}\right)^\pdim \boundrate(\epsilon/16, m)\\
+	&\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^\pdim \boundrate(\epsilon/16, m)\\
 \end{align*}
 which is the desired result.
+
 \end{proof}
 
 
@@ -504,4 +588,135 @@ which is the desired result.
         &\le \frac{\lvert \empdistr{\mathcal{S}_1}{\query-\query^*}\rvert}{\nu} + \frac{\lvert \empdistr{\mathcal{S}_2}{\query-\query^*}\rvert}{\nu} \\
         &\le \frac{2}{\nu}  \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*}
     \end{align*}
+\end{tcolorbox}
+
+
+
+
+
+
+\begin{tcolorbox}
+	\begin{corollary}
+		\label{thm_anyboundrate}
+		Define the following space of functions defined on $\mathcal{X}$
+		\begin{equation}
+			\twoqset_m := \frac{m\threeqset}{\opekernel{m}\loss{\threeqset}} = \left\{\frac{m\threequery}{\opekernel{m}\loss{\threequery}} \mid \threequery \in \threeqset\right\}
+		\end{equation}
+		We denote its pseudo-dimension $\pdim:=\operatorname{pdim}\twoqset_m$, and assume its functions are bounded by a constant $\bound$.\\
+
+		Then for all $\epsilon>0$ and all $m \geq m_{\epsilon}$
+		\begin{equation}
+			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\threequery}}{\loss{\threequery}}>\epsilon \loss{\threequery}} 
+			\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim} \boundrate(\threeqset', \epsilon, m)
+		\end{equation}
+	\end{corollary}
+\end{tcolorbox}
+	
+
+
+\begin{proof}
+	Observe first that for any function $f$
+	\begin{equation*}
+		\estloss{\mathcal{S}}{f} = \empdistr{\mathcal{S}}{ \frac{m\threequery}{\opekernel{m}} }
+	\end{equation*}
+	Then by Theorem \ref{thm_chebfixedtheta}, for all $\epsilon >0$ , $m\in \NN$, and $\twoquery \in \twoqset_m$
+	\begin{align*}
+		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}}>\epsilon} 
+		&= \PP{}{\dnude{}{\estloss{\mathcal{S}}{\frac{\twoquery\opekernel{m}}{m}}}{\loss{\frac{\twoquery\opekernel{m}}{m}}}>\epsilon} \\
+		&\leq  \boundrate(\frac{\twoqset_m\opekernel{m}}{m}, \epsilon, m) = \boundrate(\threeqset', \epsilon, m)
+   \end{align*}
+   Moreover, we know that $\boundrate$ and $m_\epsilon$ are such that
+   \begin{equation*}
+		m \geq m_{\epsilon} \implies \boundrate(\threeqset, \epsilon, m) \leq 1/2
+   \end{equation*}
+   
+   Therefore $\boundrate$ satisfies the two hypothesis of Theorem \ref{thm_infi_union_bound}, and thus for all $\epsilon >0$ and $m \geq m_\epsilon$
+   \begin{align*}
+	\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\threequery}}{\loss{\threequery}}>\epsilon \loss{\threequery}} 
+	&= \PP{}{\exists \twoquery \in \twoqset_m,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} > \epsilon}\\
+	&\leq 12(\pdim+1) \left(\frac{48 \bound}{\epsilon}\right)^{\pdim} \boundrate(\threeqset', \epsilon, m)
+   \end{align*}
+\end{proof}
+
+\note{}{Conclude!}
+
+
+
+
+
+
+\begin{tcolorbox}[colback=red!75, title=Useless?]
+	
+	We can thus define for any set of function $\qset$, any $m\in \NN$, and $\epsilon>0$, the Chebyshov concentration bound
+	\begin{equation*}
+		\boundrate_{\textrm{Cheb}}(\qset, \epsilon, m) := \frac{1}{\epsilon^2} \sup_{\query \in \qset} \Var{}{\estloss{\mathcal{S}}{\query}}
+	\end{equation*}
+	
+	
+	\begin{tcolorbox}
+		\begin{theorem}[Chebyshov bound for fixed query]
+			Let be $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
+			Define $\qset':=\frac{\qset}{\loss{\qset}}=\left\{\frac{\query}{\loss{\query}}\mid \query \in \qset\right\}$ and $\lipschitz_{\qset'}$ its Lipschitz constant bound.\\
+	
+			Then for all $\epsilon, \delta >0$, all $\query \in \qset$, and $n$ sufficiently large
+			\begin{equation}
+				m \gtrsim \left(\frac{\lipschitz^2_{\qset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}} \implies \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\qset$ }
+			\end{equation}
+			where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
+		\end{theorem}
+	\end{tcolorbox}
+	
+	
+	\begin{proof}
+		Applying Bienaym\'e-Chebyshov inequality on the probability of $\mathcal{S}$ being a coreset yields 
+		\begin{align*}
+			 \PP{}{\dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
+			 &\leq \frac{1}{\varepsilon ^{2}}\Var{}{\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} }
+			 = \frac{1}{\varepsilon ^{2}}\Var{}{\estloss{\mathcal{S}}{\frac{\query}{\loss{\query}}} }\\
+			 &\leq \boundrate_{\textrm{Cheb}}(\qset', \epsilon, m)\\
+			 &=\frac {1} {\epsilon^2}\left(\lipschitz^2_{\qset'} \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)
+		\end{align*}
+		Hence, a sufficient condition for $\mathcal{S} \sim \mathcal{DPP}(\opekernel{m})$ to satisfy $1-\delta$-surely the $\epsilon$-coreset property \ref{def_coresetprop} is to have
+		\begin{gather*}
+			\boundrate_{\textrm{Cheb}}(\qset', \epsilon, m) \leq \delta\\
+			\iff\\
+			m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2_{\qset'}}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2_{\qset'}} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+		\end{gather*} 
+		Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
+		\begin{equation*}
+			m \gtrsim \left(\frac{\lipschitz^2_{\qset'}}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
+		\end{equation*}
+	\end{proof}
+
+
+
+	
+We apply Theorem \ref{thm_breuer} for $\estloss{\mathcal{S}}{\query} = X_{\nicefrac{\query}{\opekernel{m}}}$. We define the Breuer concentration bound $\boundrate_{\textrm{Breuer}}$ such that
+\begin{align*}
+	\PP{}{ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}  > \epsilon} 
+	&\leq 2 \exp \left(
+	\begin{cases}
+		\frac{-\epsilon^2}{4 A \Var{}{\estloss{\mathcal{S}}{\query} }}
+		& \text { if } \epsilon<\epsilon_{\query, m}\\
+		\frac{-\epsilon}{6\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}} 
+		& \text { otherwise }
+	\end{cases}
+	\right)\\
+	&\leq 2 \exp \left(
+		\begin{cases}
+			\left(-4 A \boundrate_{\textrm{Cheb}}(\qset, \epsilon, m)\right)^{-1}
+			& \text { if } \epsilon<\epsilon_{\query, m}\\
+			\left(-\epsilon^{-1} 6\sup_{\query}\|\nicefrac{\query}{\opekernel{m}}\|_{\infty}\right)^{-1}
+			& \text { otherwise }
+		\end{cases}
+		\right)\\
+	& := \boundrate_{\textrm{Breuer}}(\qset, \epsilon,m)
+\end{align*}
+where we lastly used the definition \ref{def_boundratecheb} of $\boundrate_{\textrm{Cheb}}$, and where $\epsilon_{\query, m} := \frac{2 A \Var{}{\estloss{\mathcal{S}}{\query} }}{3\|\nicefrac{\query}{\opekernel{m}}  \|_{\infty}}$.
+\end{tcolorbox}
+
+
+
+\begin{tcolorbox}[colback=red!25, title=Useless?]
+	For all $\epsilon$, we note $m_{\textrm{Cheb}}(\epsilon, \qset') := c_{1/2} \left(\frac{\lipschitz^2_{\qset'}}{\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}$
 \end{tcolorbox}
