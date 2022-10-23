@@ -69,7 +69,7 @@ $$
 An important consequence of the coreset property is the following
 
 \begin{theorem}
-    Let be $\mathcal{S}$, an $\epsilon$-coreset for $\qset$. Define $\query^*:=\min_{\query \in \qset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \qset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
+    Let $\mathcal{S}$ be an $\epsilon$-coreset for $\qset$. Define $\query^*:=\min_{\query \in \qset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \qset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
 
     \begin{equation*}
         \loss{\query^*} \le {L}( \hat\query^*)\leq (1+ 3 \epsilon)\loss{\query^*}
@@ -135,21 +135,56 @@ On another hand, the use of coresets leverage one of the three issues that occur
 
 
 
-
+    
 
 \section{State-of-the-art results on coresets}
+The existence of coresets is trivial, the original data set $\mathcal{X}$ itself  being a coreset if all its elements weighted by 1. The key question is the existence of small coresets where the coreset size is sublinear, if not independent, in the number of data points $n$, while at the same time having slow rate with respect to other parameters, in particular $d$ the dimension of data, $\epsilon$ the desired error, and in the case where the coreset is obtained probabilistically, $\delta$ the probability bound of not being a coreset.
+\note{}{deterministic approches?}
+
+\subsection{Importance multinomial sampling}
+
+In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a set $\mathcal{S} \subseteq \binom{\mathcal{X}}{m}$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. categorical sampling with $\forall i \in \intint{1}{n},\ \PP{}{x_i} = q(x_i)$.
+
+By the importance sampling trick, an unbiased estimator of $\loss{\query}$ is then
+\begin{equation*}
+	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}
+\end{equation*}
+And its variance is
+\begin{equation}
+	\Var{\textrm{iid}}{\query} :=\frac{1}{m} \Var{}{\frac {\query(x)} {q(x)}}
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
+\end{equation}
+where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
+
+
+Now observe that for any query $\query \in \qset$, the variance is reduced to 0 by
+\begin{equation*}
+    q_{\query} :=\frac{ \query}{\loss{\query}} = x \mapsto \frac{ \query(x)}{\loss{\query}}
+\end{equation*}
+Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset!
+
+However, let pursue on this idea, see if we can already try to solve first limitation and see later what can be done for the second one.
+
+\subsection{Sensitivity sampling}
+
+
+
+Intuitively, in order to build a coreset of small size, we want to only select data points that are relevant. This means that for a given $x \in \mathcal{X}$, we want to make its probability to be sampled as small as possible, unless it plays a relevant role in the evaluation of $\loss{\query}$ for some $\query$, which translates to $\frac{\query}{\loss{\query}}$ being high.
+
+The idea of \cite{langberg2010_universal_approximator} is thus to take for every $x$, the sampling probability $q_\query$ in the worst case $\query$ for which $x$ is relevant in the evaluation of $\loss{\query}$. Formally, they define the following notion of sensitivity.
+
 \begin{definition}[Sensitivity]
-	The sensitivity $\sigma_i$ of a data point $x_{i}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are
-	$$
-	\begin{cases}
-		\sigma_{i}= \sup _{\query \in \qset} \frac{{\query}\left(x_{i}\right)}{L(\query)} \quad \in[0,1]\\
-		\mathfrak{S}=\sum_{i=1}^{n} \sigma_{i}
-	\end{cases}
-	$$
+	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are defined as
+	\begin{align*}
+        \begin{cases}
+            \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \quad \in[0,1]\\
+            \mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x)
+        \end{cases}
+    \end{align*}
 \end{definition} 
 
 \subsection{Main proof}
-Let be $s$ an upper bound on sensitivity $\sigma$ i.e. $\forall i, s_i \geq \sigma_i$, and $S := \sum_{i=1}^n s_i$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\query(x_i) :=  \frac{f_{\query(x_i)}}{s_i L(\query)}  \, \in[0,1]$
+Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall x \in \mathcal{X}, s(x) \geq \sigma(x)$, and $S := \sum_{x\in \mathcal{X}} s(x)$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\query(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$
 
 By Hoeffding's inequality, we thus have for any $\query \in \qset$ and $\epsilon^{\prime}>0$
 \begin{equation}

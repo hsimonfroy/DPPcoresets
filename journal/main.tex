@@ -8,6 +8,7 @@
 % ready for submission
 % \usepackage{style}
 \usepackage[nonatbib]{style_nips}
+\usepackage[fontsize=11pt, parindent=0pt]{fontsize}
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
 % [preprint] option:
@@ -39,11 +40,12 @@
 \usepackage{amsthm} % \theoremstyle
 \usepackage{amssymb} % \nsucc
 \usepackage{stmaryrd} % \llbracket
-\SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
+    \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
 \usepackage{tcolorbox} % \begin{tcolorbox}[colframe=red!25,colback=blue!10,title=blue!60!black,title= More Test]\end{tcolorbox} red!25!black means 25% red, 75%black
 \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
 \usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
-\addbibresource{biblio.bib}
+    \addbibresource{biblio.bib}
+
 
 % ###################
 % general commands
@@ -67,7 +69,7 @@
 
 % ##################
 % amsthm package settings
-\renewcommand{\baselinestretch}{1.1} 
+% \renewcommand{\baselinestretch}{1.1} 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
@@ -105,9 +107,8 @@
 
 
 
-
-\title{Journal}
 \begin{document}
+    \title{Journal}
 
 % \maketitle
 \begin{titlepage}
@@ -178,7 +179,7 @@
 
 
 \tableofcontents
-
+\onehalfspacing
 \input{parts/chapter1.tex}
 \input{parts/chapter2.tex}
 \input{parts/chapter3.tex}
