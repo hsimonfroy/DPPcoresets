@@ -1,5 +1,7 @@
 \chapter{Determinantal Point Processes}
 
+\note{inline}{previous results for iid framework}
+
 \section{Some intuition}
 
 A Determinantal Point Processes (DPP) is a random sampling over subsets of a given ground set. Noticeably, its distribution is entirely encoded by a given positive kernel, which can be tuned to a range of specific contexts. In a sense, DPPs can be said to be the kernel machine of point processes, as they allow both tractability and flexibility. 
@@ -85,7 +87,7 @@ of $\mathcal{X}$. Then the kernel $K$ measures similarity using dot products bet
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=0.8\linewidth]{pics/geometric_interpret.png}
-    \caption{A geometric interpretation: each vector corresponds to an element of $\mathcal{X}$. (a) The  probability of inclusion of a subset $A$ is the square of the volume spanned by its associated feature vectors. (b) As the magnitude of an item's feature vector increases, so do the probabilities of sets containing that item. (c) As the similarity between two items increases, the probabilities of sets containing both of them decrease.}
+    \caption{from \cite{kulesza2012_dpp_for_ml}. A geometric interpretation of a DPP relates each column of $V$ to an element of $\mathcal{X}$. (a) The  probability of inclusion of a subset $A$ is the square of the volume spanned by its associated feature vectors. (b) As the magnitude of an item's feature vector increases, so do the probabilities of sets containing that item. (c) As the similarity between two items increases, the probabilities of sets containing both of them decrease.}
     \label{fig_geometric_interpret}
 \end{figure}
 

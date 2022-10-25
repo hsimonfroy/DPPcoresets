@@ -8,7 +8,6 @@
 % ready for submission
 % \usepackage{style}
 \usepackage[nonatbib]{style_nips}
-\usepackage[fontsize=11pt, parindent=0pt]{fontsize}
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
 % [preprint] option:
@@ -29,8 +28,9 @@
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
-% title page
-\usepackage{setspace} % spacing
+% formatting
+% \usepackage[fontsize=11pt, parindent=0pt]{fontsize} % or change in style.sty
+\usepackage{setspace} % spacing, \setstretch{}
 \usepackage{longtable} % longtables
 % writing
 \usepackage{amsmath} % most maths
@@ -69,7 +69,6 @@
 
 % ##################
 % amsthm package settings
-% \renewcommand{\baselinestretch}{1.1} 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
@@ -179,7 +178,8 @@
 
 
 \tableofcontents
-\onehalfspacing
+\setstretch{1.2}
+
 \input{parts/chapter1.tex}
 \input{parts/chapter2.tex}
 \input{parts/chapter3.tex}

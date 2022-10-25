@@ -1,5 +1,35 @@
-\chapter{Improving}
-\section{Tremblay}
+\chapter{Correlated importance sampling}
+\section{A first result with DPPs}
+
+\cite{tremblay2018dppcoreset}
+
+\begin{tcolorbox}
+	\begin{theorem}
+		Let $(K_m)_{m\in \NN}$ be a sequence of projective DPP kernel and let sample $\mathcal{S} \sim \mathcal{DPP}(K_m)$. Assume that the query space $\qset$ is parametrized by some $\theta \in \Theta$, and that all Lipschitz constant with respect to $\theta$ of $\query_\theta \in \qset$ are bounded by some $\lipschitz>0$.\\
+
+		If the minimal sensitivity $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in [0,1]$ 
+		\begin{equation*}
+            m \geq \frac{32}{\epsilon^{2}}\left(\max_{x\in \mathcal{X}}\frac{\sigma(x)}{K_m(x,x)}\right) \log \frac{4\eta}{\delta}
+			\implies 
+			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\qset$}
+		\end{equation*}
+		where $\eta$ is the minimal number of balls of radius $\frac{\epsilon \inf_{f}\loss{f}}{6 n \lipschitz}$ necessary to cover $\Theta$.
+	\end{theorem}
+\end{tcolorbox}
+Note that typically $\log \eta = \OO\left(\pdim \log \frac{n}{\epsilon \inf_{f}\loss{f}}\right)$ with $\pdim = \operatorname{pdim}\qset$, and therefore is dependant on $n$ and $\epsilon$.
+
+
+The obtained bound in $\OO(\epsilon^{-2}\log \delta^{-1})$ for DPPs does not improve the sample complexity bound for coreset in the i.i.d. framework. The reason is two kind. 
+
+\begin{itemize}
+	\item First, the concentration for fixed query is dependant of known concentration results for strongly Rayleigh measures from \cite{pemantle2011rayleighconcentration}, and especially for DPPs. 
+
+	However, one important fact is that it doesn't rely on more advanced concentration for DPPs from \cite{breuer2013nevai} that involves the variance of the estimator. Since recent results from \cite{bardenet2020mcdpp}, it is known DPPs can improve variance rate, and we hope this result to be leveraged into an improved bound on coreset for fixed query.
+	\item Second, the generalization to all queries argument that is made requires the same rate in $\OO(\epsilon^{-2}\log \delta^{-1})$. If not tackled, this could ruin the effort finding improved bound for fixed queries. An improving way would be to extend classical VC theory arguments in a correlated context.
+\end{itemize}
+
+
+
 
 
 \section{Variance arguments}
@@ -7,10 +37,10 @@
 \subsubsection{Multinomial case}
 
 
-In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\PP(x_i) = q(x_i)$.
+In the multinomial case, we have $\mathcal S \sim \mathcal M(m, q)$ i.e. $m$ i.i.d. categorical sampling with $\forall x \in \mathcal{X},\ \PP{}{x} = q(x)$.
 Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\estloss{\textrm{iid}}{\query} := \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{m q(x_i)}
+	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}
 \end{equation*}
 Its variance is
 \begin{equation}
@@ -50,7 +80,7 @@ Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2}
 	\Var{\textrm{DPP}}{\query}=\sum_{i}\left(\frac{1}{\pi_{i}}-1\right) \query(x_{i})^{2}-\sum_{i \neq j} \frac{K_{ij}^{2}}{\pi_{i} \pi_{j}} \query(x_{i}) \query(x_{j}) =  \query\T (\Pi^{-1}  - \tilde{K}) \query 
 \end{equation}
 
-For a Bernoulli process where $\PP(x_i \in \mathcal S) = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{}$.
+For a Bernoulli process where $\PP{}{x_i \in \mathcal S} = \pi_i$ independently, the DPP kernel reduces to its diagonal i.e. $K = \Pi$ then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{}$.
 
 
 \subsubsection{m-DPP case}
@@ -59,16 +89,6 @@ In the m-DPP case, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and th
 \begin{equation*}
 	\estloss{\textrm{mDPP}}{\query} = \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{b_i}
 \end{equation*}
-
-Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
-$$
-\tilde L({\query}) =\frac{1}{m}\EE{}{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
-$$
-Then an unbiased estimator of $\tilde L$ is
-\begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}({\query}) = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
-\end{equation*}
-We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
 
 Returning to the estimation of $L$, we are interested in the variance of $\hat L_{\textrm{mDPP}}$ which is
 \begin{equation}
@@ -89,7 +109,7 @@ In order to benefit from some variance reduction, one should want $\forall i\neq
 
 Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
 $$
-\tilde L{\query} =\frac{1}{m}\EE{}{x \sim \textrm{mDPP}}[\query(x)]=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
+\tilde L{\query} =\frac{1}{m}\EE{x \sim \textrm{mDPP}}{\query(x)}=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
 $$
 Then an unbiased estimator of $\tilde L$ is
 \begin{equation*}

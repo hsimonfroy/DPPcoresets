@@ -23,23 +23,32 @@ is to formulate learning problems as optimization problems.
 
 Let $\mathcal{X}=\begin{Bmatrix}
 x_{i} \mid i\in \intint{1}{n}
-\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\qset$ be a space of query functions defined on $\mathcal{X}$, and $\query$ an element of $\qset$. Classical learning problem aims to find a solution $\query ^*$ in $\qset$ that minimizes a cost function $\loss{}$ over the given data $\mathcal{X}$. In this work, we focus on cost functions that are positive and additively decomposable, i.e. we consider cost functions of the form
+\end{Bmatrix}$ be a multiset (possibly with repetitions) of $n$ data points. Let $\qset$ be a space of functions called queries defined on $\mathcal{X}$, and $\query$ an element of $\qset$. Classical learning problem aims to find a solution $\query ^*$ in $\qset$ that minimizes a cost function $\loss{}$ over the given data $\mathcal{X}$. In this work, we focus on cost functions that are positive and additively decomposable, i.e. we consider cost functions of the form
 \begin{equation*}
-\loss{\query}:=\sum_{x \in \mathcal{X}} \query (x)
+\loss{\query}:=\sum_{x \in \mathcal{X}} \query (x),
 \end{equation*}
 where the queries $\query \in \qset \subseteq \RR_+^{\mathcal{X}}$ are positive functions defined on $\mathcal{X}$.
 
-A large amount of machine learning problems falls into that framework, including support vector machines, logistic regression, linear regression and k-means clustering. For example, the goal of the euclidean $k$-means clustering is to find a set of $k$ cluster centers in $\RR^d$ minimizing the quantization error
+A large amount of machine learning problems falls into that framework, including support vector machines, logistic regression, linear regression and k-means clustering. 
+
+For example, the goal of the euclidean $k$-means clustering is to find a set of $k$ cluster centers in $\RR^d$ minimizing the quantization error
 \begin{equation*}
-\loss{\query} = \sum_{x \in \mathcal{X}} \min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2
+\loss{\query} = \sum_{x \in \mathcal{X}} \min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2.
 \end{equation*}
-In this case, $\query$ is the squared distance to the nearest cluster center $q$ in a set of cluster centers $\mathcal{C}$. Formally, $\query  \in \qset = \left\{\min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \forall \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}  $, where $\binom{\mathcal{X}}{k}$ denotes ``from $\mathcal{X}$ choose $k$'', the set of all subsets of $\mathcal{X}$ of size $k$.
+In this case, $\query$ is the squared distance to the nearest cluster center $q$ in a set of cluster centers $\mathcal{C}$. Formally, 
+$\query  \in \qset = \left\{\min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \forall \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}$
+where $\binom{\mathcal{X}}{k}$ denotes ``from $\mathcal{X}$ choose $k$'', the set of all subsets of $\mathcal{X}$ of size $k$.
+
+\begin{equation*}
+    \loss{\query} = \sum_{x\in \mathcal{X}} (a\T x -b)^2
+\end{equation*}
+$\qset = \left\{(a\T x + b)^2 \mid a \in \RR^d, b \in \RR\right\}$
 
 In many machine learning applications, the induced optimization problem can be hard to solve. Given a learning task, if an algorithm is too slow on large datasets, one can either speed up the algorithm or reduce the amount of data.
 The second alternative is theoretically guaranteed by the "coresets" idea.
 A coreset is a weighted subset of the original data with the assurance that, up to a controlled relative error, the task's estimated cost function on the coreset will match the cost calculated on the complete dataset for any learning parameter.
 
-An elegant outcome of such property is the ability to execute learning algorithms only on the coreset, assuring nearly-equal performance while significantly reducing the computational cost. There are other algorithms that generate coresets, some of which are more specialized and are designed for a particular purpose (such as k-means, k-medians, logistic regression, etc.). Additionally, keep in mind that there are results for the coreset in both the streaming and offline settings. Nevertheless, we will concentrate here on the offline setting.
+An elegant outcome of such property is the ability to execute learning algorithms only on the coreset, assuring nearly-equal performance while significantly reducing the computational cost. There are many algorithms that generate coresets, some of which are more specialized and are designed for a particular purpose (such as k-means, k-medians, logistic regression, etc.). Additionally, keep in mind that there are results for coresets in both the streaming and offline settings. We will focus here on the offline setting.
 
 
 \section{The coreset property}
@@ -49,48 +58,54 @@ set $\mathcal{X}$ by a weighted set $\mathcal{S}$ which satisfies the coreset pr
 
 Let $\mathcal{S}=\begin{Bmatrix}
 x_{i} \mid i\in \intint{1}{m}
-\end{Bmatrix}$ be a submultiset of $\mathcal{X}$. To each element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost based on the weighted submultiset $\mathcal{S}$ as
-$$
-\estloss{\mathcal{S}}{\query}:=\sum_{x \in \mathcal{S}} \omega\left(x\right) \query(x)
-$$
-\begin{definition}[Coreset]
-    \label{def_coresetprop}
-    Let $\epsilon \in {]}0,1{[}$ and $\query \in \qset$. We say $\mathcal{S}$ is an $\epsilon$-coreset for $\query$ if the estimated cost based on $\mathcal{S}$ is equal to the exact cost up to a relative error $\epsilon$. Formally
-    \begin{equation}
-        \label{eqn_querycoresetprop}
-        \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon 
-    \end{equation}
-    We say $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ if it is a $\epsilon$-coreset for any $\query \in \qset$. Formally
-    \begin{equation}
-        \label{eqn_qsetcoresetprop}
-        \forall \query \in \qset,\ \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon 
-    \end{equation}
-\end{definition}
+\end{Bmatrix}$ be a submultiset of $\mathcal{X}$, and to any element $x \in \mathcal{S}$, associate a weight $\omega\left(x\right) \in \mathbb{R}^{+}$. Define the estimated cost based on the weighted multiset $\mathcal{S}$ as
+\begin{equation*}
+    \estloss{\mathcal{S}}{\query}:=\sum_{x \in \mathcal{S}} \omega\left(x\right) \query(x).
+\end{equation*}
+\begin{tcolorbox}
+    
+    \begin{definition}[Coreset]
+        \label{def_coresetprop}
+        Let $\epsilon \in {]}0,1{[}$ and $\query \in \qset$. We say $\mathcal{S}$ is an $\epsilon$-coreset for $\query$ if the estimated cost based on $\mathcal{S}$ is equal to the exact cost up to a relative error $\epsilon$. Formally
+        \begin{equation}
+            \label{eqn_querycoresetprop}
+            \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon.
+        \end{equation}
+        We say $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ if it is a $\epsilon$-coreset for any $\query \in \qset$. Formally
+        \begin{equation}
+            \label{eqn_qsetcoresetprop}
+            \forall \query \in \qset,\ \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon.
+        \end{equation}
+    \end{definition}
+\end{tcolorbox}
+
 An important consequence of the coreset property is the following
 
-\begin{theorem}
-    Let $\mathcal{S}$ be an $\epsilon$-coreset for $\qset$. Define $\query^*:=\min_{\query \in \qset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \qset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
-
-    \begin{equation*}
-        \loss{\query^*} \le {L}( \hat\query^*)\leq (1+ 3 \epsilon)\loss{\query^*}
-    \end{equation*}
-    \label{thm_optcoreset}
-\end{theorem}
+\begin{tcolorbox}
+    \begin{theorem}
+        \label{thm_optcoreset}
+        Let $\mathcal{S}$ be an $\epsilon$-coreset for $\qset$. Define $\query^*:=\min_{\query \in \qset}\loss{\query}$ and $\hat \query^*:=\min_{\query \in \qset}\estloss{\mathcal{S}}{\query}$. Then $\loss{\hat\query^*} $ is an $(1+3\epsilon)$-approximation of $\loss{\query^*}$, i.e.
+    
+        \begin{equation*}
+            \loss{\query^*} \le {L}( \hat\query^*)\leq (1+ 3 \epsilon)\loss{\query^*}.
+        \end{equation*}
+    \end{theorem}
+\end{tcolorbox}
 \begin{proof}
-    If $\mathcal{S}$ is a $\epsilon$-coreset for $\qset$, we have from Equation \ref{eqn_qsetcoresetprop} that 
+    $\mathcal{S}$ being a $\epsilon$-coreset for $\qset$ yields Equation \ref{eqn_qsetcoresetprop}, which is equivalent to 
     \begin{equation*}
-        \forall \query \in \qset ,\ (1-\epsilon) \loss{\query} \le \estloss{\mathcal{S}}{\query} \le(1+\epsilon) \loss{\query}
+        \forall \query \in \qset ,\ (1-\epsilon) \loss{\query} \le \estloss{\mathcal{S}}{\query} \le(1+\epsilon) \loss{\query}.
     \end{equation*}
     In particular, this is true for $\query^*$ and $\hat \query^*$ thus
     \begin{equation}
-        (1-\epsilon) \loss{\query^*} \le(1-\epsilon) \loss{\hat\query^*} \le \estloss{\mathcal{S}}{\hat\query^*} \le \estloss{\mathcal{S}}{\query^*} \le(1+\epsilon) \loss{\query^*}
+        (1-\epsilon) \loss{\query^*} \le(1-\epsilon) \loss{\hat\query^*} \le \estloss{\mathcal{S}}{\hat\query^*} \le \estloss{\mathcal{S}}{\query^*} \le(1+\epsilon) \loss{\query^*},
     \end{equation}
     and moreover
     \begin{equation*}
-        \loss{\query^*} \le {L}( \hat\query^*) \le \frac{(1+\epsilon)}{(1-\epsilon) } \loss{\query^*} \leq (1+ 3 \epsilon)\loss{\query^*}
+        \loss{\query^*} \le {L}( \hat\query^*) \le \frac{(1+\epsilon)}{(1-\epsilon) } \loss{\query^*} \leq (1+ 3 \epsilon)\loss{\query^*}.
         \end{equation*}
 \end{proof}
-This key consequence allows to minimize on the estimated loss $\estloss{\mathcal{S}}{}$ and still guarantee a low error on the true loss, even when the size of $\mathcal{S}$ is small before $\mathcal{X}$ one. Therefore, it makes coreset very relevant in a machine learning context, and  inscribes them into a more general learning framework that is PAC learning.
+A key consequence of that theorem is that one can minimize on the estimated loss $\estloss{\mathcal{S}}{}$ and still guarantee a low error on the true loss, even when the size of $\mathcal{S}$ is small before the size of $\mathcal{X}$. Therefore, it makes coreset very relevant in a machine learning context, and  inscribes them into a more general learning framework that is PAC learning.
 
 \section{Coresets and PAC learning}
 \subsection{PAC learning}In computational learning theory, probably approximately correct (PAC) learning is a framework for mathematical analysis of machine learning. It was proposed in 1984 in \cite{valiant1984learnable}. The first idea is that a learning problem can be formulate into an expected risk minimization. In another words, by learning, one is interested in minimizing errors over a distribution of guesses it would have to make. To do so, the learner will receives samples and must select a prediction function based on them. The PAC framework states that the learner ability can be quantified by how probable (the "probably" part) the learner have a low generalization error (the "approximately correct" part) in some sense.
@@ -119,17 +134,17 @@ for the smallest $\delta$ as possible.
 
 But we know a sufficient condition to control this error, that's the coreset property! Indeed, suppose we sample a data set $\mathcal{S}$ such that $\mathcal{S}$ is an $\epsilon/3$-coreset for $\qset$ with probability at least $1-\delta$. Formally
 \begin{equation*}
-    \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta
+    \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta.
 \end{equation*}
 Then by Theorem \ref{thm_optcoreset} we have $1-\delta$-surely, i.e. with probability at least $1-\delta$, that
 \begin{equation*}
     \loss{\query^*} \leq \loss{\hat\query^*} \leq (1+ 3 \epsilon/3) \loss{\query^*} \iff
-    |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}
+    |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}.
 \end{equation*}
 
 We thus see that the PAC framework translates to approximating with high probability the evaluation of a function on a data subset, which is guaranteed by the coreset property. 
 
-On another hand, the use of coresets leverage one of the three issues that occur in PAC learning, that is to reduce the number of samples required to compute an optimal prediction function, and still controlling the error. If the time complexity for an optimization algorithm to optimize on $n$ data points is $O(a_n)$, and that it takes $O(b_m)$ time to sample an $\epsilon$-coreset which is of size $m \le n$, then we have interest in building coreset as soon as $O(a_n) \geq O(b_m) + O(a_m)$.
+On another hand, the use of coresets leverage one of the three issues that occur in PAC learning, that is to reduce the number of samples required to compute an optimal prediction function, and still controlling the error. If the time complexity for an optimization algorithm to optimize on $n$ data points is $\OO(a_n)$, and that it takes $\OO(b_m)$ time to sample an $\epsilon$-coreset which is of size $m \le n$, then we have interest in building coreset as soon as $\OO(a_n) \geq \OO(b_m) + \OO(a_m)$.
 
 
 
@@ -143,11 +158,11 @@ The existence of coresets is trivial, the original data set $\mathcal{X}$ itself
 
 \subsection{Importance multinomial sampling}
 
-In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a set $\mathcal{S} \subseteq \binom{\mathcal{X}}{m}$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. categorical sampling with $\forall i \in \intint{1}{n},\ \PP{}{x_i} = q(x_i)$.
+In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a set $\mathcal{S} \subseteq \binom{\mathcal{X}}{m}$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. categorical sampling with $\forall x \in \mathcal{X},\ \PP{}{x} = q(x)$.
 
 By the importance sampling trick, an unbiased estimator of $\loss{\query}$ is then
 \begin{equation*}
-	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}
+	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}.
 \end{equation*}
 And its variance is
 \begin{equation}
@@ -157,13 +172,13 @@ And its variance is
 where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
 
-Now observe that for any query $\query \in \qset$, the variance is reduced to 0 by
+Now observe that for any query $\query \in \qset$, the variance is reduced to 0 by taking
 \begin{equation*}
-    q_{\query} :=\frac{ \query}{\loss{\query}} = x \mapsto \frac{ \query(x)}{\loss{\query}}
+    q_{\query} :=\frac{ \query}{\loss{\query}} = x \mapsto \frac{ \query(x)}{\loss{\query}}.
 \end{equation*}
 Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset!
 
-However, let pursue on this idea, see if we can already try to solve first limitation and see later what can be done for the second one.
+However, let pursue on this idea, see if we can solve first limitation and see later what can be done for the second.
 
 \subsection{Sensitivity sampling}
 
@@ -171,37 +186,94 @@ However, let pursue on this idea, see if we can already try to solve first limit
 
 Intuitively, in order to build a coreset of small size, we want to only select data points that are relevant. This means that for a given $x \in \mathcal{X}$, we want to make its probability to be sampled as small as possible, unless it plays a relevant role in the evaluation of $\loss{\query}$ for some $\query$, which translates to $\frac{\query}{\loss{\query}}$ being high.
 
-The idea of \cite{langberg2010_universal_approximator} is thus to take for every $x$, the sampling probability $q_\query$ in the worst case $\query$ for which $x$ is relevant in the evaluation of $\loss{\query}$. Formally, they define the following notion of sensitivity.
+The idea of \cite{langberg2010_universal_approximator} is thus to take for every $x$, the sampling probability $q_\query$ in the worst case $\query$, i.e. for which $x$ is the most relevant in the evaluation of $\loss{\query}$. Formally, they define the following notion of sensitivity.
 
 \begin{definition}[Sensitivity]
-	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ and the total sensitivity $\mathfrak S$ of $\mathcal X$ are defined as
-	\begin{align*}
-        \begin{cases}
-            \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \quad \in[0,1]\\
-            \mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x)
-        \end{cases}
-    \end{align*}
+	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ with respect to $\qset$ is defined as and the total sensitivity $\mathfrak S$ of $\mathcal X$ are defined as
+    \begin{equation*}
+        \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \ \in[0,1].
+    \end{equation*}
+    and the total sensitivity with respect to $\qset$ as $\mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x) \ \in[1,n]$.
 \end{definition} 
 
-\subsection{Main proof}
-Let $s$ be an upper bound on sensitivity $\sigma$ i.e. $\forall x \in \mathcal{X}, s(x) \geq \sigma(x)$, and $S := \sum_{x\in \mathcal{X}} s(x)$. Furthermore, let be sampled  $\mathcal S \sim \mathcal M(m, s/S)$, the multinomial sampling case. Define $g_\query(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$
+If we were now too sample $x$ from a distribution proportional to the sensitivity $\PP{}{x} \propto \sigma(x)$, it would not depend on $\query$ which overcome our first limitation. However, we would still need to know $\loss{\query}$ for every $\query$, in order to compute it.
 
-By Hoeffding's inequality, we thus have for any $\query \in \qset$ and $\epsilon^{\prime}>0$
-\begin{equation}
-	\mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x) - \mathbb{E}\left[g_{\query}(x)\right]\right|>\epsilon^{\prime}\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
-\end{equation}
-and by definition, $\mathbb{E}\left[g_{\query}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x)=\frac{\estloss{\textrm{iid}}{\query}}{S L(\query)}$, thus
-\begin{equation*}
-	\mathbb{P}\left[|\estloss{\textrm{iid}}{\query} - L(\query)|>\epsilon^{\prime} S L(\query)\right] \leq 2 \exp \left(-2 m \epsilon^{\prime 2}\right)
-\end{equation*}
-Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} with probability at least $1-\delta$, if we choose
-\begin{equation}
-	m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
-\end{equation}
+But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall x \in \mathcal{X}, s(x) \geq \sigma(x)$, and define $S := \sum_{x\in \mathcal{X}} s(x) \geq \mathfrak{S}$. We can then sample $x$ from a distribution proportional to $s$, i.e.  $\mathcal S \sim \mathcal M(m, s/S)$, and we have the following result.
+
+
+\begin{tcolorbox}
+    \begin{theorem}[Hoeffding bound for fixed query]
+        \label{thm_hoeffdingfixedquery}
+        Let $m\in \NN$ and $\mathcal S \sim \mathcal M(m, s/S)$. 
+
+		Then for all $\epsilon >0$ and all $\query \in \qset$
+		\begin{equation*}
+			\PP{}{\dnude{\nu}{\estloss{\textrm{iid}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
+		\end{equation*}
+		
+		
+		Moreover, for all $\delta>0$ 
+		\begin{equation*}
+            m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
+			\implies 
+			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$}
+		\end{equation*}
+    \end{theorem}
+\end{tcolorbox}
+
+\begin{proof}
+    Define $g_\query(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$.
+    Because of boundedness, we can apply Hoeffding inequality, and have for any $\query \in \qset$ and $\epsilon>0$
+    \begin{equation*}
+        \mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x) - \mathbb{E}\left[g_{\query}(x)\right]\right|>\epsilon/S\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
+    \end{equation*}
+    Furthermore, $\mathbb{E}\left[g_{\query}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x)=\frac{\estloss{\textrm{iid}}{\query}}{S L(\query)}$, thus
+    \begin{equation*}
+        \mathbb{P}\left[|\estloss{\textrm{iid}}{\query} - L(\query)|>\epsilon L(\query)\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
+    \end{equation*}
+    Hence, $\mathcal{S}$ satisfies the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} with probability at least $1-\delta$, if we choose
+    \begin{equation*}
+        m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}.
+    \end{equation*}
+\end{proof}
+
+
+
+
+
+
+The required number of samples depends quadratically on $S$ the upper bound on total sensitivity $\mathfrak{S}$. Hence, the tighter the bound on the sensitivity $s \geq \sigma$ is, the less samples are required. If one take the looser bound $s=1$, so $S=n$, this implies $m \gtrsim n^2$ which is useless in practice.
+
+Note that total sensitivity $\mathfrak{S} \in [1,n]$ depends on the richness of function space $\qset$. 
+\begin{itemize}
+    \item $\mathfrak{S}=1$ if and only if for all $x\in\mathcal{X}$, $\sigma(x)=1/n$. This means $\qset$ only contains constant functions.
+    \item $\mathfrak{S}=n$ if and only if for each $x\in \mathcal{X}$, it exists some $\query \in \qset$ such that for any other element $y$ of $\mathcal{X}$, $f(y)=0$.
+\end{itemize}
+
+Fortunately, it is possible to compute tight bounds on the sensitivity for many machine learning problems. For instance, \cite{lucic2016_lineartime_detection_via_sensitivity} show that the sensitivity bound for $k$-means problem is $\mathfrak{S} = \Theta(k)$. When $k = n-1$, the query set $\qset$ contains all functions that are zero on $n-1$ points, taking $n-1$ points to be centers of their own cluster, and we recover the worst case $S\simeq n$.
+
 
 
 \subsection{Extension to all queries}
 
+In previous section, we obtained a sample complexity bound on obtaining coreset for a single query $\query$. But in order to obtain an $\epsilon$-coreset for $\qset$, the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} must holds simultaneously for all queries $\query \in \qset$.
+
+Intuitively, we would like to invoke a union bound argument/Bonferroni correction over all queries $\query \in \qset$. In the case where $\qset$ is finite, applying union bound on the previous bound from \ref{thm_hoeffdingfixedquery} yields
+\begin{equation*}
+    \PP{}{\dnude{\nu}{\estloss{\textrm{iid}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq 2 |\qset|\exp \left(-2 m \epsilon^2/S^2\right).
+\end{equation*}
+Hence, for all $\delta>0$ 
+\begin{equation*}
+    m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2|\qset|}{\delta}
+    \implies 
+    \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$}
+\end{equation*}
+
+However, in the case $\qset$ is not finite, this bound diverge. We give here the intuition how a finite bound can still be obtained and we will detail this method in Section \ref{sec_extension_all_queries}.
+
+The key idea is to construct a set $\qset'_\epsilon \subseteq \qset$ which still is finite, and that approximate the set $\qset$ with $\epsilon$ granularity. It would further imply that if $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$, then it would be an $\epsilon'$-coreset for $\qset'_\epsilon$, for controlled $\epsilon'$, and then one could apply union bound on $\qset'_\epsilon$ instead.
+
+This would summon the size of $\qset'_\epsilon$ into the obtained bound, which depends on the richness of the set $\qset$ it approximate. Richness in that case can be quantified through pseudo-dimension, which generalize the VC-dimension to real-valued function sets.
 
 
 \begin{tcolorbox}
@@ -226,19 +298,28 @@ we have
 \end{equation}
 \end{tcolorbox}
 
+Then it can be shown size of previously mentioned $\qset'_\epsilon$ is $\OO(\epsilon^{-\pdim})$ where $\pdim:=\operatorname{pdim}\qset$. Applying union bound leads to
+\begin{equation*}
+	m \gtrsim \frac{S^{2}}{\epsilon^{2}} (d'\log\frac{1}{\epsilon} + \log \frac{1}{\delta})
+\end{equation*}
+where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
+
+This result presented here follows from seminal works on theoretic generalizations of the PAC model from \cite{haussler1992decisiontheoricgeneralizationofPACmodel}.
+Improving that scheme, more recent results from \cite{li2001_improved_bound_sample_complexity} involving chaining arguments leads to
+\begin{equation*}
+	m \gtrsim \frac{S^{2}}{\epsilon^{2}} (d' + \log \frac{1}{\delta}).
+\end{equation*}
+Moreover, they shown this bound to be tight in the i.i.d. sampling framework, with respect to $\epsilon$ and $\delta$.
+
+Finally, \cite{braverman2016coresetsota} improved it with respect to $S$ by showing that under the same framework
+\begin{equation*}
+	m \gtrsim \frac{S}{\epsilon^{2}} (d' \log S + \log \frac{2}{\delta}).
+\end{equation*}
 
 
+As an example, we saw that in the $k$-means case, $\mathfrak{S} = \Omega(k)$, and it can be shown that for $d$-dimensional data, $\pdim = \OO(dk\log k)$, which leads to
+\begin{equation*}
+    m \gtrsim \frac{k}{\epsilon^{2}} (dk \log^2 k + \log \frac{2}{\delta}).
+\end{equation*}
 
-
-\note{}{developp sota}
-See \textbf{Uniform guarantee for all queries} in \cite{bachem2017coresetML}. Introducing the pseudo-dimension $d'$, it gives
-\begin{equation}
-	m \geq \OO(\frac{S^{2}}{2 \epsilon^{2}} (d' + \log \frac{2}{\delta}))
-\end{equation}
-
-See \textbf{Theorem 5.5} of \cite{braverman2016coresetsota} for an improved bound.
-\begin{equation}
-	m \geq \OO(\frac{S}{2 \epsilon^{2}} (d' \log S + \log \frac{2}{\delta}))
-\end{equation}
-
-See \cite{bachem2017coresetML}.
+See \cite{bachem2017coresetML} for further insights on sensitivity and pseudo-dimension bounding methods.

@@ -11,11 +11,11 @@
 		\label{thm_sgdpaper}
 		Let $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$.
 		\begin{equation}
-			\estloss{\mathcal{S}}{\threequery} := \sum_{x \in \mathcal{S}} \frac{\threequery(x)}{\opekernel{m}(x,x)}
+			\estloss{\mathcal{S}}{\threequery} := \sum_{x \in \mathcal{S}} \frac{\threequery(x)}{\opekernel{m}(x,x)}.
 		\end{equation}
 		Equation (S14) yields that 
 		\begin{equation}
-			\Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+			\Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2}).
 		\end{equation}
 		where $\lipschitz_\threequery := \operatorname{Lip}\left\{\frac{m\threequery}{K^{(m)}_{q, \tilde \gamma}} \right\}$ is the Lipschitz constant of $x \mapsto \frac{m\threequery(x)}{K^{(m)}_{q, \tilde \gamma}(x,x)}$.
 	\end{theorem}
@@ -52,7 +52,7 @@ We can then reformulate the result from Theorem \ref{thm_sgdpaper} into the foll
 \begin{proof}
 	We simply apply Theorem \ref{thm_sgdpaper} with $\threequery = \frac{\opekernel{m}g}{m}$, such that
 	\begin{align*}
-		\Var{}{\empdistr{\mathcal{S}}{\twoquery}} = \Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})
+		\Var{}{\empdistr{\mathcal{S}}{\twoquery}} = \Var{}{\estloss{\mathcal{S}}{\threequery}} = \lipschitz^2_\threequery \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2}),
 	\end{align*}
 	where $\lipschitz_\threequery$ is the Lipschitz constant of $x \mapsto \frac{m\threequery(x)}{K^{(m)}_{q, \tilde \gamma}(x,x)} = \frac{\opekernel{m}(x,x)}{K^{(m)}_{q, \tilde \gamma}(x,x)} \twoquery(x) $.
 
@@ -68,14 +68,14 @@ We can then reformulate the result from Theorem \ref{thm_sgdpaper} into the foll
 Let $\qset$ be the function space on which we want the coreset property to hold.
 Then let define the following function space defined on $\mathcal{X}$
 		\begin{equation}
-		\twoqset_m := \frac{m\qset}{\opekernel{m}\loss{\qset}} = \left\{x \mapsto \frac{m\query(x)}{\opekernel{m}(x,x)\loss{\query}} \mid \query \in \qset\right\}
+		\twoqset_m := \frac{m\qset}{\opekernel{m}\loss{\qset}} = \left\{x \mapsto \frac{m\query(x)}{\opekernel{m}(x,x)\loss{\query}} \mid \query \in \qset\right\}.
 	\end{equation}
 We have that for any $\query \in \qset$, we have $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ such that
 	\begin{equation}
 		\label{def_ftog}
 		\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} = \empdistr{\mathcal{S}}{g}
 		\quad \text{ and }\quad 
-		\meanempdistr{g} = \EE{}{\empdistr{\mathcal{S}}{g}} = \frac{\EE{}{\estloss{\mathcal{S}}{\query}}}{\loss{\query}} = 1
+		\meanempdistr{g} = \EE{}{\empdistr{\mathcal{S}}{g}} = \frac{\EE{}{\estloss{\mathcal{S}}{\query}}}{\loss{\query}} = 1.
 	\end{equation}
 
 
@@ -100,7 +100,7 @@ We further discuss to what extend these assumptions are relevant.
 Let define for any $\epsilon>0$ and $m\in \NN$, the Chebyshov concentration bound
 \begin{equation}
 	\label{def_boundratecheb}
-	\boundrate_{\textrm{Cheb}}(\epsilon, m) := \frac{1}{\epsilon^2} \sup_{\twoqset \in \{\twoqset_m \mid m \in \NN\}} \sup_{\twoquery \in \twoqset} \Var{}{\empdistr{\mathcal{S}}{\twoquery}}
+	\boundrate_{\textrm{Cheb}}(\epsilon, m) := \frac{1}{\epsilon^2} \sup_{\twoqset \in \{\twoqset_m \mid m \in \NN\}} \sup_{\twoquery \in \twoqset} \Var{}{\empdistr{\mathcal{S}}{\twoquery}}.
 \end{equation}
 We know from Corollary \ref{cor_sgdpaper} and assumption on Lipschitz constant boundedness \ref{asm_gm} that $\boundrate_{\textrm{Cheb}}(\epsilon, m) = \frac {1} {\epsilon^2}\left(\lipschitz^2 \OO( m ^{-(1+\frac 1 d)}) +\OO( n^{-1/2})\right)$.
 
@@ -123,7 +123,6 @@ We know from Corollary \ref{cor_sgdpaper} and assumption on Lipschitz constant b
 			\implies 
 			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$ }
 		\end{equation*}
-		where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
 	\end{theorem}
 \end{tcolorbox}
 
@@ -147,11 +146,11 @@ We know from Corollary \ref{cor_sgdpaper} and assumption on Lipschitz constant b
 	\begin{gather*}
 		\boundrate_{\textrm{Cheb}}(\epsilon, m) \leq \delta 
 		\iff
-		m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}
+		m^{1+\frac 1 d} \gtrsim \frac{\lipschitz^2}{\delta \epsilon^2 + \OO(n^{-1/2})} = \frac {\lipschitz^2} {\delta\epsilon^2} \frac{1}{1 + \frac{1}{\delta \epsilon^2}\OO(n^{-1/2})}.
 	\end{gather*} 
 	Then this means that for sufficiently large $n$ (potentially $n\gtrsim \delta^{-2} \epsilon^{-4}$), we can control the second factor and thus obtain the bound
 	\begin{equation*}
-		m \gtrsim \left(\frac{\lipschitz^2}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}
+		m \gtrsim \left(\frac{\lipschitz^2}{\delta\epsilon^2} \right)^{\frac{1}{1+\frac 1 d}}.
 	\end{equation*}
 \end{proof}
 
@@ -194,7 +193,7 @@ Let define for any $\epsilon>0$ and $m\in \NN$,
 \begin{equation*}
 	\boundrate_{\textrm{BD}}(\epsilon,m) := 2 \exp \left( -\left(\max\left\{
 			4 A \boundrate_{\textrm{Cheb}}(\epsilon, m),\
-			\frac{6 \bound}{\epsilon m}\right\}\right)^{-1}
+			\frac{6 \bound}{\epsilon m}\right\}\right)^{-1}.
 			\right)
 \end{equation*}
 
@@ -219,7 +218,7 @@ Let define for any $\epsilon>0$ and $m\in \NN$,
 		
 		Moreover, for all $\delta>0$ and for $n$ sufficiently large
 		\begin{equation*}
-			m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+			m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \log  \frac{2}{\delta }\right)^{\frac{1}{1+\frac 1 d}}
 			\implies 
 			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$ }
 		\end{equation*}
@@ -267,27 +266,27 @@ Let define for any $\epsilon>0$ and $m\in \NN$,
 	\begin{gather*}
 		\boundrate_{\textrm{Breuer}}(\epsilon,m) \leq \delta
 		\iff 
-		\left(\log \left( \frac{2}{\delta }\right)\right)^{-1} \geq
+		\left(\log \frac{2}{\delta }\right)^{-1} \geq
 		\max\left\{
 			4 A \boundrate_{\textrm{Cheb}}(\epsilon, m),\
 			\frac{6 \bound}{\epsilon m}\right\}
 		\\
-		\iff \left(\log \left( \frac{2}{\delta }\right)\right)^{-1} \text{ is greater than both }
+		\iff \left(\log \frac{2}{\delta }\right)^{-1} \text{ is greater than both }
 		4 A \boundrate_{\textrm{Cheb}}(\epsilon, m)
 		\text{ and }
 		\frac{6 \bound}{\epsilon m}
 	\end{gather*}
 	For the first inequality, we know from Theorem \ref{thm_chebfixedtheta} a sufficient condition is that for $n$ sufficiently large 
 	\begin{equation*}
-		m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+		m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \log  \frac{2}{\delta } \right)^{\frac{1}{1+\frac 1 d}}.
 	\end{equation*}
 	For the second inequality, a sufficient condition is that
 	\begin{equation*}
-		m \geq \frac{6 \bound}{\epsilon} \log \left( \frac{2}{\delta }\right) 
+		m \geq \frac{6 \bound}{\epsilon} \log  \frac{2}{\delta }.
 	\end{equation*}
 	Combining this two cases, a sufficient condition is given by
 	\begin{equation*}
-		m \gtrsim \bound\left(\frac{\lipschitz^2}{\epsilon^2} \log \left( \frac{2}{\delta }\right) \right)^{\frac{1}{1+\frac 1 d}}
+		m \gtrsim \bound\left(\frac{\lipschitz^2}{\epsilon^2} \log  \frac{2}{\delta } \right)^{\frac{1}{1+\frac 1 d}}.
 	\end{equation*}
 
 \end{proof}
@@ -297,11 +296,10 @@ Let define for any $\epsilon>0$ and $m\in \NN$,
 
 
 
-\section{Extensio
-n to all queries}
+\section{Extension to all queries}
+\label{sec_extension_all_queries}
 In order to obtain an $\epsilon$-coreset for $\qset$, the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} must holds simultaneously for all queries $\query \in \qset$.
 
-\note{}{Bon Feroni blabla}
 
 
 
@@ -377,7 +375,7 @@ We delay the proof of Theorem \ref{thm_infi_union_bound}
 		m \gtrsim \bound \left(\frac{256\lipschitz^2}{\epsilon^2} \log \left( \frac{16}{\delta }\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}\right) \right)^{\frac{1}{1+\frac 1 d}}\\
 		\iff m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{1}{\delta } + \pdim \log \frac{\bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}
 	\end{gather*}
-	This rate is conditioned to the fact that $m$ is such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$. But we know it holds as soon as $m \gtrsim \bound \left(\frac{\lipschitz^2}{\epsilon^2} \log \left(4\right) \right)^{\frac{1}{1+\frac 1 d}}$, which is trivially implied by the obtained bound.
+	This rate is conditioned to the fact that $m$ is such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$. But we know it holds as soon as $m \gtrsim \bound \left(\frac{4\lipschitz^2}{\epsilon^2} \log 4 \right)^{\frac{1}{1+\frac 1 d}}$, which is trivially implied by the obtained bound.
 
 \end{proof}
 
@@ -389,7 +387,7 @@ We delay the proof of Theorem \ref{thm_infi_union_bound}
 
 
 We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemma 12. and 13., getting rid of independency hypothesis, and making intermediary results more flexible to further improvements.
-\note{}{state of the art slightly better than haussler, cf. Li, but strongly? require independancy}
+
 
 \begin{tcolorbox}
 	\begin{lemma}[Symmetrisation]
