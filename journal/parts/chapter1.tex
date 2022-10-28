@@ -16,7 +16,7 @@ x_{i} \mid i\in \intint{1}{n}
 \end{equation}
 where the queries $\query \in \qset \subseteq \RR_+^{\mathcal{X}}$ are positive functions defined on $\mathcal{X}$.
 
-A large amount of machine learning problems falls into the framework \eqref{eqn_lossquery}, including support vector machines, logistic regression, linear regression and k-means clustering. 
+A large amount of machine learning problems falls into the framework \cref{eqn_lossquery}, including support vector machines, logistic regression, linear regression and k-means clustering. 
 \begin{example}[$k$-means]  
     The goal of Euclidean $k$-means clustering is to find a set of $k$ cluster centers $\mathcal{C}\subseteq \RR^d$ minimizing the quantization error
     \begin{equation*}
@@ -85,7 +85,7 @@ An important consequence of the coreset property is the following
     \end{theorem}
 \end{tcolorbox}
 \begin{proof}
-    $\mathcal{S}$ being a $\epsilon$-coreset for $\qset$ yields Equation \ref{eqn_qsetcoresetprop}, which is equivalent to 
+    $\mathcal{S}$ being a $\epsilon$-coreset for $\qset$ yields \cref{eqn_qsetcoresetprop}, which is equivalent to 
     \begin{equation*}
         \forall \query \in \qset ,\ (1-\epsilon) \loss{\query} \le \estloss{\mathcal{S}}{\query} \le(1+\epsilon) \loss{\query}.
     \end{equation*}
@@ -129,7 +129,7 @@ But we know a sufficient condition to control this error, that's the coreset pro
 \begin{equation*}
     \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta.
 \end{equation*}
-Then by Theorem \ref{thm_optcoreset} we have $1-\delta$-surely, i.e. with probability at least $1-\delta$, that
+Then by \cref{thm_optcoreset} we have $1-\delta$-surely, i.e. with probability at least $1-\delta$, that
 \begin{equation*}
     \loss{\query^*} \leq \loss{\hat\query^*} \leq (1+ 3 \epsilon/3) \loss{\query^*} \iff
     |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}.
@@ -170,7 +170,7 @@ Now observe that for any query $\query \in \qset$, the variance is reduced to 0 
 \begin{equation*}
     q_{\query} :=\frac{ \query}{\loss{\query}} = x \mapsto \frac{ \query(x)}{\loss{\query}}.
 \end{equation*}
-Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset! In Section-\ref{sect_senstsampl} we see one way to bypass these two limitations.
+Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset! In \cref{sect_senstsampl} we see one way to bypass these two limitations.
 
 \subsection{Sensitivity sampling}
 \label{sect_senstsampl}
@@ -224,7 +224,7 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
     \begin{equation*}
         \mathbb{P}\left[|\estloss{\textrm{iid}}{\query} - L(\query)|>\epsilon L(\query)\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
     \end{equation*}
-    Hence, $\mathcal{S}$ satisfies \ref{eqn_querycoresetprop} i.e. $\mathcal{S}$ is an $\epsilon$-coreset for $\query$  with probability at least $1-\delta$, if we choose
+    Hence, $\mathcal{S}$ satisfies \cref{eqn_querycoresetprop} i.e. $\mathcal{S}$ is an $\epsilon$-coreset for $\query$  with probability at least $1-\delta$, if we choose
     \begin{equation*}
         m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}.
     \end{equation*}
@@ -249,9 +249,9 @@ Fortunately, it is possible to compute tight bounds on the sensitivity for many 
 
 \subsection{Extension to all queries}
 
-In previous section, we obtained a sample complexity bound on obtaining coreset for a single query $\query$. But in order to obtain an $\epsilon$-coreset for $\qset$, the $\epsilon$-coreset for $\query$ property \ref{eqn_querycoresetprop} must holds simultaneously for all queries $\query \in \qset$.
+In previous section, we obtained a sample complexity bound on obtaining coreset for a single query $\query$. But in order to obtain an $\epsilon$-coreset for $\qset$, the $\epsilon$-coreset for $\query$ must holds simultaneously for all queries $\query \in \qset$.
 
-Intuitively, we would like to invoke a union bound argument/Bonferroni correction over all queries $\query \in \qset$. In the case where $\qset$ is finite, applying union bound on the previous bound from \ref{thm_hoeffdingfixedquery} yields
+Intuitively, we would like to invoke a union bound argument/Bonferroni correction over all queries $\query \in \qset$. In the case where $\qset$ is finite, applying union bound on the previous bound from \cref{thm_hoeffdingfixedquery} yields
 \begin{equation*}
     \PP{}{\dnude{\nu}{\estloss{\textrm{iid}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq 2 |\qset|\exp \left(-2 m \epsilon^2/S^2\right).
 \end{equation*}
@@ -262,7 +262,7 @@ Hence, for all $\delta>0$
     \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$}
 \end{equation*}
 
-However, in the case $\qset$ is not finite, this bound diverge. We give here the intuition how a finite bound can still be obtained and we will detail this method in Section \ref{sec_extension_all_queries}.
+However, in the case $\qset$ is not finite, this bound diverge. We give here the intuition how a finite bound can still be obtained and we will detail this method in \cref{sec_extension_all_queries}.
 
 The key idea is to construct a set $\qset'_\epsilon \subseteq \qset$ which still is finite, and that approximate the set $\qset$ with $\epsilon$ granularity. It would further imply that if $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$, then it would be an $\epsilon'$-coreset for $\qset'_\epsilon$, for controlled $\epsilon'$, and then one could apply union bound on $\qset'_\epsilon$ instead.
 
