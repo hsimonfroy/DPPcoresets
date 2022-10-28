@@ -1,6 +1,10 @@
 \chapter{Determinantal Point Processes}
+\label{chap_DPP}
+We saw in Chapter \ref{chap_intro_coresets} the uniform bound on sample complexity of coresets. These bounds are based on Probabilistically Approximately Correct (PAC) learning theory results, where sample complexity bounds (with respect to $\delta$ and $\epsilon$) are known and tight in the i.i.d. framework. One could then be tempted to extend to the case where samples are drawn dependently.
 
-\note{inline}{previous results for iid framework}
+Whereas the space of distributions for $m$ i.i.d samplings has size that does not depend on $m$, the way $m$ samples can be correlated growth exponentially with $m$. In order to tackle this space of correlations, more recent results restricted to the cases of martingales or $\beta$-mixing processes such as \cite{gao2016_learnability_beta_mixing}.
+
+In the current chapter, we introduce Determinantal Point Processes (DPPs), another restriction of correlated sampling, which admits useful tractability properties, while still maintaining expressiveness into the sub-category of negatively correlated sampling. This negative correlation is expected to be a key property in order to perform better for sample complexity results.
 
 \section{Some intuition}
 

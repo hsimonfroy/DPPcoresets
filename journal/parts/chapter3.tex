@@ -1,7 +1,18 @@
 \chapter{Correlated importance sampling}
+\label{chap_correlated_sampling}
+
+
+
+We saw in Chapter \ref{chap_DPP} that DPPs is a restriction of correlated sampling that admits useful tractability properties. Moreover, DPPs still maintain expressiveness into the sub-category of negatively correlated sampling, which is the kind of processes we expect to perform better for sample complexity. The intuition is that negatively correlated sampling can eliminate redundancy in sampling sets an independent sampling can not.
+
+In this chapter, we present current results on coreset sampling with DPPs, and show qualitative results on variance reduction from DPPs. 
+
+
+
 \section{A first result with DPPs}
 
-\cite{tremblay2018dppcoreset}
+
+\cite{tremblay2018dppcoreset} first introduce DPPs into the coreset problems, based 
 
 \begin{tcolorbox}
 	\begin{theorem}
@@ -9,14 +20,16 @@
 
 		If the minimal sensitivity $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in [0,1]$ 
 		\begin{equation*}
-            m \geq \frac{32}{\epsilon^{2}}\left(\max_{x\in \mathcal{X}}\frac{\sigma(x)}{K_m(x,x)}\right) \log \frac{4\eta}{\delta}
+            m \geq \frac{32}{\epsilon^{2}}\left(\max_{x\in \mathcal{X}}\frac{m\sigma(x)}{K_m(x,x)}\right) \log \frac{4\eta}{\delta}
 			\implies 
 			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\qset$}
 		\end{equation*}
 		where $\eta$ is the minimal number of balls of radius $\frac{\epsilon \inf_{f}\loss{f}}{6 n \lipschitz}$ necessary to cover $\Theta$.
 	\end{theorem}
 \end{tcolorbox}
-Note that typically $\log \eta = \OO\left(\pdim \log \frac{n}{\epsilon \inf_{f}\loss{f}}\right)$ with $\pdim = \operatorname{pdim}\qset$, and therefore is dependant on $n$ and $\epsilon$.
+Note first that the fraction $\frac{m}{K_m(x,x)}$ appearing in the right hand side of the bound can in practice uniformly be bounded uniformly on $m$, because $K_m(x,x)$ would typically grow linearly with $m$. This fraction does not appear in the i.i.d. framework because the numerator $m$ cancel with the marginal intensity which is $mq(x)$.
+
+Also note that typically $\log \eta = \OO\left(\pdim \log \frac{n}{\epsilon \inf_{f}\loss{f}}\right)$ with $\pdim = \operatorname{pdim}\qset$, and therefore is dependant on $n$ and $\epsilon$.
 
 
 The obtained bound in $\OO(\epsilon^{-2}\log \delta^{-1})$ for DPPs does not improve the sample complexity bound for coreset in the i.i.d. framework. The reason is two kind. 
@@ -106,19 +119,6 @@ In order to benefit from some variance reduction, one should want $\forall i\neq
 , and their value show "no tendency to align" hinting $\query(x_i) \query(x_j) < 0$. We could more conservatively consider that the induced variance change, whether positive or negative, would in either case be small, as for DPP and m-DPP, 2 dissimilar points tend toward independence.
 
 
-
-Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
-$$
-\tilde L{\query} =\frac{1}{m}\EE{x \sim \textrm{mDPP}}{\query(x)}=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
-$$
-Then an unbiased estimator of $\tilde L$ is
-\begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}{\query} = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
-\end{equation*}
-We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
-\note{}{complete}
-
-
 \subsection{Variance comparison}
 In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var{\textrm{iid}}{}$, $\Var{\textrm{diag}}{}$ and $\Var{\textrm{DPP}}{}$ are quadratic forms of $\query$ associated with respective matrices
 $$\begin{cases}
@@ -130,7 +130,7 @@ $$\begin{cases}
 \subsubsection{Comparing DPP versus diag}
 The DPP variance strictly beats uniformly the Bernoulli process variance if $\tilde K$ strictly dominates identity i.e. 
 \begin{equation}
-	\forall \query, \, \Var{\textrm{DPP}} < \Var{\textrm{diag}} \iff \tilde K \succ I
+	\forall \query, \, \Var{\textrm{DPP}}{} < \Var{\textrm{diag}}{} \iff \tilde K \succ I
 \end{equation}
 But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
 

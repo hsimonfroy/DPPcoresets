@@ -193,8 +193,8 @@ Let define for any $\epsilon>0$ and $m\in \NN$,
 \begin{equation*}
 	\boundrate_{\textrm{BD}}(\epsilon,m) := 2 \exp \left( -\left(\max\left\{
 			4 A \boundrate_{\textrm{Cheb}}(\epsilon, m),\
-			\frac{6 \bound}{\epsilon m}\right\}\right)^{-1}.
-			\right)
+			\frac{6 \bound}{\epsilon m}\right\}\right)^{-1}
+			\right).
 \end{equation*}
 
 
@@ -642,7 +642,19 @@ which is the desired result.
    \end{align*}
 \end{proof}
 
-\note{}{Conclude!}
+
+
+
+Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
+$$
+\tilde L{\query} =\frac{1}{m}\EE{x \sim \textrm{mDPP}}{\query(x)}=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
+$$
+Then an unbiased estimator of $\tilde L$ is
+\begin{equation*}
+	\hat{\tilde L}_{\textrm{mDPP}}{\query} = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
+\end{equation*}
+We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
+\note{}{complete}
 
 
 
