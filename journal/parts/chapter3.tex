@@ -12,7 +12,7 @@ In this chapter, we present current results on coreset sampling with DPPs, and s
 \section{A first result with DPPs}
 
 
-\cite{tremblay2018dppcoreset} first introduce DPPs into the coreset problems, based on the idea of diversity sampling. Their results holds for both DPPs and $m$-DPPs. Since projective DPPs are precisely the intersection of both DPPs and $m$-DPPs, all results apply to them. For the sake of conciseness, we state here their result for $m$-DPPs and we refer to their article for the DPP case. .
+\cite{tremblay2018dppcoreset} first introduce DPPs into the coreset problems, based on the idea of diversity sampling. Their results holds for both DPPs and $m$-DPPs. Since projective DPPs are precisely the intersection of both DPPs and $m$-DPPs, all results apply to them. For the sake of conciseness, we state here their result for $m$-DPPs and we refer to their article for the DPP case.
 
 \begin{tcolorbox}
 	\begin{theorem}[From \cite{tremblay2018dppcoreset}]
@@ -42,13 +42,14 @@ Thus, the obtained bound for DPPs does not improve the sample complexity bound f
 
 
 Despite these mitigated results on concentrations, DPPs has already been shown to preform variance reduction, e.g. \cite{bardenet2020mcdpp}.
-In the following \cref{sec__variance_arguments}, we present qualitative variance reductions in favour off DPP and $m$-DPP sampling, against Bernoulli process sampling and multinomial sampling.
+In the following \cref{sec__variance_arguments}, we present qualitative variance reductions in favour of DPP and $m$-DPP sampling, against Bernoulli process sampling and multinomial sampling.
 
 
 \section{Variance arguments}
 \label{sec__variance_arguments}
 We express variance formulas in four sampling cases: multinomial, DPP, Bernoulli process, and $m$-DPP. Then we compare these variances under a domination criteria.
 \subsection{Four sampling cases}
+\label{subsec__foursampl}
 \paragraph{In the multinomial case}, we have $\mathcal S \sim \mathcal M(m, q)$. Then an unbiased estimator of $L$ is
 \begin{equation*}
 	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}
@@ -56,9 +57,9 @@ We express variance formulas in four sampling cases: multinomial, DPP, Bernoulli
 and its variance is
 \begin{equation*}
 	\Var{\textrm{iid}}{\query} :=\frac{1}{m} \Var{}{\frac {\query(x)} {q(x)}}
-	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2} = \boldsymbol\query\T(\frac{Q^{-1}} m - \frac{\moones} m)\boldsymbol\query
 \end{equation*}
-where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
+where $\boldsymbol\query := (f(x))_{x\in \mathcal{X}}$, $Q := \operatorname{diag}(q)$ and $\moones := \voones \voones \T$ the matrix full of ones. 
 
 
 \paragraph{In the DPP case}, we have $ \mathcal S \sim \mathcal{DPP}(K)$, and for all $x \in \mathcal{X}$, we denote its marginals $\pi_x := K_{xx}$. Then an unbiased estimator of $L$ is
@@ -79,67 +80,115 @@ Its variance can be computed using $\epsilon_x$ as the counting variable for $x$
 
 
 
-Introducing $\Pi = \operatorname{diag}(\pi)$ and $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
+Introducing $\Pi := \operatorname{diag}(\pi)$ and $\tilde K := \Pi^{-1}K^{\odot 2} \Pi^{-1}$, we can rewrite  
 
 \begin{equation}
-	\Var{\textrm{DPP}}{\query}=\sum_{x \in \mathcal{X}}\left(\frac{1}{\pi_{x}}-1\right) \query(x)^{2}-\sum_{x \neq y} \frac{K_{xy}^{2}}{\pi_{x} \pi_{y}} \query(x) \query(y) =  \query\T (\Pi^{-1}  - \tilde{K}) \query 
+	\Var{\textrm{DPP}}{\query}=\sum_{x \in \mathcal{X}}\left(\frac{1}{\pi_{x}}-1\right) \query(x)^{2}-\sum_{x \neq y} \frac{K_{xy}^{2}}{\pi_{x} \pi_{y}} \query(x) \query(y) =  \boldsymbol\query\T (\Pi^{-1}  - \tilde{K}) \boldsymbol\query 
 \end{equation}
 
-\paragraph{In the Bernoulli process case}, where for all $x \in \mathcal{X}$, $\PP{}{x \in \mathcal S} = \pi_x$ independently, we have a special case of DPP, where the kernel reduces to its diagonal, i.e. $K = \Pi$ and then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{f} := \query\T (\Pi^{-1}  - I) \query $.
+\paragraph{In the Bernoulli process case}, where for all $x \in \mathcal{X}$, $\PP{}{x \in \mathcal S} = \pi_x$ independently, we have a special case of DPP, where the kernel reduces to its diagonal, i.e. $K = \Pi$ and then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{f} := \boldsymbol\query\T (\Pi^{-1}  - I) \boldsymbol\query $.
 
 
-\paragraph{In the m-DPP case}, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and we denote the marginals $b_{i} := \mathbb{E}\left[\epsilon_{i}\right]$, that admit an analytic form. Then an unbiased estimator of $L$ is
+\paragraph{In the m-DPP case}, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and we denote its marginals $b_{x} := \mathbb{E}\left[\epsilon_{i}\right]$, that admit an analytic form one can find in \cite{kulesza2012_dpp_for_ml}. Then an unbiased estimator of $L$ is
 \begin{equation*}
-	\estloss{\textrm{mDPP}}{\query} = \sum_{x_i\in \mathcal S} \frac{\query(x_i)}{b_i}
+	\estloss{\textrm{mDPP}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{b_x}
 \end{equation*}
 
 and its variance is
 \begin{equation}
-	\Var{\textrm{mDPP}}{\query}=\sum_{i}\left(\frac{1}{b_i}-1\right) \query(x_i)^2
-	+ \sum_{i \neq j} C_{ij}\query(x_i) \query(x_j)
+	\Var{\textrm{mDPP}}{\query}:=\sum_{i}\left(\frac{1}{b_x}-1\right) \query(x)^2
+	+ \sum_{x \neq y} C_{xy}\query(x) \query(y)
 \end{equation}
-where $C_{ij}=\frac{\mathbb{E}\left[\left(\epsilon_{i}-b_{i}\right)\left(\epsilon_{j}-b_{j}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{i} \epsilon_{j}\right]}{b_{i} b_{j}}-1
+where $C_{xy}:=\frac{\mathbb{E}\left[\left(\epsilon_{x}-b_{y}\right)\left(\epsilon_{y}-b_{y}\right)\right]}{\mathbb{E}\left[\epsilon_{i}\right] \mathbb{E}\left[\epsilon_{j}\right]}=\frac{\mathbb{E}\left[\epsilon_{x} \epsilon_{y}\right]}{b_{x} b_{y}}-1
 $
 
-Observe that if the m-DPP kernel is reduced to its diagonal ($C_{ij} = 0$), we recover $\Var{\textrm{diag}}{}$, the variance of a Bernoulli process with same marginals ($\pi_i = b_i$), though the former has fixed sample size $m$, and the latter not.
+Observe that if the m-DPP kernel is reduced to its diagonal ($C_{xy} = 0$), we recover $\Var{\textrm{diag}}{}$, the variance of a Bernoulli process with same marginals ($\pi_x = b_x$), though the former has fixed sample size $m$, and the latter not.
 
-In order to benefit from some variance reduction, one should want $\forall x\neq y \,,\, C_{xy}\query(x) \query(y) <0$ for a given m-DPP.
+In order to benefit from some variance reduction, one should find a $m$-DPP where $\forall x\neq y \,,\, C_{xy}\query(x) \query(y) <0$.
 
 \cite{zhang2017dppminibatch} discuss that intuitively, if the $m$-DPP kernel rely on some similarity measure and that $f$ is smooth for it, then 2 similar points should have both negative correlation ($C_{xy}<0$) and their value have positive scalar product ($\query(x) \query(y) > 0$). This provides variance reduction.
 
-Reversely, it is argued that 2 dissimilar points should have positive correlation, and their value show "no tendency to align" hinting $\query(x) \query(y) < 0$, and again providing variance reduction. However, properties of strong Rayleigh measures implies always $C_{xy}\leq0$ (see \cite{pemantle2011rayleighconcentration}). But we could more conservatively consider that, whether DPP or $m$-DPP, 2 dissimilar points tend toward independence. Thus the induced variance change, whether positive or negative depending on the sign of $\query(x) \query(y)$, would in either case be small. 
+Reversely, they argued that 2 dissimilar points should have positive correlation, and their value show ``no tendency to align'' hinting $\query(x) \query(y) < 0$, and again providing variance reduction. However, properties of strong Rayleigh measures implies always $C_{xy}\leq0$ (see \cite{pemantle2011rayleighconcentration}). But we could more conservatively consider that, whether DPP or $m$-DPP, two dissimilar points tend toward independence. Thus the induced variance change, whether positive or negative depending on the sign of $\query(x) \query(y)$, would in either case be small. 
+
 
 
 \subsection{Variance comparison}
-In order to compare processes with same marginals, we set $\Pi = mQ$. Then $\Var{\textrm{iid}}{}$, $\Var{\textrm{diag}}{}$ and $\Var{\textrm{DPP}}{}$ are quadratic forms of $\query$ associated with respective matrices
+In the following, we compare processes with same marginals, and therefore set $\Pi = mQ$. Also, 
+since $m$-DPP marginals admits analytic but complicated form, we drop the $m$-DPP case comparison. We show in \cref{subsec__foursampl} that $\Var{\textrm{iid}}{}$, $\Var{\textrm{diag}}{}$ and $\Var{\textrm{DPP}}{}$ are quadratic forms of $\boldsymbol\query$ associated with respective matrices
 $$\begin{cases}
 	\Var{\textrm{iid}}{} \equiv \Pi^{-1} - \frac{\moones}{m} \\
 	\Var{\textrm{diag}}{} \equiv \Pi^{-1} - I \\
 	\Var{\textrm{DPP}}{} \equiv \Pi^{-1} - \tilde K
 \end{cases}$$
 
-\subsubsection{Comparing DPP versus diag}
-The DPP variance strictly beats uniformly the Bernoulli process variance if $\tilde K$ strictly dominates identity i.e. 
-\begin{equation}
-	\forall \query, \, \Var{\textrm{DPP}}{f} < \Var{\textrm{diag}}{f} \iff \tilde K \succ I
-\end{equation}
-But $\tilde K$ is a symmetric positive definite matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{i} \tilde K_{ii}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I$.
+This allows to compare samplings through the Loewner ordering ($\preceq$) of the variance associated matrices. For instance, we say DPP variance strictly dominates Bernoulli process variance if it uniformly yields lower variance, which is equivalent to $\tilde K$ being strictly greater than identity. Formally 
+\begin{equation*}
+	\forall \query \in \RR^{\mathcal{X}}, \, \Var{\textrm{DPP}}{f} < \Var{\textrm{diag}}{f} \iff \tilde K \succ I.
+\end{equation*}
+Massaging some linear algebra thus gives
 
-\subsubsection{Comparing DPP versus i.i.d.}
-\label{sec_dpp_vs_iid}
-The DPP variance strictly beats uniformly the multinomial variance if $\tilde K$ strictly dominates $\frac{\moones}{m}$ i.e. 
-\begin{equation}
-	\forall \query, \, \Var{\textrm{DPP}}{f} < \Var{\textrm{iid}}{f} \iff \tilde K \succ \frac{\moones}{m}
-\end{equation}
-$K$ being symmetric positive of rank $r \in \intint{0}{n}$, it exists $V \in \RR^{r \times n}$ such that $K = V\T V$, and we denote by $V_i$ its colons, for $i \in \intint{1}{n}$.
+\begin{tcolorbox}
+	\begin{proposition}[Variance comparison]\ \\
+		\label{prop__var_comp}
+		DPP variance dominates Bernoulli process variance on positive-valued functions
+		\begin{align}
+			\label{eqn__posvar}
+			\forall \query \in \RR_+^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{diag}}{f}.
+		\end{align}
+		In the general case of real-valued functions, DPP variance does not dominate Bernoulli process variance but does up to a factor three
+		\begin{align}
+			\label{eqn__nodom}
+			&\exists \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \geq \Var{\textrm{diag}}{f}\\
+			\label{eqn__domtwo}
+			&\forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq 3\Var{\textrm{diag}}{f}.
+		\end{align}
+		Moreover, if the DPP is projective, then
+		\begin{align}
+			\label{eqn__projiid}
+			\forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{i.i.d.}}{f}.
+		\end{align}
+	\end{proposition}
+\end{tcolorbox}
 
-For any vector $v \in \RR^{r}$, \cite{copenhaver2013diagramvectors} define its diagram vector 
-$$\tilde v :=
- \frac{1}{\sqrt{r-1}} ((v_k^{2}-v_l^{2} , \sqrt{2 r} v_k v_l ) \mid k<l)\T \in \RR^{r(r-1)}$$
-concatenating all the differences of squares and products.
-
-Then introducing $\tilde V = \begin{pmatrix}\tilde V_i \mid i\in\intint{1}{n}\end{pmatrix}
-$ allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. In order to have $\tilde K - \frac{\moones}{m}\succeq 0$, it is sufficient to have $m \geq r$. This is exactly the case for a projective DPP with rank $r = m$, because $m \leq r$ holds for every DPP. Therefore, for every multinomial sampling, we have a projective DPP which always beats it uniformly.
 
 
+\begin{proof}[Proof of:]\
+	\begin{enumerate}
+		\item[\cref{eqn__posvar}] Assume $\query \in \RR_+^{\mathcal{X}}$. Then $\boldsymbol\query\T (\tilde K - I)\boldsymbol\query = \sum_{x \neq y} \frac{K_{xy}^{2}}{\pi_{x} \pi_{y}} \query(x) \query(y) \geq 0$ and therefore $\Var{\textrm{DPP}}{f} \leq \Var{\textrm{diag}}{f}$.
+		\item[\cref{eqn__nodom}] $\tilde K = \Pi^{-1}K^{\odot 2} \Pi^{-1}$ is a symmetric positive matrix and by Hadamard inequality $\det( \tilde K) \leq \prod_{x\in \mathcal{X}} \tilde K_{xx}= 1$. Therefore at least one of its eigenvalue is lower than 1, hence $\tilde K \nsucc I \iff \exists \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \geq \Var{\textrm{diag}}{f}$.
+		\item[\cref{eqn__domtwo}]
+			For all $f\in \RR^{\mathcal{X}}$, let denote by $f = f_+ - f_-$ its decomposition into its positive and negative part, which both belong in $\RR_+^{\mathcal{X}}$. Then we have
+
+		\begin{align*}
+			\hspace{-1cm}\Var{\textrm{DPP}}{f} &= \Var{\textrm{DPP}}{f_+} + \Var{\textrm{DPP}}{f_-} - 2\Cov{\textrm{DPP}}{f_+,f_-} \ &\text{\footnotesize Al-Kashi}\\
+			&\leq \Var{\textrm{DPP}}{f_+} + \Var{\textrm{DPP}}{f_-} + 2\sqrt[]{\Var{\textrm{DPP}}{f_+}\Var{\textrm{DPP}}{f_-}} \ &\text{\footnotesize Cauchy-Schwartz}\\
+			&\leq \Var{\textrm{diag}}{f_+} + \Var{\textrm{diag}}{f_-} + 2\sqrt[]{\Var{\textrm{diag}}{f_+}\Var{\textrm{diag}}{f_-}} \ &\text{\footnotesize \cref{eqn__posvar}}\\
+			&\leq 3\Var{\textrm{diag}}{f}
+		\end{align*}
+
+		where we lastly use that $\Var{\textrm{diag}}{f} = \Var{\textrm{diag}}{f_+} + \Var{\textrm{diag}}{f_-}$ since its associated matrix is diagonal.
+		\item[\cref{eqn__projiid}]
+		$K$ being symmetric positive of rank $r \in \intint{0}{n}$, it exists $V \in \RR^{r \times n}$ such that $K = V\T V$, and we denote by $V_i$ its colons, for $i \in \intint{1}{n}$.
+	
+		For any vector $v \in \RR^{r}$, \cite{copenhaver2013diagramvectors} define its diagram vector 
+		$$\tilde v :=
+			\frac{1}{\sqrt{r-1}} (v_k^{2}-v_l^{2} , \sqrt{2 r} v_k v_l )_{k<l}\T \in \RR^{r(r-1)}$$
+		concatenating all the $\frac{r(r-1)}{2}$ differences of squares and $\frac{r(r-1)}{2}$ products.
+		
+		Then introduce $\tilde V = (\tilde V_i )_{i\in\intint{1}{n}}$, the matrix whose columns are diagram vectors of matrix $V$ columns. It allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. Then in order to have 
+		\begin{equation*}
+			\tilde K - \frac{\moones}{m}\succeq 0 \iff \forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{i.i.d.}}{f}
+		\end{equation*}
+		it is sufficient to have DPP kernel $K$ such that $r \leq m$. On the other hand, we know its average number of samples is $\operatorname{Tr}K = \operatorname{Tr}\Pi^{-1} = m$, because we fixed its marginals. Moreover $\operatorname{Tr}K \leq r$ holds for every DPP, this implies $\operatorname{Tr}K=r$, and therefore it is a projective DPP. Put differently, for any multinomial sampling, we have a projective DPP that beats it uniformly.
+	\end{enumerate}
+	
+\end{proof}
+
+Note that \cref{eqn__domtwo} use the general inequality
+\begin{equation*}
+	\Var{}{f} \leq \Var{}{f_+} + \Var{}{f_-} + 2\sqrt[]{\Var{}{f_+}\Var{}{f_-}}
+\end{equation*}
+which justifies that in many cases, we can restrict ourselves to controlling variances of positive-valued functions without loss of generality.
+
+In the case of positive valued functions, \cref{prop__var_comp} shows that for any Bernoulli process or multinomial sampling, taking any projective DPP sampling with same marginals would yield lower variance. This is a strong qualitative argument for the use of projective DPPs for the coreset problem, that we will now try to quantify.
 
