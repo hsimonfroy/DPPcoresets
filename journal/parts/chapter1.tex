@@ -3,6 +3,9 @@
 \label{chap_intro_coresets}
 \section{Motivations}
 
+% ##################
+% REPLACE MULTISET BY SEQUENCE
+% ##################
 
 A common if not the standard approach in machine learning
 is to formulate learning problems as optimization problems.
@@ -33,8 +36,9 @@ A large amount of machine learning problems falls into the framework \cref{eqn_l
     \begin{equation*}
         \loss{\query} = \sum_{x\in \mathcal{X}} (a\T x +b -y)^2
     \end{equation*}
-    $\qset = \left\{(a\T x + b -y)^2 \mid a \in \RR^d, b \in \RR\right\}$
+    $\qset = \left\{x \mapsto (a\T x + b -y)^2 \mid a \in \RR^d, b \in \RR\right\}$
 \end{example}
+\note{}{missing text}
     
 
 In many machine learning applications, the induced optimization problem can be hard to solve. Given a learning task, if an algorithm is too slow on large datasets, one can either speed up the algorithm or reduce the amount of data.
@@ -129,7 +133,7 @@ But we know a sufficient condition to control this error, that's the coreset pro
 \begin{equation*}
     \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta.
 \end{equation*}
-Then by \cref{thm_optcoreset} we have $1-\delta$-surely, i.e. with probability at least $1-\delta$, that
+Then by \cref{thm_optcoreset} we have with probability at least $1-\delta$ (w.p. $1-\delta$), that
 \begin{equation*}
     \loss{\query^*} \leq \loss{\hat\query^*} \leq (1+ 3 \epsilon/3) \loss{\query^*} \iff
     |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}.
@@ -159,10 +163,10 @@ By the importance sampling trick, an unbiased estimator of $\loss{\query}$ is th
 	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}.
 \end{equation*}
 And its variance is
-\begin{equation}
+\begin{equation*}
 	\Var{\textrm{iid}}{\query} :=\frac{1}{m} \Var{}{\frac {\query(x)} {q(x)}}
-	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2} = \query\T(\frac{Q^{-1}} m - \frac{\moones} m)\query
-\end{equation}
+	=\frac{1}{m} \sum_{x \in \mathcal{X}} \frac{\query(x)^{2}}{q(x)} -\frac{1}{m} \loss{\query}^{2}
+\end{equation*}
 where $Q = \operatorname{diag}(q)$ and $\moones = \voones \voones \T$ the matrix full of ones. 
 
 
@@ -209,7 +213,7 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
 		\begin{equation*}
             m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2}{\delta}
 			\implies 
-			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$}
+			\text{$\mathcal{S}$ is an $\epsilon$-coreset for $\query$ w.p. $1-\delta$}
 		\end{equation*}
     \end{theorem}
 \end{tcolorbox}
@@ -259,7 +263,7 @@ Hence, for all $\delta>0$
 \begin{equation*}
     m \geq \frac{S^{2}}{2 \epsilon^{2}} \log \frac{2|\qset|}{\delta}
     \implies 
-    \text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\query$}
+    \text{$\mathcal{S}$ is an $\epsilon$-coreset for $\query$ w.p. $1-\delta$}
 \end{equation*}
 
 However, in the case $\qset$ is not finite, this bound diverge. We give here the intuition how a finite bound can still be obtained and we will detail this method in \cref{sec_extension_all_queries}.
@@ -315,4 +319,4 @@ As an example, we saw that in the $k$-means case, $\mathfrak{S} = \Omega(k)$, an
     m \gtrsim \frac{k}{\epsilon^{2}} (dk \log^2 k + \log \frac{2}{\delta}).
 \end{equation*}
 
-See \cite{bachem2017coresetML} for further insights on sensitivity and pseudo-dimension bounding methods.
+We refer to \cite{bachem2017coresetML} for further insights on sensitivity and pseudo-dimension bounding methods.

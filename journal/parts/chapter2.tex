@@ -33,7 +33,7 @@ In the discrete case, a point process is simply a probability measure on $2^{\ma
 \end{definition}
 Here, $K_A :=$ $\left[K_{x y}\right]_{x, y \in A}$ denotes the submatrix of $K$ indexed by elements of $A$, and we adopt $\operatorname{det}K_\emptyset=1$. Note that normalization is unnecessary here, since we are defining marginal probabilities that need not sum to $1$ .
 
-Since $\PP{}{}$ is a probability measure, all principal minors $\operatorname{det}K_A$ of $K$ must be positives, and thus $K$ itself must be positive (for Loewner order). It is possible to show in the same way that the eigenvalues of $K$ are bounded above by one. These requirements turn out to be sufficient. By the Macchi-Soshnikov theorem (\cite{macchi1975dpp}),any $K$ such that $0 \preceq K \preceq I$ defines a DPP.
+Since $\PP{}{}$ is a probability measure, all principal minors $\operatorname{det}K_A$ of $K$ must be positives, and thus $K$ itself must be positive (for Loewner order $\preceq$). It is possible to show in the same way that the eigenvalues of $K$ are bounded above by one. These requirements turn out to be sufficient. By the Macchi-Soshnikov theorem (\cite{macchi1975dpp}),any $K$ such that $0 \preceq K \preceq I$ defines a DPP.
 
 We refer to $K$ as the marginal kernel since it contains all the information needed to compute the probability of any subset $A$ being included in $\mathcal{S}$. A few simple observations follow from \cref{def_dpp}. If $A=\{x\}$ is a singleton, then we have
 \begin{equation*}
@@ -75,8 +75,8 @@ Edges in uniform spanning trees, eigenvalues of random matrices, as well as some
 
 
 \section{Geometric interpretation}
-DPPs are defined on determinants, that have an intuitive geometric interpretation. Since a DPP kernel $K$ is symmetric, it exists $V \in \RR^{d \times n}$ such that $K= V V\T$. 
-Denote the columns of $V$ by $(V_i)$ for $i\in \intint{1}{n}$. Then $\forall A \subseteq \mathcal{X}$
+DPPs are defined on determinants, that have an intuitive geometric interpretation. Since a DPP kernel $K$ is symmetric, there exists $V \in \RR^{d \times n}$ such that $K= V V\T$. 
+Denote the columns of $V$ by $(V_x)$ for $x\in \mathcal{X}$. Then $\forall A \subseteq \mathcal{X}$
 
 \begin{equation}
     \PP{}{A \subseteq \mathcal{S}} = \operatorname{Vol}^2(V_A)
@@ -100,7 +100,7 @@ This geometric interpretation explain why diverse sets are more probable. It is 
 
 \section{Some useful properties}
 
-projection DPP
+projective DPP
 mDPP
 
 despite exponential support
@@ -115,15 +115,15 @@ despite exponential support
 Although DPPs can be impressively efficient given the exponential number of subsets being sampled from, sampling can be rapidly limited by performance. 
 Except for a few specialised kernels like the edges in uniform spanning trees mentioned previously, the default exact sampler is a spectral algorithm due to \cite{hough2006_hkpv}.
 
-It leverages the fact that DPPs are mixtures of projection DPPs to generate repeated samples given the spectral content of the kernel. This method is commonly called the spectral method since it requires the spectral/eigendecomposition of the positive kernel. 
+It leverages the fact that DPPs are mixtures of projective DPPs to generate repeated samples given the spectral content of the kernel. This method is commonly called the spectral method since it requires the spectral/eigendecomposition of the positive kernel. 
 
 Formally, if a DPP is defined by a kernel $K$ defined on $n$ data points, one requires the eigendecomposition $K= V V\T$  where $V \in \RR^{d \times n}$. 
 This can often be the computational bottleneck since it generally requires $O(n^3)$ time. Note however that for some DPPs based on specific kernels like OPE kernels, $K$ is built via this decomposition and thus it is trivially known.
 
-In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n k^2)$ time, where $k$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projection kernel, $k = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
+In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n k^2)$ time, where $k$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $k = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
 
 Some recent works from \cite{gillenwater2019_treebased_fast_dpp_sampling} improved somewhat this complexity. Based on the still needed eigendecomposition, it implements a binary tree structure storing appropriate summary statistics of the eigenvectors, requiring $O(n d^2)$ to build, but can then generate repeated
-samples in $O(\log(n)k^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projection kernel.
+samples in $O(\log(n)k^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel.
 
 This method becomes a viable alternative to the spectral method when the total
 number of items $n$ is large and when the dimensionality $d$ of the
@@ -138,6 +138,5 @@ Several sampling methods have been developed in the case we only need an approxi
 
 A first class of methods involves a kernel approximation of a given DPP kernel, using random projections such as in \cite{kulesza2012_dpp_for_ml}, or low-rank factorization techniques.
 
-A second class involves Monte Carlo Markov Chain (MCMC). This is often down in an inexact fashion using target distribution close but different from a DPP one. Noticeably, \cite{gautier2017_zonotope_for_dpp_sampling} proposed an exact MCMC sampler for projection DPPs.
+A second class involves Monte Carlo Markov Chain (MCMC). This is often down in an inexact fashion using target distribution close but different from a DPP one. Noticeably, \cite{gautier2017_zonotope_for_dpp_sampling} proposed an exact MCMC sampler for projective DPPs.
 
-\vspace{10cm}

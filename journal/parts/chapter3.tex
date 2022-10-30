@@ -3,7 +3,7 @@
 
 
 
-We saw in \cref{chap_DPP} that DPPs is a restriction of correlated sampling that admits useful tractability properties. Moreover, DPPs still maintain expressiveness into the sub-category of negatively correlated sampling, which is the kind of processes we expect to perform better for sample complexity. The intuition is that negatively correlated sampling can eliminate redundancy in sampling sets, an independent sampling can not.
+We saw in \cref{chap_DPP} that DPPs are a restriction of correlated sampling that admits useful tractability properties. Moreover, DPPs still maintain expressiveness into the sub-category of negatively correlated sampling, which is the kind of processes we expect to perform better for sample complexity. The intuition is that negatively correlated sampling can eliminate redundancy in sampling sets, an independent sampling can not.
 
 In this chapter, we present current results on coreset sampling with DPPs, and show qualitative results on variance reduction from DPPs. 
 
@@ -12,37 +12,39 @@ In this chapter, we present current results on coreset sampling with DPPs, and s
 \section{A first result with DPPs}
 
 
-\cite{tremblay2018dppcoreset} first introduce DPPs into the coreset problems, based on the idea of diversity sampling. Their results holds for both DPPs and $m$-DPPs. Since projective DPPs are precisely the intersection of both DPPs and $m$-DPPs, all results apply to them. For the sake of conciseness, we state here their result for $m$-DPPs and we refer to their article for the DPP case.
+\cite{tremblay2018dppcoreset} first introduce DPPs into the coreset problems, based on the idea of diversity sampling. Their results holds for both DPPs and $m$-DPPs. Since projection DPPs are precisely the intersection of both DPPs and $m$-DPPs, all results apply to them. For the sake of conciseness, we state here their result for $m$-DPPs and we refer to their article for the DPP case.
 
 \begin{tcolorbox}
-	\begin{theorem}[From \cite{tremblay2018dppcoreset}]
-		Let $(K_m)_{m\in \NN}$ be a sequence of $m$-DPP kernel and let sample $\mathcal{S} \sim \mathcal{DPP}(K_m)$. Assume that the query space $\qset$ is parametrized by some $\theta \in \Theta$, and that all Lipschitz constant with respect to $\theta$ of $\query_\theta \in \qset$ are bounded by some $\lipschitz>0$.\\
-		If the minimal sensitivity $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in [0,1]$ 
+	\begin{theorem}[\cite{tremblay2018dppcoreset}]
+		\label{thm__tremblay}
+		Let $m \in \NN$, $K_m$ a $m$-DPP kernel and let sample $\mathcal{S} \sim \mathcal{DPP}(K_m)$. Assume that the query space $\qset$ is parametrized by some $\theta \in \Theta$, and that all Lipschitz constant with respect to $\theta$ of $\query_\theta \in \qset$ are bounded by some $\lipschitz := \sup_{x \in \mathcal{X}} \operatorname{Lip}\left\{\theta \mapsto \query_\theta(x)\right\}$.\\
+
+		If the minimal sensitivity satisfies $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in [0,1]$ 
 		\begin{equation*}
             m \geq \frac{32}{\epsilon^{2}}\left(\max_{x\in \mathcal{X}}\frac{m\sigma(x)}{K_m(x,x)}\right)^2 \log \frac{4\eta}{\delta}
 			\implies 
-			\text{$\mathcal{S}$ is $1-\delta$-surely an $\epsilon$-coreset for $\qset$}
+			\text{$\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ w.p. $1-\delta$}
 		\end{equation*}
 		where $\eta$ is the minimal number of balls of radius $\frac{\epsilon \inf_{f}\loss{f}}{6 n \lipschitz}$ necessary to cover $\Theta$.
 	\end{theorem}
 \end{tcolorbox}
 Note first that the fraction $\frac{m}{K_m(x,x)}$ appearing in the right hand side of the bound is due to the correlated importance sampling framework. This fraction does not appear in the i.i.d. framework because the numerator $m$ cancel with the marginal intensity $mq(x)$. In practice, this fraction can be bounded uniformly on $m$, because $K_m(x,x)$ would typically grow linearly with $m$.
 
-Also note that typically $\log \eta = \OO\left(\pdim \log \frac{n}{\epsilon \inf_{f}\loss{f}}\right)$ with $\pdim = \operatorname{pdim}\qset$, and therefore is dependant on $n$ and $\epsilon$.
+Also note that typically $\log \eta = \OO\left(\pdim \log \frac{n}{\epsilon \inf_{f}\loss{f}}\right)$ with $\pdim = \operatorname{pdim}\qset$, and therefore depends on $n$ and $\epsilon$.
 
 
-Thus, the obtained bound for DPPs does not improve the sample complexity bound for coreset in the i.i.d. framework. The reason is two kind. 
+Thus, the obtained bound for DPPs of \cref{thm__tremblay} does not improve the sample complexity bound on coreset size in i.i.d. framework, from \cite{braverman2016coresetsota}. There are two reasons for this. 
 
 \begin{itemize}
-	\item First, the concentration for fixed query is dependant of known concentration results for strongly Rayleigh measures from \cite{pemantle2011rayleighconcentration}, and especially for DPPs. 
+	\item First, the result crucially relies on a concentration inequality for strongly Rayleigh measures (especially DPPs) from \cite{pemantle2011rayleighconcentration}, which does not improve Hoeffding bound used in \cref{chap_intro_coresets}. 
 
-	However, one important fact is that it doesn't rely on more advanced concentration for DPPs from \cite{breuer2013nevai} that involves the variance of the estimator. Since recent results from \cite{bardenet2020mcdpp}, it is known DPPs can improve variance rate, and we hope this result to be leveraged into an improved bound on coreset for fixed query.
-	\item Second, the generalization to all queries argument that is made introduce a $\log \epsilon^{-1}$ term, and foremost a dependency in $n$, through $\eta$. If not tackled, this could ruin the effort finding improved bound for fixed queries. An improvement way would be to extend classical VC theory arguments in a correlated context.
+	However, one important fact is that it doesn't rely on more advanced concentration for projective DPPs from \cite{breuer2013nevai} that involves the variance of the estimator. Since recent results from \cite{bardenet2020mcdpp}, it is known DPPs can improve variance rate, and we hope this result to be leveraged into an improved bound on coreset for fixed query.
+
+	\item Second, the argument to generalize to all queries from \cite{tremblay2018dppcoreset} introduce a $\log \epsilon^{-1}$ term, and foremost a dependency in $n$, through $\eta$. If not tackled, this could ruin the effort finding improved bound for fixed queries. An improvement way would be to extend classical VC theory arguments in a correlated context.
 \end{itemize}
 
 
-Despite these mitigated results on concentrations, DPPs has already been shown to preform variance reduction, e.g. \cite{bardenet2020mcdpp}.
-In the following \cref{sec__variance_arguments}, we present qualitative variance reductions in favour of DPP and $m$-DPP sampling, against Bernoulli process sampling and multinomial sampling.
+Despite these mitigated results on concentrations, DPPs has already been shown to perform variance reduction, e.g. \cite{bardenet2020mcdpp}. In the following \cref{sec__variance_arguments}, we present qualitative variance reductions in favour of DPP and $m$-DPP sampling, against Bernoulli process sampling and multinomial sampling.
 
 
 \section{Variance arguments}
@@ -113,7 +115,7 @@ Reversely, they argued that 2 dissimilar points should have positive correlation
 
 
 \subsection{Variance comparison}
-In the following, we compare processes with same marginals, and therefore set $\Pi = mQ$. Also, 
+In the following, we compare processes with the same marginals, and therefore set $\Pi = mQ$. Also, 
 since $m$-DPP marginals admits analytic but complicated form, we drop the $m$-DPP case comparison. We show in \cref{subsec__foursampl} that $\Var{\textrm{iid}}{}$, $\Var{\textrm{diag}}{}$ and $\Var{\textrm{DPP}}{}$ are quadratic forms of $\boldsymbol\query$ associated with respective matrices
 $$\begin{cases}
 	\Var{\textrm{iid}}{} \equiv \Pi^{-1} - \frac{\moones}{m} \\
