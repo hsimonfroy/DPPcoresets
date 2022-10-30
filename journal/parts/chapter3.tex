@@ -52,7 +52,7 @@ Despite these mitigated results on concentrations, DPPs has already been shown t
 We express variance formulas in four sampling cases: multinomial, DPP, Bernoulli process, and $m$-DPP. Then we compare these variances under a domination criteria.
 \subsection{Four sampling cases}
 \label{subsec__foursampl}
-\paragraph{In the multinomial case}, we have $\mathcal S \sim \mathcal M(m, q)$. Then an unbiased estimator of $L$ is
+\paragraph{In the multinomial case,} we have $\mathcal S \sim \mathcal M(m, q)$. Then an unbiased estimator of $L$ is
 \begin{equation*}
 	\estloss{\textrm{iid}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{m q(x)}
 \end{equation*}
@@ -64,7 +64,7 @@ and its variance is
 where $\boldsymbol\query := (f(x))_{x\in \mathcal{X}}$, $Q := \operatorname{diag}(q)$ and $\moones := \voones \voones \T$ the matrix full of ones. 
 
 
-\paragraph{In the DPP case}, we have $ \mathcal S \sim \mathcal{DPP}(K)$, and for all $x \in \mathcal{X}$, we denote its marginals $\pi_x := K_{xx}$. Then an unbiased estimator of $L$ is
+\paragraph{In the DPP case,} we have $ \mathcal S \sim \mathcal{DPP}(K)$, and for all $x \in \mathcal{X}$, we denote its marginals $\pi_x := K_{xx}$. Then an unbiased estimator of $L$ is
 \begin{equation*}
 	\estloss{\textrm{DPP}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{\pi_x}
 \end{equation*}
@@ -88,10 +88,10 @@ Introducing $\Pi := \operatorname{diag}(\pi)$ and $\tilde K := \Pi^{-1}K^{\odot 
 	\Var{\textrm{DPP}}{\query}=\sum_{x \in \mathcal{X}}\left(\frac{1}{\pi_{x}}-1\right) \query(x)^{2}-\sum_{x \neq y} \frac{K_{xy}^{2}}{\pi_{x} \pi_{y}} \query(x) \query(y) =  \boldsymbol\query\T (\Pi^{-1}  - \tilde{K}) \boldsymbol\query 
 \end{equation}
 
-\paragraph{In the Bernoulli process case}, where for all $x \in \mathcal{X}$, $\PP{}{x \in \mathcal S} = \pi_x$ independently, we have a special case of DPP, where the kernel reduces to its diagonal, i.e. $K = \Pi$ and then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{f} := \boldsymbol\query\T (\Pi^{-1}  - I) \boldsymbol\query $.
+\paragraph{In the Bernoulli process case,} where for all $x \in \mathcal{X}$, $\PP{}{x \in \mathcal S} = \pi_x$ independently, we have a special case of DPP, where the kernel reduces to its diagonal, i.e. $K = \Pi$ and then $\tilde K = I$. We denote its variance $\Var{\textrm{diag}}{f} := \boldsymbol\query\T (\Pi^{-1}  - I) \boldsymbol\query $.
 
 
-\paragraph{In the m-DPP case}, we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and we denote its marginals $b_{x} := \mathbb{E}\left[\epsilon_{i}\right]$, that admit an analytic form one can find in \cite{kulesza2012_dpp_for_ml}. Then an unbiased estimator of $L$ is
+\paragraph{In the m-DPP case,} we have $\mathcal S \sim \mathcal{DPP}(K) \mid |S|=m$, and we denote its marginals $b_{x} := \mathbb{E}\left[\epsilon_{i}\right]$, that admit an analytic form one can find in \cite{kulesza2012_dpp_for_ml}. Then an unbiased estimator of $L$ is
 \begin{equation*}
 	\estloss{\textrm{mDPP}}{\query} := \sum_{x\in \mathcal S} \frac{\query(x)}{b_x}
 \end{equation*}
@@ -123,7 +123,7 @@ $$\begin{cases}
 	\Var{\textrm{DPP}}{} \equiv \Pi^{-1} - \tilde K
 \end{cases}$$
 
-This allows to compare samplings through the Loewner ordering ($\preceq$) of the variance associated matrices. For instance, we say DPP variance strictly dominates Bernoulli process variance if it uniformly yields lower variance, which is equivalent to $\tilde K$ being strictly greater than identity. Formally 
+This allows to compare samplings through the Loewner ordering ($\preceq$) of the variance associated matrices. For instance, DPP variance strictly dominates Bernoulli process variance i.e. it uniformly yields lower variance, if and only if $\tilde K$ is strictly greater than identity. Formally 
 \begin{equation*}
 	\forall \query \in \RR^{\mathcal{X}}, \, \Var{\textrm{DPP}}{f} < \Var{\textrm{diag}}{f} \iff \tilde K \succ I.
 \end{equation*}
