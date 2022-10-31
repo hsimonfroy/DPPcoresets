@@ -1,6 +1,6 @@
 
 
-\chapter{Improving concentration with DPP}
+\chapter{Improving concentration with DPPs}
 \label{chap__improv_conc_dpp}
 
 
@@ -76,6 +76,7 @@ It is worth to say this variance generalize to the continuous case. Actually, pr
 Also, note that the higher $d$ is, the less the variance gain in \cref{eqn__improved_var}. Intuitively, this is because as the dimension increase, all points become already repelled from each others, so the addition of repulsiveness is less and less effective, or put differently, there is less and less redundancy in an independent sampling that we can get rid of by a negatively correlated sampling.
 
 \note{}{cf. independent sphere packing in high dimension?}
+\note{}{illustrate?}
 
 We now introduce some notations
 \begin{itemize}
@@ -112,6 +113,7 @@ so that we can reformulate the result from \cref{thm_sgdpaper} into the followin
 
 
 \section{Regularity assumptions}
+\label{sec__reg_assumptions}
 In order to translate the improved variance rate from \cref{cor_sgdpaper} into a concentration inequality and then a sample complexity bound for coreset, several assumptions are made and are discussed.
 
 Let $\qset \in \RR^{\mathcal{X}}$ be the function space on which we want the coreset property to hold. With the notations of \cref{chap_intro_coresets}, define the following function space 
@@ -137,8 +139,7 @@ Formally, we assume there exists positive reals $\lipschitz, \bound \in \RR_+$ a
 	\item \label{assum__pseudodim}$\operatorname{pdim}\twoqset_m \leq \pdim$
 \end{enumerate}
 
-\subsection{Discussing the assumptions}
-We invoke asymptotic phenomena to justify our precedent assumptions. With notations from previous \cref{sec__quant_result_variance}, we first have that for large $n$, the KDE estimation is close to the true density, namely $\tilde \gamma \xrightarrow[n \to +\infty]{} \gamma$. Second, next theorem describes the asymptotic behaviour of any OPE kernel, and in particular confirms that $K_q^{(m)}$ is of order $m$.
+\paragraph{We justify these assumptions} by invoking asymptotic behaviour of sets $\twoqset_m$. With notations from previous \cref{sec__quant_result_variance}, we first have that for large $n$, the KDE estimation is close to the true density, namely $\tilde \gamma \xrightarrow[n \to +\infty]{} \gamma$. Second, next theorem describes the asymptotic behaviour of any OPE kernel, and in particular confirms that $K_q^{(m)}$ is of order $m$.
 \begin{tcolorbox}
 	\begin{theorem}[\cite{simon2010_totik_thm}]
 		Assume $q$ is continuous. Then, for every $\epsilon>0$, we have uniformly for $x\in [-1+\epsilon,1-\epsilon]^d$
@@ -149,7 +150,7 @@ We invoke asymptotic phenomena to justify our precedent assumptions. With notati
 	where $q_{\mathrm{eq}} = x \mapsto \prod_{k=1}^d \frac{1}{\pi \sqrt[]{1-x_k^2}}$.
 \end{tcolorbox}
 
-Finally, the restriction of $K^{(m)}_{q, \tilde \gamma}$ into $\opekernel{m}$ is such that for large $n$, we have $K^{(m)}_{q, \tilde \gamma} \simeq \opekernel{m}$. Put together, the asymptotic behaviour of the set $\twoqset_m$ is 
+Finally, the restriction of $K^{(m)}_{q, \tilde \gamma}$ into $\opekernel{m}$ is such that for large $n$, we have $K^{(m)}_{q, \tilde \gamma} \simeq \opekernel{m}$. Put together, the asymptotic behaviour of sets $\twoqset_m$ is 
 \begin{equation}
 	\twoqset_m \to \twoqset := \frac{\qset\gamma}{\loss{\qset}q_{\mathrm{eq}}} = \left\{x \mapsto \frac{\query(x)\gamma(x)}{\loss{\query}q_{\mathrm{eq}}(x)} \mid \query \in \qset\right\} \in \RR^{\mathcal{X}}.
 \end{equation}
@@ -162,7 +163,7 @@ Finally, the restriction of $K^{(m)}_{q, \tilde \gamma}$ into $\opekernel{m}$ is
 	\item $\operatorname{pdim}\twoqset_m \lesssim \operatorname{pdim}\twoqset =: \pdim$
 \end{enumerate}
 
-Note that $\twoqset$ plays a similar role as $\twoqset_s$ we introduced in \cref{eqn__g_sensitivity}. It is a function space whose properties influence the sample complexity bound, as we will now show.
+Noticeably the bound $\bound$ does not depend on $\qset$, but only on the underlying distribution of data. Besides, $\twoqset$ plays a similar role as $\twoqset_s$ we introduced in \cref{eqn__g_sensitivity}. More than that, when $\qset$ is sufficiently rich, the pseudo-dimension of both $\twoqset$ and $\twoqset_s$ is expected to be driven by the one of $\qset$ in a similar fashion. Moreover, just like $\twoqset_s$, $\twoqset$ is a function space whose properties influence the sample complexity bound, as we will now show.
 
 
 
@@ -228,9 +229,9 @@ Remark that from \cref{cor_sgdpaper} and the assumption \ref{assum__lip} on Lips
 	\end{equation*}
 \end{proof}
 
-We obtained a sample complexity bound with improved dependency in $\epsilon$ compared to the one from \cref{thm_hoeffdingfixedquery} for the i.i.d. sampling framework. Our result is $\OO(\epsilon^{\frac{-2}{1+\frac{1}{d}}})$ whereas the latter is $\OO(\epsilon^{-2})$. As for the variance, the higher the dimension $d$ is, the less is the gain in sample complexity, because the less there is redundancy to get rid of by a negatively correlated sampling.
+We obtained a sample complexity bound with improved dependency in $\epsilon$ compared to the one from \cref{thm_hoeffdingfixedquery} for the i.i.d. sampling framework. Our result is $\OO(\epsilon^{{-2}/(1+1/d)})$ whereas the latter is $\OO(\epsilon^{-2})$. As for the variance, the higher the dimension $d$ is, the less is the gain in sample complexity, because the less there is redundancy to get rid of by a negatively correlated sampling.
 
-On the other hand, the dependency in $\delta$ is worsened compared to i.i.d. sampling. Our result is $\OO(\delta^{\frac{-2}{1+\frac{1}{d}}})$ whereas the latter is $\log \delta^{-1}$.
+On the other hand, the dependency in $\delta$ is worsened compared to i.i.d. sampling. Our result is $\OO(\delta^{{-1}/(1+1/d)})$ whereas the latter is $\log \delta^{-1}$.
 We propose to tackle this dependency, before generalizing the obtained bound to all queries.
 
 
@@ -366,15 +367,7 @@ Although the concentration bound from \cite{breuer2013nevai} pre-dates the works
 
 \section{Extension to all queries}
 \label{sec_extension_all_queries}
-In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_querycoresetprop} must hold simultaneously for all queries $\query \in \qset$.
-
-
-
-
-
-
-
-
+In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_querycoresetprop} must hold simultaneously for all queries $\query \in \qset$. To do so, recall the idea from \cref{chap_intro_coresets} of constructing a surrogate finite set that approximate well $\qset$, then apply union bound on it. We summarize this process into 
 
 \begin{tcolorbox}
 	\begin{theorem}[Infinite union bound]
@@ -386,7 +379,7 @@ In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_queryco
 			\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq \boundrate(\epsilon, m)
 		\end{equation}
 
-		Then for all $\epsilon >0$ and all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$, it holds
+		Then for all $\epsilon \in ]0,M]$ and all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$, it holds
 		\begin{equation}
 			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq 
 			8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}} \boundrate(\epsilon/16, m)
@@ -394,8 +387,7 @@ In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_queryco
 	\end{theorem}
 \end{tcolorbox}
 
-
-We delay the proof of \cref{thm_infinite_union_bound} in the next \cref{sec__proof_thm_infinite_union_bound}
+Contrary to the classical union bound, this theorem allows to convert any reasonable uniform bound $\mathcal{R}$ into a similar bound over an infinite set. We delay its proof of in \cref{sec__proof_thm_infinite_union_bound}. Applied to the BD-type bound we obtained for fixed queries, it provides our main result on sample complexity of coreset.
 
 \begin{tcolorbox}
 	\begin{theorem}[BD-type bound for all queries]
@@ -427,7 +419,7 @@ We delay the proof of \cref{thm_infinite_union_bound} in the next \cref{sec__pro
 		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} > \epsilon}  \leq \boundrate_{\textrm{BD}}(\epsilon, m)
 	\end{equation*}
 	
-	Moreover, the assumption \ref{assum__inf} implies $\twoqset_m \in [0,M]^{\mathcal{X}}$. Hypotheses of \cref{thm_infinite_union_bound} are thus satisfied, and we can apply it taking $\threeqset=\twoqset_m$, which yields that for all $m \in \NN$ such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$, it holds
+	Moreover, the assumption \ref{assum__inf} implies $\twoqset_m \in [0,M]^{\mathcal{X}}$. The hypotheses of \cref{thm_infinite_union_bound} are thus satisfied, and we can apply it taking $\threeqset=\twoqset_m$, which yields that for all $m \in \NN$ such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$, it holds
 	\begin{align*}
 		\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
 		= \PP{}{\exists \twoquery \in \twoqset_m,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} >  \epsilon}\\
@@ -449,20 +441,27 @@ We delay the proof of \cref{thm_infinite_union_bound} in the next \cref{sec__pro
 
 
 
+Our results is to be compared to \cref{eqn__sota_coreset}
+\begin{equation*}
+	m \gtrsim \frac{S}{\epsilon^{2}} (\operatorname{pdim}\twoqset_s \log S + \log \frac{2}{\delta}).
+\end{equation*}
+
+Discussing assumptions in \cref{sec__reg_assumptions}, we remarked that for sufficiently rich query space $\qset$, $\operatorname{pdim}\twoqset_s$ can be quiet comparable to $\pdim$. Also was noticed that $\bound$ does not need to depend on $\qset$. With this in mind, our bound is quiet comparable to the state-of-art, and improve it by a $(1+1/d)$-root. However, our result requires a supplementary condition on Lipschitz constant. Perspectives of improvements are discussed in \cref{sec__discussion_perspectives} 
+
 
 
 \section{Proof of \cref{thm_infinite_union_bound}}
 \label{sec__proof_thm_infinite_union_bound}
 
 
-We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemma 12. and 13., getting rid of independency hypothesis, and making intermediary results more flexible to further improvements.
+We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decisiontheoricgeneralizationofPACmodel}. We specifically revisit Lemmas 12. and 13., getting rid of independency hypothesis, and making intermediary results more flexible to further improvements. Importantly, the proof is still in progress, the remaining work being reduced to \cref{lem_infi_union_bound}.
 
+We start by a symmetrisation argument that relates a concentration statement between a sampling and its expectancy, with a concentration statement between two i.i.d. samplings. 
 
 \begin{tcolorbox}
 	\begin{lemma}[Symmetrisation]
 		\label{lem_symm}
-		Assume the hypothesis of \cref{thm_infinite_union_bound} about $\boundrate$.
-		Let furthermore be $\epsilon>0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two sequences of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$.\\
+		Assume the hypothesis of \cref{thm_infinite_union_bound} about bounding function $\boundrate$. Let furthermore $\epsilon>0$, $m\in \NN$, and $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two sequences of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$.\\
 		  
 		Then for all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$
 		\begin{equation*}
@@ -478,14 +477,14 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 
 	For such an $f$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2$. Because $\boundrate(\epsilon, m) \leq 1/2$, we know this happens with probability greater than $1-1/2 = 1/2$, and we thus have
 	\begin{align*}
-		&\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon}
-		\frac 1 2 \\
+		&\frac 1 2\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon}
+		\\
 		\leq\ &\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon \wedge \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2 } \\
 		\leq\ &\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }
 	\end{align*}
 	where we used the triangular inequality 
 	\begin{equation*}
-		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} - \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq   \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} - \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq   \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}.
 	\end{equation*} 
 \end{proof}
 
@@ -493,22 +492,28 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 
 
 
-
+We then introduce the notion of $\epsilon$-packing and $\epsilon$-covering, on which rely the construction of a surrogate query set that approximate $\qset$ to an $\epsilon$ granularity.
 
 \begin{tcolorbox}
-    \begin{definition}[Covering and Packing]
+    \begin{definition}[Separated set and packing number]
         Let $(\threeqset, d)$ be a metric space. 
         \begin{itemize}
             \item For any $\epsilon> 0$, a subset $\threeqset' \subseteq \threeqset$ is said to be $\epsilon$-separated if for all distinct $\threequery'_1, \threequery'_2 \in \threeqset'$, $d(\threequery'_1, \threequery'_2) > \epsilon$.
-            \item The $\epsilon$-packing number on $(\threeqset, d)$, denoted by $\packing(\epsilon, \threeqset, d)$, is then defined as cardinality of the largest $\epsilon$-separated subset $\threeqset'$ of $\threeqset$.
+            \item The $\epsilon$-packing number on $(\threeqset, d)$, denoted by $\packing(\epsilon, \threeqset, d)$, is the cardinality of the largest $\epsilon$-separated subset $\threeqset'$ of $\threeqset$.
         \end{itemize}
         Intuitively, the $\epsilon$-packing number is the maximal number of balls of radius $\epsilon/2$ that can fit into $\threeqset$ without intersecting.
+    \end{definition}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+	\begin{definition}[Covered set and cover number]
+		Let $(\threeqset, d)$ be a metric space. 
         \begin{itemize}
             \item For any $\epsilon> 0$, a subset $\threeqset'$ of $\threeqset$ is said to be an $\epsilon$-cover of $\threeqset$ if for all $\threequery \in \threeqset$, there exists $\threequery' \in \threeqset'$ with $d(\threequery, \threequery') \leq \epsilon$.
-            \item The $\epsilon$-covering number on $(\threeqset, d)$, denoted by $\covering(\epsilon, \threeqset, d)$, is then defined as cardinality of the smallest $\epsilon$-cover of $\threeqset$.
+            \item The $\epsilon$-covering number on $(\threeqset, d)$, denoted by $\covering(\epsilon, \threeqset, d)$, is the cardinality of the smallest $\epsilon$-cover of $\threeqset$.
         \end{itemize}
         Intuitively, the $\epsilon$-covering number is the minimal number of balls of radius $\epsilon$ than can fill $\threeqset$, with possible overlaps.
-    \end{definition}
+	\end{definition}
 \end{tcolorbox}
 
     One can easily check that for all $\epsilon>0$
@@ -519,7 +524,7 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 
 
 
-
+Moreover, in the case of metric function spaces, packing numbers can be related to the pseudo-dimension of the packed space through
 
 \begin{tcolorbox}
     \begin{theorem}[\cite{pollard1984_convergence_stoch_proc} and \cite{haussler1995spherepacking}]
@@ -537,10 +542,7 @@ We follow a similar proof scheme as in section 9.4 of \cite{haussler1992decision
 \end{tcolorbox}
 Note that the second bound is better than the first one when $\epsilon$ is sufficiently small compared to $d'_{\threeqset}$ and vice versa.
 
-
-
-
-
+We introduce the following conjecture, as an attempt to extend Lemma 13. from \cite{haussler1992decisiontheoricgeneralizationofPACmodel} to a non-i.i.d. framework. We discuss in the draft of proof an inequality that would lead to the result. In addition, we discuss how the method used in i.i.d. case can not be applied easily to ours.
 
 
 \begin{tcolorbox}
@@ -556,21 +558,23 @@ Note that the second bound is better than the first one when $\epsilon$ is suffi
 \end{tcolorbox}
 
 
-
 \begin{proof}[Draft of Proof]
 	Let $\mathcal{S}_1$ and $\mathcal{S}_2$ sampled such that $\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon$. 
 	
-	We denote their concatenation by $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2$ which is of size $2m$. Let then be taken $\threeqset'_{\mathcal{S}}$, a minimal $\epsilon/4$-cover of $\threeqset$ for the $\dlone{\empdistr{\mathcal{S}}{}}{}{}$ topology, then $|\threeqset'_{\mathcal{S}}| = \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{})$. We thus know there exists $\threequery' \in \threeqset'_{\mathcal{S}}$ such that $\dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} \leq \epsilon/4$.
+	We denote their concatenation by $\mathcal{S} := \mathcal{S}_1 \uplus \mathcal{S}_2 \in \mathcal{X}^{2m}$ which is of size $2m$. Let then be taken $\threeqset'_{\mathcal{S}}$, a minimal $\epsilon/4$-cover of $\threeqset$ for the $\dlone{\empdistr{\mathcal{S}}{}}{}{}$ distance, then $|\threeqset'_{\mathcal{S}}| = \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{})$. We thus know there exists $\threequery' \in \threeqset'_{\mathcal{S}}$ such that $\dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} \leq \epsilon/4$.
 
 
 	Then triangular inequalities yields that
 	\begin{align*}
 		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} &\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} + \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_1}{\threequery'}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery'}}  \\
 		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}}  + \empdistr{\mathcal{S}_1}{\lvert \threequery-\threequery'\rvert} + \empdistr{\mathcal{S}_2}{\lvert\threequery-\threequery'\rvert}\\
-		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} + 2 \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'}\\
-		\iff \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} &\geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} - 2  \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} > \epsilon/2 
+		&\leq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} + 2 \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'}.
 	\end{align*}
-	Therefore
+	Because of the $\epsilon/4$-cover, it implies 
+	\begin{equation*}
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} \geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} - 2  \dlone{\empdistr{\mathcal{S}}{}}{\threequery}{\threequery'} > \epsilon/2
+	\end{equation*}
+	and therefore
 	\begin{equation*}
 		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \leq \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4}
 	\end{equation*}
@@ -583,25 +587,29 @@ Note that the second bound is better than the first one when $\epsilon$ is suffi
         &\overset{?}{\leq} \sup_{\threeqset'_{\mathcal{S}}} |\threeqset'_{\mathcal{S}}| \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }\\
 		&= \sup_{\mathcal{S} \in \mathcal{X}^{2m} } N(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
 	\end{align*}
-$\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists of bounding the union probability of random event other a random set. Since we can bound uniformly both, event probability, and set cardinality, it could seem intuitive this random union bound hold. However, the conditioning by $\threeqset'_{\mathcal{S}}$ makes this bound non trivial and require further assumptions.
+$\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists of bounding the probability of a union of event over a random set. Since we can bound uniformly both, event probability, and set cardinality, it could seem intuitive this random union bound hold. However, the conditioning by $\threeqset'_{\mathcal{S}}$ makes this bound non trivial and likely requires further assumptions.
+
+
+Though we make use of the symmetry between $\mathcal{S}_1$ and $\mathcal{S}_2$, we can't leverage it as much as the i.i.d. framework does. Such as in \cite{haussler1992decisiontheoricgeneralizationofPACmodel}, methods from PAC learning theory often leverage the fact that swapping samples from $\mathcal{S}_1$ and $\mathcal{S}_2$ preserves the i.i.d. sampling, which is not the case in general for a DPP sampling. For instance, if $\mathcal{X} = \{0,1\}$, then a $2$-DPP will return almost surely $\mathcal{S}_1 =\mathcal{S}_2 = \{0,1\}$. But swapping $0$ with $1$ leads to $\mathcal{S}_1 =\{0,0\}$ and $\mathcal{S}_2 =\{1,1\}$. This event has zero probability for a $2$-DPP sampling, so the sampling has not been preserved by the swapping.
 
 \end{proof}
 
 
-From there, we are now able to prove \cref{thm_infinite_union_bound}. 
+
+
+Admitting \cref{lem_infi_union_bound}, we are able to prove \cref{thm_infinite_union_bound}. 
 \begin{proof}
 	Let $\epsilon>0$ and take $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$. Combining \cref{lem_symm} and \cref{lem_infi_union_bound} gives
-	\begin{align*}
+	\begin{gather*}
 		\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
-		&\leq 2\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }\\
-		&\leq 2 \sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 }
-	\end{align*}
+		\leq 2\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }\\
+		\leq 2 \sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 }
+	\end{gather*}
 
 In order to bound the last term, first consider applying the union bound
 	\begin{align*}
 		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 } 
 		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} + \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/8 }\\
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/16 }\\
 		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/16 }\\
 		&\leq 2\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 }\\
 		&\leq 2 \boundrate(\threeqset, \epsilon/16, m)
@@ -615,74 +623,21 @@ Second, we know from \cref{eqn__pack_cover_pack} and \cref{thm_pack}
 \end{align*}
 where we used the fact that $a \log a < (a/2)^2$ whenever $a \geq 5$, which is the case for $\frac{8eM}{\epsilon} \geq 5$ since $\epsilon \in ]0,\bound]$.
 
-The two precedent bound does neither depend on $\mathcal{S}$ nor $f$, and therefore 
+The two precedent bounds do neither depend on $\mathcal{S}$ nor $f$, and therefore 
 \begin{align*}
 	\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
 	&\leq 8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}}\boundrate(\epsilon/16, m)\\
 \end{align*}
-which is the desired result.
-
-\end{proof}
+which is the desired result.\end{proof}
 
 
-
-
+\section{Discussions and perspectives}
+\label{sec__discussion_perspectives}
 
 
 
 
 
-
-
-
-
-\begin{tcolorbox}[colback=red!10,title= Useless?]
-	We define $\forall a,b \geq 0$ and $\forall \nu >0$
-	\begin{equation}
-		\dnu{\nu}{a}{b} := \frac{|a-b|}{a+b+\nu}
-	\end{equation}
-	
-	From that definition, one can easily check
-	\begin{proposition}
-		\label{prop_dnu}
-		For all $\nu>0$, the function $d_\nu$ verifies the following properties
-		\begin{itemize}
-			\item $d_\nu$ is a distance i.e. it verifies positivity, separation, symmetry and triangular inequality.
-			\item $\forall a,b \geq 0,\ 0\leq \dnu{\nu}{a}{b} < \min( \frac{|a-b|}{a}, 1)$
-			\item Moreover, if $\exists \bound\geq 0$ such that $a,b \le \bound$, then 
-			\begin{equation*}
-				\frac{|a-b|}{\nu + 2\bound} \le \dnu{\nu}{a}{b} \le \frac{|a-b|}{\nu}
-			\end{equation*}
-		\end{itemize}
-	\end{proposition}
-
-
-    
-    Using properties \cref{prop_dnu} of $\dnude{\nu}{}{}$ distance yields that
-    \begin{align*}
-        \dnude{\nu}{\empdistr{\mathcal{S}_1}{\query}}{\empdistr{\mathcal{S}_1}{\query^*}} + \dnude{\nu}{\empdistr{\mathcal{S}_2}{\query}}{\empdistr{\mathcal{S}_2}{\query^*}}
-        &\le \frac{\lvert \empdistr{\mathcal{S}_1}{\query-\query^*}\rvert}{\nu} + \frac{\lvert \empdistr{\mathcal{S}_2}{\query-\query^*}\rvert}{\nu} \\
-        &\le \frac{2}{\nu}  \dlone{\empdistr{\mathcal{S}}{}}{\query}{\query^*}
-    \end{align*}
-\end{tcolorbox}
-
-
-
-
-
-
-
-
-Note that we could also be interested in a biased cost function such as the diversified risk introduced by \cite{zhang2017dppminibatch}
-$$
-\tilde L{\query} =\frac{1}{m}\EE{x \sim \textrm{mDPP}}{\query(x)}=\frac{1}{m}\sum_{x_i \in \mathcal X} b_{i} \query\left(x_{i}\right)
-$$
-Then an unbiased estimator of $\tilde L$ is
-\begin{equation*}
-	\hat{\tilde L}_{\textrm{mDPP}}{\query} = \frac{1}{m}\sum_{x_i\in \mathcal S} \query(x_i)
-\end{equation*}
-We can switch between $L$ and $\tilde L$, substituting $\query(x_i)$ by $\frac{b_i \query(x_i)}{m}$.
-\note{}{complete}
 
 
 

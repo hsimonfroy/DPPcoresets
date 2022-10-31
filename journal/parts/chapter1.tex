@@ -184,14 +184,15 @@ Of course, attempting to sample from $q_\query$ is quiet limited in practice. Fi
 Intuitively, in order to build a coreset of small size, we want to only select data points that are relevant. This means that for a given $x \in \mathcal{X}$, we want to make its probability to be sampled as small as possible, unless it plays a relevant role in the evaluation of $\loss{\query}$ for some $\query$, which translates to $\frac{\query}{\loss{\query}}$ being high.
 
 The idea of \cite{langberg2010_universal_approximator} is thus to take for every $x$, the sampling probability $q_\query$ in the worst case $\query$, i.e. for which $x$ is the most relevant in the evaluation of $\loss{\query}$. Formally, they define the following notion of sensitivity.
-
-\begin{definition}[Sensitivity]
-	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ with respect to $\qset$ is defined as
-    \begin{equation*}
-        \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \ \in[0,1].
-    \end{equation*}
-    and the total sensitivity with respect to $\qset$ as $\mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x) \ \in[1,n]$.
-\end{definition} 
+\begin{tcolorbox}
+    \begin{definition}[Sensitivity]
+        The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ with respect to $\qset$ is defined as
+        \begin{equation*}
+            \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \ \in[0,1].
+        \end{equation*}
+        and the total sensitivity with respect to $\qset$ as $\mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x) \ \in[1,n]$.
+    \end{definition} 
+\end{tcolorbox}
 
 If we were now too sample $x$ from a distribution proportional to the sensitivity $\PP{}{X=x} \propto \sigma(x)$, it would not depend on $\query$. However, we would still need to know $\loss{\query}$ for every $\query$, in order to compute it.
 
@@ -316,9 +317,10 @@ Improving that scheme, more recent results from \cite{li2001_improved_bound_samp
 Moreover, they shown this bound to be tight in the i.i.d. sampling framework, with respect to $\epsilon$ and $\delta$.
 
 Finally, \cite{braverman2016coresetsota} improved it with respect to $S$ by showing that under the same framework
-\begin{equation*}
+\begin{equation}
+    \label{eqn__sota_coreset}
 	m \gtrsim \frac{S}{\epsilon^{2}} (d' \log S + \log \frac{2}{\delta}).
-\end{equation*}
+\end{equation}
 
 
 As an example, we saw that in the $k$-means case, $\mathfrak{S} = \Omega(k)$, and it can be shown that for $d$-dimensional data, $\pdim = \OO(dk\log k)$, which leads to

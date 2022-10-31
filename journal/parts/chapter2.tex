@@ -18,27 +18,30 @@ An essential characteristic of a DPP is that the occurrences of the element of t
 \section{Definition}
 Determinantal Point Processes are before all point processes, which can be described as processes for selecting a collection of mathematical points randomly located on a mathematical space. Formally, a point process $\PP{}{}$ on a ground set $\mathcal{X}$ is a probability measure over "point patterns" or "point configurations" of $\mathcal{X}$, which are subsets of $\mathcal{X}$. For instance, $\mathcal{X}$ could be a continuous region of the euclidean plane in which a scientist injects some quantum particles trapped into a potential well. Then $\PP{}{\left\{x_1, x_2, x_3\right\}}$ characterizes the likelihood of seeing these particles at places $x_1, x_2$, and $x_3$. Depending on the type of the particles, the measurements might tend to cluster together, or they might occur independently, or they might tend to spread out into space. $\PP{}{}$ captures these correlations.
 
-In the following, we focus on discrete, finite point processes, where we assume without loss of generality that $\mathcal{X}=\begin{Bmatrix}
+In the following, we focus on finite point processes, where we assume without loss of generality that $\mathcal{X}=\begin{Bmatrix}
     x_{i} \mid i\in \intint{1}{n}
-    \end{Bmatrix}$, in this setting we sometimes refer to elements of $\mathcal{X}$ as items. The discrete setting is computationally simpler and often more appropriate for real-world data.
+    \end{Bmatrix}$, in this setting we sometimes refer to elements of $\mathcal{X}$ as items. The discrete setting is computationally simpler and often more appropriate for real-world data. We refer to \cite{hough2006_hkpv} for a review of DPPs in the continuous case.
 
 In the discrete case, a point process is simply a probability measure on $2^{\mathcal X}$ i.e. the power set of $\PP{}{}$ i.e. the set of all subsets of $\mathcal{X}$. A sample from $\PP{}{}$ might be the empty set, the entirety of $\mathcal{X}$, or anything in between. 
-\begin{definition}[Determinantal Point Process]
-    \label{def_dpp}
-    $\PP{}{}$ is called a determinantal point process if, when $\mathcal{S}$ is a random subset drawn according to $\PP{}{}$, we have, for every $A \subseteq \mathcal{X}$,
-    \begin{equation}
-        \PP{}{A \subseteq \mathcal{S}}=\operatorname{det}K_A
-    \end{equation}
-    for some real, symmetric matrix $K \in \RR^{n \times n}$ indexed by the elements of $\mathcal{X}$.
-\end{definition}
-Here, $K_A :=$ $\left[K_{x y}\right]_{x, y \in A}$ denotes the submatrix of $K$ indexed by elements of $A$, and we adopt $\operatorname{det}K_\emptyset=1$. Note that normalization is unnecessary here, since we are defining marginal probabilities that need not sum to $1$ .
+\begin{tcolorbox}
+    \begin{definition}[Determinantal Point Process]
+        \label{def_dpp}
+        $\PP{}{}$ is called a determinantal point process if, when $\mathcal{S}$ is a random subset drawn according to $\PP{}{}$, we have, for every $A \subseteq \mathcal{X}$,
+        \begin{equation}
+            \PP{}{A \subseteq \mathcal{S}}=\operatorname{det}K_A
+        \end{equation}
+        for some real, symmetric matrix $K \in \RR^{n \times n}$ indexed by the elements of $\mathcal{X}$.
+    \end{definition}
+    Here, $K_A :=$ $\left[K_{x y}\right]_{x, y \in A}$ denotes the submatrix of $K$ indexed by elements of $A$, and we adopt $\operatorname{det}K_\emptyset=1$. Note that normalization is unnecessary here, since we are defining marginal probabilities that need not sum to $1$ .
+\end{tcolorbox}
 
-Since $\PP{}{}$ is a probability measure, all principal minors $\operatorname{det}K_A$ of $K$ must be positives, and thus $K$ itself must be positive (for Loewner order $\preceq$). It is possible to show in the same way that the eigenvalues of $K$ are bounded above by one. These requirements turn out to be sufficient. By the Macchi-Soshnikov theorem (\cite{macchi1975dpp}),any $K$ such that $0 \preceq K \preceq I$ defines a DPP.
+Since $\PP{}{}$ is a probability measure, all principal minors $\operatorname{det}K_A$ of $K$ must be positives, and thus $K$ itself must be positive (for Loewner order $\preceq$). It is possible to show in the same way that the eigenvalues of $K$ are bounded above by one. These requirements turn out to be sufficient. By the Macchi-Soshnikov theorem from \cite{macchi1975dpp},any $K$ such that $0 \preceq K \preceq I$ defines a DPP.
 
 We refer to $K$ as the marginal kernel since it contains all the information needed to compute the probability of any subset $A$ being included in $\mathcal{S}$. A few simple observations follow from \cref{def_dpp}. If $A=\{x\}$ is a singleton, then we have
-\begin{equation*}
+\begin{equation}
+    \label{eqn__marginal}
 	\PP{}{x \in \mathcal{S}}=K_{x x}
-\end{equation*}
+\end{equation}
 also denoted $K(x,x)$. That is, the diagonal of $K$ gives the marginal probabilities of inclusion for individual elements of $\mathcal{X}$. Diagonal entries close to 1 correspond to elements of $\mathcal{X}$ that are almost always selected by the DPP. Furthermore, if $A=\{x, y\}$ is a two-element set, then
 \begin{equation}
     \label{eqn_paircorrel}
@@ -54,6 +57,34 @@ also denoted $K(x,x)$. That is, the diagonal of $K$ gives the marginal probabili
 Thus, the off-diagonal elements determine the negative correlations between pairs of elements: large values of $K_{x y}$ imply that $x$ and $y$ tend not to co-occur.
 
 \cref{eqn_paircorrel} demonstrates why DPPs are "diversifying". If we think of the entries of the marginal kernel as measurements of similarity between pairs of elements in $\mathcal{X}$, then highly similar elements are unlikely to appear together. If $K_{x y}=\sqrt{K_{x x} K_{y y}}$, then $i$ and $j$ are "perfectly similar" and do not appear together almost surely. Conversely, when $K$ is diagonal there are no correlations and the elements appear independently. Note that DPPs cannot represent distributions where elements are more likely to co-occur than if they were independent: correlations are always negative.
+
+
+
+
+
+A DPP of kernel $K$ can have a random sample size. From \cref{eqn__marginal}, we know that the average number of samples is equal to the trace of $K$, Formally
+\begin{equation*}
+    \EE{}{|\mathcal{S}|} = \EE{}{\sum_{x \in \mathcal{X}} \1\{x \in \mathcal{S}\}} = \sum_{x \in \mathcal{X}} \PP{}{x \in \mathcal{\mathcal{S}}} = \sum_{x \in \mathcal{X}}K_{xx}=  \operatorname{Tr}K.
+\end{equation*} 
+But in many cases, one prefers to specify deterministically the number of samples, instead of having a random number of them. This leads to the definition of $m$-DPP.
+\begin{tcolorbox}
+    \begin{definition}[$m$-DPP]
+        A $m$-DPP is a DPP conditioned to a fixed sample size $m$. Therefore, it is a probability distribution supported on $\binom{\mathcal{X}}{m}$ only.
+    \end{definition}
+\end{tcolorbox}
+
+
+Finally, we introduce a subclass of DPPs called projective DPPs that admits useful properties.
+
+\begin{tcolorbox}
+    \begin{definition}[Projective DPP]
+        A DPP is projective if every eigenvalue of its kernel is in $\{0,1\}$. This is equivalent to the kernel being a projection matrix.
+    \end{definition}
+\end{tcolorbox}
+
+Projective DPPs are sometimes called elementary DPPs, because it turns out any DPP can be written as a mixture of projective DPP, see Lemma 2.6. from \cite{kulesza2012_dpp_for_ml}. 
+
+For a DPP of kernel $K$, being a projective DPP is equivalent to having deterministic sample size. We know this size is equal to $\operatorname{Tr}K$ which in that case is by definition the rank of $K$. As a corollary, the set of projective DPPs of rank $m$ are precisely the intersection of the set of DPPs and the set of $m$-DPPs.  
 
 
 \section{Examples}
@@ -98,12 +129,8 @@ of $\mathcal{X}$. Then the kernel $K$ measures similarity using dot products bet
 This geometric interpretation explain why diverse sets are more probable. It is because their feature vectors are more orthogonal, and hence span larger volumes. Conversely, items with parallel feature vectors are selected together with probability zero, since their feature vectors define a degenerate parallelepiped. Ceteris paribus, items with large magnitude feature vectors are more likely to appear, because the spanned volume for sets containing them evolves linearly with respect to their magnitude, and thus the probability evolves quadratically with respect to it.
 
 
-\section{Some useful properties}
 
-projective DPP
-mDPP
 
-despite exponential support
 
 
 
