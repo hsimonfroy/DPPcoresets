@@ -258,7 +258,7 @@ Note that total sensitivity $\mathfrak{S} \in [1,n]$ depends on the richness of 
 
 Fortunately, it is possible to compute tight bounds on the sensitivity for many machine learning problems. For instance, \cite{lucic2016_lineartime_detection_via_sensitivity} show that the sensitivity bound for $k$-means problem is $\mathfrak{S} = \Theta(k)$. When $k = n-1$, the query set $\qset$ contains all functions that are zero on $n-1$ points, taking $n-1$ points to be centers of their own cluster, and we recover the worst case $S = n$.
 
-
+\vspace{1cm}
 
 \subsection{Extension to all queries}
 
@@ -280,6 +280,8 @@ However, in the case $\qset$ is not finite, this bound diverge. We give here the
 The key idea is to construct a set $\qset'_\epsilon \subseteq \qset$ which still is finite, and that approximate the set $\qset$ with $\epsilon$ granularity. It would further imply that if $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$, then it would be an $\epsilon'$-coreset for $\qset'_\epsilon$, for controlled $\epsilon'$, and then one could apply union bound on $\qset'_\epsilon$ instead.
 
 This would summon the size of $\qset'_\epsilon$ into the obtained bound, which depends on the richness of the set $\qset$ it approximate. Richness in that case can be quantified through pseudo-dimension, which generalize the VC-dimension to real-valued function sets.
+
+\newpage
 
 
 \begin{tcolorbox}
