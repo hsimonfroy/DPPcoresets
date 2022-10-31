@@ -156,7 +156,7 @@ The existence of coresets is trivial, the original data set $\mathcal{X}$ itself
 
 \subsection{Importance multinomial sampling}
 
-In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a set $\mathcal{S} \subseteq \binom{\mathcal{X}}{m}$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. sampling of $X_i$ such that $\forall x \in \mathcal{X},\ \PP{}{X_1=x} = q(x)$.
+In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a sequence $\mathcal{S} \in \mathcal{X}^m$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. sampling of $X$ such that $\forall x \in \mathcal{X},\ \PP{}{X=x} = q(x)$.
 
 By the importance sampling trick, an unbiased estimator of $\loss{\query}$ is then
 \begin{equation*}
@@ -186,14 +186,14 @@ Intuitively, in order to build a coreset of small size, we want to only select d
 The idea of \cite{langberg2010_universal_approximator} is thus to take for every $x$, the sampling probability $q_\query$ in the worst case $\query$, i.e. for which $x$ is the most relevant in the evaluation of $\loss{\query}$. Formally, they define the following notion of sensitivity.
 
 \begin{definition}[Sensitivity]
-	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ with respect to $\qset$ is defined as and the total sensitivity $\mathfrak S$ of $\mathcal X$ are defined as
+	The sensitivity $\sigma(x)$ of a data point $x \in \mathcal{X}$ with respect to $\qset$ is defined as
     \begin{equation*}
         \sigma(x) = \sup _{\query \in \qset} \frac{{\query}\left(x\right)}{L(\query)} \ \in[0,1].
     \end{equation*}
     and the total sensitivity with respect to $\qset$ as $\mathfrak{S}=\sum_{x\in \mathcal{X}} \sigma(x) \ \in[1,n]$.
 \end{definition} 
 
-If we were now too sample $x$ from a distribution proportional to the sensitivity $\PP{}{x} \propto \sigma(x)$, it would not depend on $\query$. However, we would still need to know $\loss{\query}$ for every $\query$, in order to compute it.
+If we were now too sample $x$ from a distribution proportional to the sensitivity $\PP{}{X=x} \propto \sigma(x)$, it would not depend on $\query$. However, we would still need to know $\loss{\query}$ for every $\query$, in order to compute it.
 
 But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall x \in \mathcal{X}, s(x) \geq \sigma(x)$, and define $S := \sum_{x\in \mathcal{X}} s(x) \geq \mathfrak{S}$. We can then sample $x$ from a distribution proportional to $s$, i.e.  $\mathcal S \sim \mathcal M(m, s/S)$, and we have the following result.
 
@@ -219,12 +219,12 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
 \end{tcolorbox}
 
 \begin{proof}
-    Define $g_\query(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$.
+    Define $g_s(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$.
     Because of boundedness, we can apply Hoeffding inequality, and have for any $\query \in \qset$ and $\epsilon>0$
     \begin{equation*}
-        \mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x) - \mathbb{E}\left[g_{\query}(x)\right]\right|>\epsilon/S\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
+        \mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_s(x) - \mathbb{E}\left[g_s(x)\right]\right|>\epsilon/S\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
     \end{equation*}
-    Furthermore, $\mathbb{E}\left[g_{\query}(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_{\query}(x)=\frac{\estloss{\textrm{iid}}{\query}}{S L(\query)}$, thus
+    Furthermore, $\mathbb{E}\left[g_s(x)\right]=\frac{1}{S}$ and $\frac{1}{m} \sum_{x \in \mathcal{S}} g_s(x)=\frac{\estloss{\textrm{iid}}{\query}}{S L(\query)}$, thus
     \begin{equation*}
         \mathbb{P}\left[|\estloss{\textrm{iid}}{\query} - L(\query)|>\epsilon L(\query)\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
     \end{equation*}
@@ -244,10 +244,10 @@ The required number of samples depends quadratically on $S$ the upper bound on t
 Note that total sensitivity $\mathfrak{S} \in [1,n]$ depends on the richness of function space $\qset$. 
 \begin{itemize}
     \item $\mathfrak{S}=1$ if and only if for all $x\in\mathcal{X}$, $\sigma(x)=1/n$. This means $\qset$ only contains constant functions.
-    \item $\mathfrak{S}=n$ if and only if for each $x\in \mathcal{X}$, it exists some $\query \in \qset$ such that for any other element $y$ of $\mathcal{X}$, $f(y)=0$.
+    \item $\mathfrak{S}=n$ if and only if for each $x\in \mathcal{X}$, there exists some $\query \in \qset$ such that for any other element $y$ of $\mathcal{X}$, $f(y)=0$.
 \end{itemize}
 
-Fortunately, it is possible to compute tight bounds on the sensitivity for many machine learning problems. For instance, \cite{lucic2016_lineartime_detection_via_sensitivity} show that the sensitivity bound for $k$-means problem is $\mathfrak{S} = \Theta(k)$. When $k = n-1$, the query set $\qset$ contains all functions that are zero on $n-1$ points, taking $n-1$ points to be centers of their own cluster, and we recover the worst case $S\simeq n$.
+Fortunately, it is possible to compute tight bounds on the sensitivity for many machine learning problems. For instance, \cite{lucic2016_lineartime_detection_via_sensitivity} show that the sensitivity bound for $k$-means problem is $\mathfrak{S} = \Theta(k)$. When $k = n-1$, the query set $\qset$ contains all functions that are zero on $n-1$ points, taking $n-1$ points to be centers of their own cluster, and we recover the worst case $S = n$.
 
 
 
@@ -296,11 +296,17 @@ we have
 \end{equation}
 \end{tcolorbox}
 
-Then it can be shown size of previously mentioned $\qset'_\epsilon$ is $\OO(\epsilon^{-\pdim})$ where $\pdim:=\operatorname{pdim}\qset$. Applying union bound leads to
+Introducing the function space
+\begin{equation}
+    \label{eqn__g_sensitivity}
+    \twoqset_s := \frac{\qset}{s\loss{\qset}} \ =\left\{x \mapsto \frac{\query(x)}{s(x)\loss{\query}} \mid \query \in \qset\right\} \in [0,1]^{\mathcal{X}}.
+\end{equation}
+it can be shown the size of previously mentioned $\qset'_\epsilon$ is $\OO(\epsilon^{-\pdim})$ where $\pdim:=\operatorname{pdim}\twoqset_s$. Applying union bound then leads to
 \begin{equation*}
 	m \gtrsim \frac{S^{2}}{\epsilon^{2}} (d'\log\frac{1}{\epsilon} + \log \frac{1}{\delta})
 \end{equation*}
-where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor.
+where $y \gtrsim x$ is a transitive notation for $y = \Omega(x)$ i.e. $y$ is lower bounded by $x$ up to a constant factor. 
+%Likewise, we denote $y \lesssim x \iff y = \OO(x)$ and $y \asymp x \iff y = \Theta(x)$.
 
 This result presented here follows from seminal works on theoretic generalizations of the PAC model from \cite{haussler1992decisiontheoricgeneralizationofPACmodel}.
 Improving that scheme, more recent results from \cite{li2001_improved_bound_sample_complexity} involving chaining arguments leads to
