@@ -19,7 +19,7 @@ In this chapter, we present current results on coreset sampling with DPPs, and s
 		\label{thm__tremblay}
 		Let $m \in \NN$, $K_m$ a $m$-DPP kernel and let sample $\mathcal{S} \sim \mathcal{DPP}(K_m)$. Assume that the query space $\qset$ is parametrized by some $\theta \in \Theta$, and that all Lipschitz constant with respect to $\theta$ of $\query_\theta \in \qset$ are bounded by some $\lipschitz := \sup_{x \in \mathcal{X}} \operatorname{Lip}\left\{\theta \mapsto \query_\theta(x)\right\}$.\\
 
-		If the minimal sensitivity satisfies $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in [0,1]$ 
+		If the minimal sensitivity satisfies $\min_{x\in \mathcal{X}}\sigma(x) \geq 1/n$, then for all $\epsilon, \delta \in ]0,1]$ 
 		\begin{equation*}
             m \geq \frac{32}{\epsilon^{2}}\left(\max_{x\in \mathcal{X}}\frac{m\sigma(x)}{K_m(x,x)}\right)^2 \log \frac{4\eta}{\delta}
 			\implies 

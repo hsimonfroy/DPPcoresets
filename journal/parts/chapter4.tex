@@ -75,8 +75,8 @@ It is worth to say this variance generalize to the continuous case. Actually, pr
 
 Also, note that the higher $d$ is, the less the variance gain in \cref{eqn__improved_var}. Intuitively, this is because as the dimension increase, all points become already repelled from each others, so the addition of repulsiveness is less and less effective, or put differently, there is less and less redundancy in an independent sampling that we can get rid of by a negatively correlated sampling.
 
-\note{}{cf. independent sphere packing in high dimension?}
-\note{}{illustrate?}
+% \note{}{cf. independent sphere packing in high dimension?}
+% \note{}{illustrate?}
 
 We now introduce some notations
 \begin{itemize}
@@ -116,9 +116,9 @@ so that we can reformulate the result from \cref{thm_sgdpaper} into the followin
 \label{sec__reg_assumptions}
 In order to translate the improved variance rate from \cref{cor_sgdpaper} into a concentration inequality and then a sample complexity bound for coreset, several assumptions are made and are discussed.
 
-Let $\qset \in \RR^{\mathcal{X}}$ be the function space on which we want the coreset property to hold. With the notations of \cref{chap_intro_coresets}, define the following function space 
+Let $\qset \subseteq \RR^{\mathcal{X}}$ be the function space on which we want the coreset property to hold. With the notations of \cref{chap_intro_coresets}, define the following function space 
 		\begin{equation*}
-		\twoqset_m := \frac{m\qset}{\opekernel{m}\loss{\qset}} = \left\{x \mapsto \frac{m\query(x)}{\opekernel{m}(x,x)\loss{\query}} \mid \query \in \qset\right\} \in \RR^{\mathcal{X}}.
+		\twoqset_m := \frac{m\qset}{\opekernel{m}\loss{\qset}} = \left\{x \mapsto \frac{m\query(x)}{\opekernel{m}(x,x)\loss{\query}} \mid \query \in \qset\right\} \subseteq \RR^{\mathcal{X}}.
 	\end{equation*}
 Note then that for any $\query \in \qset$, we can define $g := \frac{m\query}{\opekernel{m}\loss{\query}} \in \twoqset_m$ which verifies
 	\begin{equation}
@@ -152,7 +152,7 @@ Formally, we assume there exists positive reals $\lipschitz, \bound \in \RR_+$ a
 
 Finally, the restriction of $K^{(m)}_{q, \tilde \gamma}$ into $\opekernel{m}$ is such that for large $n$, we have $K^{(m)}_{q, \tilde \gamma} \simeq \opekernel{m}$. Put together, the asymptotic behaviour of sets $\twoqset_m$ is 
 \begin{equation}
-	\twoqset_m \to \twoqset := \frac{\qset\gamma}{\loss{\qset}q_{\mathrm{eq}}} = \left\{x \mapsto \frac{\query(x)\gamma(x)}{\loss{\query}q_{\mathrm{eq}}(x)} \mid \query \in \qset\right\} \in \RR^{\mathcal{X}}.
+	\twoqset_m \to \twoqset := \frac{\qset\gamma}{\loss{\qset}q_{\mathrm{eq}}} = \left\{x \mapsto \frac{\query(x)\gamma(x)}{\loss{\query}q_{\mathrm{eq}}(x)} \mid \query \in \qset\right\} \subseteq \RR^{\mathcal{X}}.
 \end{equation}
 
 
@@ -359,7 +359,7 @@ Thereby, the condition on $\epsilon$ translates to a much worse bound on $m$, ru
 		 
 
 
-\paragraph{Compared to the i.i.d. framework bound} from \cref{thm_hoeffdingfixedquery}, we obtained a better bound on coreset size for fixed query. This corroborate the qualitative results we obtained on variance comparison in \cref{sec__variance_arguments}, by quantifying the effect of increased variance rate on sampling complexity. 
+\paragraph{Compared to the i.i.d. framework bound} from \cref{thm_hoeffdingfixedquery}, we obtained a better bound on coreset size for fixed query. This corroborate the qualitative results we obtained on variance comparison in \cref{sec__variance_arguments}, by quantifying the effect of increased variance rate on sample complexity of coreset. 
 
 Although the concentration bound from \cite{breuer2013nevai} pre-dates the works of \cite{tremblay2018dppcoreset}, it is only because of the improved variance rate from \cite{bardenet2021sgddpp} that it can yields improved concentration result. If one were to apply classical variance rate in $\OO(m^{-1})$ to it, it would find no improvements of the i.i.d. framework.
 
@@ -376,13 +376,13 @@ In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_queryco
 
 		Assume there exists a bounding function $\boundrate$ such that for all $\epsilon >0$, function $\threequery \in \threeqset$, integer $m \in \NN$, and let $\mathcal{S} \sim \PP{}{}$, we have the bound
 		\begin{equation}
-			\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq \boundrate(\epsilon, m)
+			\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq \boundrate(\epsilon, m).
 		\end{equation}
 
 		Then for all $\epsilon \in ]0,M]$ and all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$, it holds
 		\begin{equation}
 			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq 
-			8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}} \boundrate(\epsilon/16, m)
+			8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}} \boundrate(\epsilon/16, m).
 		\end{equation}
 	\end{theorem}
 \end{tcolorbox}
@@ -405,7 +405,7 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 		\begin{equation*}
 			m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \left( \pdim \log \frac{\bound}{\epsilon} + \log \frac{1}{\delta }  \right) \right)^{\frac{1}{1+\frac 1 d}} 
 			\implies 
-			\text{$\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ w.p. $1-\delta$}
+			\text{$\mathcal{S}$ is an $\epsilon$-coreset for $\qset$ w.p. $1-\delta$}.
 		\end{equation*}
 	\end{theorem}
 \end{tcolorbox}
@@ -416,7 +416,7 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 
 	We know from \cref{thm_breuerfixedtheta} that for all $\epsilon \in ]0,\bound]$ and $m \in \NN$ we have
 	\begin{equation*}
-		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} > \epsilon}  \leq \boundrate_{\textrm{BD}}(\epsilon, m)
+		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} > \epsilon}  \leq \boundrate_{\textrm{BD}}(\epsilon, m).
 	\end{equation*}
 	
 	Moreover, the assumption \ref{assum__inf} implies $\twoqset_m \in [0,M]^{\mathcal{X}}$. The hypotheses of \cref{thm_infinite_union_bound} are thus satisfied, and we can apply it taking $\threeqset=\twoqset_m$, which yields that for all $m \in \NN$ such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$, it holds
@@ -433,7 +433,7 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 		\boundrate_{\textrm{BD}}(\epsilon/16, m) \leq \frac{\delta}{8} \left(\frac{8e\bound}{\epsilon}\right)^{-2\pdim}
 		\iff
 		m \gtrsim \left(\frac{256\lipschitz^2}{\epsilon^2} \log \left( \frac{16}{\delta }\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}\right) \right)^{\frac{1}{1+\frac 1 d}}\\
-		\iff m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{1}{\delta } + \pdim \log \frac{\bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}
+		\iff m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{1}{\delta } + \pdim \log \frac{\bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}.
 	\end{gather*}
 	This rate is conditioned to the fact that $m$ is such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$. But we know it holds as soon as $m \gtrsim \left(\frac{4\lipschitz^2}{\epsilon^2} \log 4 \right)^{\frac{1}{1+\frac 1 d}}$, which is trivially implied by the obtained bound.
 
@@ -446,7 +446,7 @@ Our results is to be compared to \cref{eqn__sota_coreset}
 	m \gtrsim \frac{S}{\epsilon^{2}} (\operatorname{pdim}\twoqset_s \log S + \log \frac{2}{\delta}).
 \end{equation*}
 
-Discussing assumptions in \cref{sec__reg_assumptions}, we remarked that for sufficiently rich query space $\qset$, $\operatorname{pdim}\twoqset_s$ can be quiet comparable to $\pdim$. Also was noticed that $\bound$ does not need to depend on $\qset$. With this in mind, our bound is quiet comparable to the state-of-art, and improve it by a $(1+1/d)$-root. However, our result requires a supplementary condition on Lipschitz constant. Perspectives of improvements are discussed in \cref{sec__discussion_perspectives} 
+Discussing assumptions in \cref{sec__reg_assumptions}, we remarked that for sufficiently rich query space $\qset$, $\operatorname{pdim}\twoqset_s$ can be quiet comparable to $\pdim$. Also was noticed that $\bound$ does not need to depend on $\qset$. With this in mind, our bound is quiet comparable to the state-of-the-art, and improve it by a $(1+1/d)$-root. However, our result requires a supplementary condition on Lipschitz constant. Perspectives of improvements are discussed in \cref{sec__discussion_perspectives} 
 
 
 
@@ -548,7 +548,7 @@ We introduce the following conjecture, as an attempt to extend Lemma 13. from \c
 \begin{tcolorbox}
 	\begin{conjecture}
 		\label{lem_infi_union_bound}
-		Let $\epsilon >0$, $m\in \NN$, and  $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two sequences of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Then
+		Let $\epsilon \in ]0,1]$, $m\in \NN$, and  $\mathcal{S}_1, \mathcal{S}_2 \overset{i.i.d.}{\sim} \PP{}{}$, two sequences of size $m$ independently sampled from the same distribution supported on $\mathcal{X}^m$. Then
 		
 		\begin{gather*}
 			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \\\leq \\
@@ -631,12 +631,21 @@ The two precedent bounds do neither depend on $\mathcal{S}$ nor $f$, and therefo
 which is the desired result.\end{proof}
 
 
-\section{Discussions and perspectives}
+\chapter{Conclusion and perspectives}
 \label{sec__discussion_perspectives}
 
+In this report, we attempted to provide improved sample complexity results on coresets by the use of a well-chosen DPP. We started with an inventory on coreset literature, then we brought to light determinantal point processes as an improvement way. After qualitatively justifying the use of DPPs over existing sampling methods, we established quantitative results.
+
+We show that under the assumption of \cref{lem_infi_union_bound}, still to be proven, a specific projective DPP based on orthogonal polynomials yields an improved sample complexity. Basically, previous state-of-the-art sample complexity is improved by a $(1+1/d)$-root. Also, it does not require to compute bounds on sensitivity, which can be a huge drawback of current methods depending on the problem. However, this result comes with some costs. 
+
+First, it requires a supplementary regularity condition, namely, controlled Lipschitz constant. This requirement comes from the nature of the method used in \cite{bardenet2020mcdpp} to build the OPE kernel, which relies on a detour through continuous DPPs needed to apply continuous arguments. At the moment this report is redacted, it is not known if that detour can be shortcut in the discrete case. One idea could be to build a DPP kernel directly from a discrete OPE, i.e. to build an orthogonal polynomials family with respect to the empirical measure. When the data size is sufficiently large, one could recover the same behaviour.
+
+Second, we saw in \cref{sec__sampling_DPP} that sampling from DPP comes with additional computational cost. In our case, sampling from the OPE kernel can be achieved in $\OO(nm^2)$, compared to $\OO(nm)$ in the i.i.d. case. One could rely on approximate DPP sampling, though it is not clear how sensible is our analysis to the exactness of the sampling.
+
+Our analysis should rely on actual results on concentration inequalities for DPPs, known achievable variance rates, generalization bound in the non-i.i.d. framework, and known DPP sampling methods. We made it sufficiently flexible to adapt to any potential improvements of these. We hope it provided a good insight on the potential improvements in machine learning applications one should expect from negatively correlated sampling, and especially DPPs. This work was intended to be the most complete on the theoretical level. The next step would now be to confirm it empirically via numerical experiments.
 
 
-
+Finally, I can't close this report without thanking the team SigMA from CRIStAL, for its good spirit and understanding that has greatly contributed to dilute the worries of a broken arm while biking. In particular, I acknowledge R\'emi Bardenet motivation, openness, relevance and the energy he invests in involving everyone into its scientific adventures.
 
 
 

@@ -27,18 +27,20 @@ A large amount of machine learning problems falls into the framework \cref{eqn_l
     \end{equation*}
     In this case, $\query$ is the squared distance to the nearest cluster center $q$ in a set of cluster centers $\mathcal{C}$. Formally, 
     \begin{equation*}
-        \qset = \left\{\query : x \mapsto \min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}   
+        \qset = \left\{\query : x \mapsto \min_{q \in \mathcal{C} } \lVert x - q \rVert^2_2 \mid \mathcal{C}  \in \binom{\mathcal{X}}{k}\right\}
     \end{equation*}
     where $\binom{\mathcal{X}}{k}$ denotes ``from $\mathcal{X}$ choose $k$'', the set of all subsets of $\mathcal{X}$ of size $k$.
 \end{example}
 
-\begin{example}
+\begin{example}[linear regression]
+    The goal of ordinary least squares linear regression is to find a vector $a \in \RR^d$ and a scalar $b \in \RR$ that minimizes the sum of squares 
     \begin{equation*}
-        \loss{\query} = \sum_{x\in \mathcal{X}} (a\T x +b -y)^2
+        \loss{\query} = \sum_{(y,z)\in \mathcal{X}} (a\T y +b -z)^2
     \end{equation*}
-    $\qset = \left\{x \mapsto (a\T x + b -y)^2 \mid a \in \RR^d, b \in \RR\right\}$
+    where the data is $\mathcal{X} =\begin{Bmatrix}x_i :=(y_{i}, z_i) \mid i\in \intint{1}{n}\end{Bmatrix}$ with for all $i\in \intint{1}{n}$, $y_i \in \RR^d$ and $z_i \in \RR$. In this case, we have \begin{equation*}
+        \qset = \left\{(y,z) \mapsto (a\T y + b -z)^2 \mid a \in \RR^d, b \in \RR\right\} 
+    \end{equation*}
 \end{example}
-\note{}{missing text}
     
 
 In many machine learning applications, the induced optimization problem can be hard to solve. Given a learning task, if an algorithm is too slow on large datasets, one can either speed up the algorithm or reduce the amount of data.
@@ -59,11 +61,13 @@ x_{i} \mid i\in \intint{1}{m}
 \begin{equation*}
     \estloss{\mathcal{S}}{\query}:=\sum_{x \in \mathcal{S}} \omega\left(x\right) \query(x).
 \end{equation*}
+
+The aim of this estimator is ``to approximate'' $\loss{\query}$ defined in \cref{eqn_lossquery}. Depending on the context, there are plenty of meaning ``to approximate'' can get. We focus especially on the coreset property.
 \begin{tcolorbox}
     
     \begin{definition}[Coreset]
         \label{def_coresetprop}
-        Let $\epsilon \in {]}0,1{[}$ and $\query \in \qset$. We say $\mathcal{S}$ is an $\epsilon$-coreset for $\query$ if the estimated cost based on $\mathcal{S}$ is equal to the exact cost up to a relative error $\epsilon$. Formally
+        Let $\epsilon \in {]}0,1{]}$ and $\query \in \qset$. We say $\mathcal{S}$ is an $\epsilon$-coreset for $\query$ if the estimated cost based on $\mathcal{S}$ is equal to the exact cost up to a relative error $\epsilon$. Formally
         \begin{equation}
             \label{eqn_querycoresetprop}
             \left|\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}}-1\right| \le \epsilon.
@@ -105,43 +109,48 @@ An important consequence of the coreset property is the following
 A key consequence of that theorem is that one can minimize on the estimated loss $\estloss{\mathcal{S}}{}$ and still guarantee a low error on the true loss, even when the size of $\mathcal{S}$ is small before the size of $\mathcal{X}$. Therefore, it makes coreset very relevant in a machine learning context, and  inscribes them into a more general learning framework that is PAC learning.
 
 \section{Coresets and PAC learning}
-\subsection{PAC learning}In computational learning theory, probably approximately correct (PAC) learning is a framework for mathematical analysis of machine learning. It was proposed in 1984 in \cite{valiant1984learnable}. The first idea is that a learning problem can be formulate into an expected risk minimization. In another words, by learning, one is interested in minimizing errors over a distribution of guesses it would have to make. To do so, the learner will receives samples and must select a prediction function based on them. The PAC framework states that the learner ability can be quantified by how probable (the "probably" part) the learner have a low generalization error (the "approximately correct" part) in some sense.
+In computational learning theory, probably approximately correct (PAC) learning is a framework for mathematical analysis of machine learning. It was proposed in 1984 in \cite{valiant1984learnable}. The first idea is that a learning problem can be formulate into an expected risk minimization. In another words, by learning, one is interested in minimizing errors over a distribution of guesses it would have to make. To do so, the learner will receives samples and must select a prediction function based on them. The PAC framework states that the learner ability can be quantified by how probable (the "probably" part) the learner have a low generalization error (the "approximately correct" part) in some sense.
 
 
 
 In that framework, several practical issues can occur. 
-\begin{itemize}
+\begin{enumerate}
     \item The richness of the considered class of prediction function can be too small to embrace the complexity of the studied phenomena.
     \item The risk optimizer algorithm could struggle finding the minimizing function, for instance only finding local minima, or yielding high computational complexity.
     \item The sample complexity required for reaching a given level of "probable" in the approximately correctness can vary.
-\end{itemize}
+\end{enumerate}
 
 However, a learning problem is generally not separable into these three issues. This means their resolution is not independent and had to be tackled jointly. For instance, making more expressive a class of prediction function can make its optimization more difficult, or make the sample complexity required higher. The latter case is well known as overfitting.
 
-\subsection{Link with coresets}
 
-Let us see how coresets can naturally intervene into the PAC framework. Formally, let be given a probability distribution $\PP{}{}$ generating the data $\mathcal{S}$, and let be $\qset$ a family of loss functions. Minimizing the expected loss is equivalent to finding $\query^*:= \arg \min_{\query \in \qset} \loss{\query}$. Because we are only given $\mathcal{S}$ and not the full distribution, we have to approximate $\loss{\query}$ by some estimate $\estloss{\mathcal{S}}{\query}$ based on the data, and then minimizing it with $\hat{\query}^* := \arg \min_{\query\in \qset} \estloss{\mathcal{S}}{\query}$. 
+The use of coresets tackles the last two issues. It aims to reduce the number of samples required to compute an optimal prediction function, and still control the error of the optimization step. The computational complexity of an optimizer being often linked to the number of samples, it is by the way reduced. In general, if the time complexity for an optimization algorithm to optimize on $n$ data points is $\OO(a_n)$, and that it takes $\OO(b_m)$ time to sample an $\epsilon$-coreset which is of size $m \le n$, then we have interest in building coreset as soon as $\OO(a_n) \geq \OO(b_m) + \OO(a_m)$.
 
 
-In order to evaluate this scheme, we fix some $\epsilon>0$, and we want with the highest probability as possible that the relative error of $\loss{\hat\query^*}$ against $\loss{\query^*}$ is less than $\epsilon$. Put differently we want
-\begin{equation*}
-	\mathbb{P}\left[|\loss{\hat\query^*} - \loss{\query^*}| \ge \epsilon \loss{\query^*}\right] \leq \delta
-\end{equation*}
-for the smallest $\delta$ as possible.
 
-But we know a sufficient condition to control this error, that's the coreset property! Indeed, suppose we sample a data set $\mathcal{S}$ such that $\mathcal{S}$ is an $\epsilon/3$-coreset for $\qset$ with probability at least $1-\delta$. Formally
-\begin{equation*}
-    \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta.
-\end{equation*}
-Then by \cref{thm_optcoreset} we have with probability at least $1-\delta$ (w.p. $1-\delta$), that
-\begin{equation*}
-    \loss{\query^*} \leq \loss{\hat\query^*} \leq (1+ 3 \epsilon/3) \loss{\query^*} \iff
-    |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}.
-\end{equation*}
+% \subsection{Link with coresets}
 
-We thus see that the PAC framework translates to approximating with high probability the evaluation of a function on a data subset, which is guaranteed by the coreset property. 
+% Let us see how coresets can naturally intervene into the PAC framework. Formally, let be given a probability distribution $\PP{}{}$ generating the data $\mathcal{S}$, and let be $\qset$ a family of loss functions. Minimizing the expected loss is equivalent to finding $\query^*:= \arg \min_{\query \in \qset} \loss{\query}$. Because we are only given $\mathcal{S}$ and not the full distribution, we have to approximate $\loss{\query}$ by some estimate $\estloss{\mathcal{S}}{\query}$ based on the data, and then minimizing it with $\hat{\query}^* := \arg \min_{\query\in \qset} \estloss{\mathcal{S}}{\query}$. 
 
-On another hand, the use of coresets leverage one of the three issues that occur in PAC learning, that is to reduce the number of samples required to compute an optimal prediction function, and still controlling the error. If the time complexity for an optimization algorithm to optimize on $n$ data points is $\OO(a_n)$, and that it takes $\OO(b_m)$ time to sample an $\epsilon$-coreset which is of size $m \le n$, then we have interest in building coreset as soon as $\OO(a_n) \geq \OO(b_m) + \OO(a_m)$.
+
+% In order to evaluate this scheme, we fix some $\epsilon>0$, and we want with the highest probability as possible that the relative error of $\loss{\hat\query^*}$ against $\loss{\query^*}$ is less than $\epsilon$. Put differently we want
+% \begin{equation*}
+% 	\mathbb{P}\left[|\loss{\hat\query^*} - \loss{\query^*}| \ge \epsilon \loss{\query^*}\right] \leq \delta
+% \end{equation*}
+% for the smallest $\delta$ as possible.
+
+% But we know a sufficient condition to control this error, that's the coreset property. Indeed, suppose we sample a data set $\mathcal{S}$ such that $\mathcal{S}$ is an $\epsilon/3$-coreset for $\qset$ with probability at least $1-\delta$. Formally
+% \begin{equation*}
+%     \PP{}{\forall f \in \qset,\ |\frac{\estloss{\mathcal{S}}{\query}}{\loss{\query}} - 1| \leq \epsilon/3} \geq 1- \delta.
+% \end{equation*}
+% Then by \cref{thm_optcoreset} we have with probability at least $1-\delta$ (w.p. $1-\delta$), that
+% \begin{equation*}
+%     \loss{\query^*} \leq \loss{\hat\query^*} \leq (1+ 3 \epsilon/3) \loss{\query^*} \iff
+%     |\loss{\hat\query^*} - \loss{\query^*}| \leq \epsilon \loss{\query^*}.
+% \end{equation*}
+
+% We thus see that the PAC framework translates to approximating with high probability the evaluation of a function on a data subset, which is guaranteed by the coreset property. 
+
+% On another hand, the use of coresets leverage one of the three issues that occur in PAC learning, that is to reduce the number of samples required to compute an optimal prediction function, and still controlling the error. If the time complexity for an optimization algorithm to optimize on $n$ data points is $\OO(a_n)$, and that it takes $\OO(b_m)$ time to sample an $\epsilon$-coreset which is of size $m \le n$, then we have interest in building coreset as soon as $\OO(a_n) \geq \OO(b_m) + \OO(a_m)$.
 
 
 
@@ -150,13 +159,12 @@ On another hand, the use of coresets leverage one of the three issues that occur
     
 
 \section{State-of-the-art results on coresets}
-The existence of coresets is trivial, the original data set $\mathcal{X}$ itself  being a coreset if all its elements weighted by 1. The key question is the existence of small coresets where the coreset size is sublinear, if not independent, in the number of data points $n$, while at the same time having slow rate with respect to other parameters, in particular $d$ the dimension of data, $\epsilon$ the desired error, and in the case where the coreset is obtained probabilistically, $\delta$ the probability bound of not being a coreset.
-\note{}{deterministic approches?}
-\note{}{renvoyer vers Bachem}
+The existence of coresets is trivial, the original data set $\mathcal{X}$ itself  being a $0$-coreset, taking all its elements weighted by 1. The key question is the existence of small coresets where the coreset size is sublinear, if not independent, in the number of data points $n$, while at the same time having slow rate with respect to other parameters, in particular $d$ the dimension of data, $\epsilon$ the desired error, and in the case where the coreset is obtained probabilistically, $\delta$ the probability bound of not being a coreset.
+
 
 \subsection{Importance multinomial sampling}
 
-In the stochastic case, a well-established approach is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a sequence $\mathcal{S} \in \mathcal{X}^m$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. sampling of $X$ such that $\forall x \in \mathcal{X},\ \PP{}{X=x} = q(x)$.
+In the stochastic case, a well-established approach to coreset construction is importance multinomial sampling. Given any distribution $q$ on $\mathcal{X}$, one can sample a sequence $\mathcal{S} \in \mathcal{X}^m$ from the multinomial distribution of size $m$ based on $q$, $\mathcal S \sim \mathcal M(m, q)$, i.e. $m$ i.i.d. sampling of $X$ such that $\forall x \in \mathcal{X},\ \PP{}{X=x} = q(x)$.
 
 By the importance sampling trick, an unbiased estimator of $\loss{\query}$ is then
 \begin{equation*}
@@ -174,7 +182,7 @@ Now observe that for any query $\query \in \qset$, the variance is reduced to 0 
 \begin{equation*}
     q_{\query} :=\frac{ \query}{\loss{\query}} = x \mapsto \frac{ \query(x)}{\loss{\query}}.
 \end{equation*}
-Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset! In \cref{sect_senstsampl} we see one way to bypass these two limitations.
+Of course, attempting to sample from $q_\query$ is quiet limited in practice. First, we would prefer not having to make our sampling depend on the query function $\query$. Second and main obstacle is that using $q_\query$ implies already knowing $\loss{\query}$, for which we are supposedly looking an approximation for via building coreset. In \cref{sect_senstsampl} we see one way to bypass these two limitations.
 
 \subsection{Sensitivity sampling}
 \label{sect_senstsampl}
@@ -204,7 +212,7 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
         \label{thm_hoeffdingfixedquery}
         Let $m\in \NN$ and $\mathcal S \sim \mathcal M(m, s/S)$. 
 
-		Then for all $\epsilon >0$ and all $\query \in \qset$
+		Then for all $\epsilon >0 $ and all $\query \in \qset$
 		\begin{equation*}
 			\PP{}{\dnude{\nu}{\estloss{\textrm{iid}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
 		\end{equation*}
@@ -221,7 +229,7 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
 
 \begin{proof}
     Define $g_s(x) :=  \frac{\query(x)}{s(x) L(\query)}  \, \in[0,1]$.
-    Because of boundedness, we can apply Hoeffding inequality, and have for any $\query \in \qset$ and $\epsilon>0$
+    Because of boundedness, we can apply Hoeffding inequality, and have for any $\query \in \qset$ and $\epsilon >0$
     \begin{equation*}
         \mathbb{P}\left[\left|\frac{1}{m} \sum_{x \in \mathcal{S}} g_s(x) - \mathbb{E}\left[g_s(x)\right]\right|>\epsilon/S\right] \leq 2 \exp \left(-2 m \epsilon^2/S^2\right).
     \end{equation*}
@@ -237,7 +245,7 @@ But assume that we know an upper bound $s$ on sensitivity $\sigma$ i.e. $\forall
 
 
 
-
+\newpage
 
 
 The required number of samples depends quadratically on $S$ the upper bound on total sensitivity $\mathfrak{S}$. Hence, the tighter the bound on the sensitivity $s \geq \sigma$ is, the less samples are required. If one take the looser bound $s=1$, so $S=n$, this implies $m \gtrsim n^2$ which is useless in practice.
@@ -297,12 +305,12 @@ we have
 \end{equation}
 \end{tcolorbox}
 
-Introducing the function space
+Let now introduce the function space
 \begin{equation}
     \label{eqn__g_sensitivity}
-    \twoqset_s := \frac{\qset}{s\loss{\qset}} \ =\left\{x \mapsto \frac{\query(x)}{s(x)\loss{\query}} \mid \query \in \qset\right\} \in [0,1]^{\mathcal{X}}.
+    \twoqset_s := \frac{\qset}{s\loss{\qset}} \ =\left\{x \mapsto \frac{\query(x)}{s(x)\loss{\query}} \mid \query \in \qset\right\} \subseteq [0,1]^{\mathcal{X}}.
 \end{equation}
-it can be shown the size of previously mentioned $\qset'_\epsilon$ is $\OO(\epsilon^{-\pdim})$ where $\pdim:=\operatorname{pdim}\twoqset_s$. Applying union bound then leads to
+It can be shown the size of previously mentioned $\qset'_\epsilon$ is $\OO(\epsilon^{-\pdim})$ where $\pdim:=\operatorname{pdim}\twoqset_s$. Applying union bound then leads to
 \begin{equation*}
 	m \gtrsim \frac{S^{2}}{\epsilon^{2}} (d'\log\frac{1}{\epsilon} + \log \frac{1}{\delta})
 \end{equation*}
@@ -315,17 +323,13 @@ Improving that scheme, more recent results from \cite{li2001_improved_bound_samp
 	m \gtrsim \frac{S^{2}}{\epsilon^{2}} (d' + \log \frac{1}{\delta}).
 \end{equation*}
 Moreover, they shown this bound to be tight in the i.i.d. sampling framework, with respect to $\epsilon$ and $\delta$.
-
 Finally, \cite{braverman2016coresetsota} improved it with respect to $S$ by showing that under the same framework
 \begin{equation}
     \label{eqn__sota_coreset}
 	m \gtrsim \frac{S}{\epsilon^{2}} (d' \log S + \log \frac{2}{\delta}).
 \end{equation}
-
-
 As an example, we saw that in the $k$-means case, $\mathfrak{S} = \Omega(k)$, and it can be shown that for $d$-dimensional data, $\pdim = \OO(dk\log k)$, which leads to
 \begin{equation*}
     m \gtrsim \frac{k}{\epsilon^{2}} (dk \log^2 k + \log \frac{2}{\delta}).
 \end{equation*}
-
 We refer to \cite{bachem2017coresetML} for further insights on sensitivity and pseudo-dimension bounding methods.

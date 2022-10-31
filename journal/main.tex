@@ -124,8 +124,8 @@
         \end{spacing}
         \vspace{20pt}
         \begin{spacing}{0.9}
-            \fontsize{26pt}{26pt}\selectfont%
-            \textsc{\textbf{Improving Coreset Sampling Bounds with Determinantal Point Processes}}\\%
+            \fontsize{23.6pt}{26pt}\selectfont%
+            \textsc{\textbf{Improving Sample Complexity of Coresets with Determinantal Point Processes}}\\%
         \end{spacing}
         \vspace{5pt}
         \begin{spacing}{0.05}
@@ -181,7 +181,18 @@
     
 
 \begin{abstract}
-    In this internship, we
+
+    The last several years have seen the rise of data sets of extraordinary scale across a variety of scientific fields. Such massive data sets bring new challenges, because of the high cost of collecting, maintaining, and interpreting them. Existing well-proven methods can become computationally impractical when dealing with millions or even billions of data points, and when they may no longer fit on a single system but instead need to be stored on clusters of servers. New algorithms are therefore required to scale to this massive data setting. 
+    
+    While one could concentrate on specific machine learning issues and develop many new algorithms, we concentrated in this internship on a more comprehensive strategy. We investigate coresets, which are compressed descriptions of potentially enormous data sets, and that still guarantee provable computational properties.
+
+    Thanks to the careful selection of sample distribution, i.i.d. random sampling has proven to be one of the most effective techniques for creating coresets. However, independent samples can sometimes be extremely redundant, and one could hope that
+    enforcing diversity would yield better performances. 
+    
+    Because proving coreset property in a general non-i.i.d. framework is difficult, we rely on determinantal point processes (DPPs), a class of point processes that naturally introduce diversity through repulsiveness. DPPs are interesting because they are a rare example of repulsive point processes with tractable theoretical properties, while still being sufficiently expressive to address a variety of problems.
+
+    This report is an attempt to provide improved sample complexity results on coresets by the use of well chosen DPP sampling. We start with an inventory on coreset literature, then we bring to light determinantal point processes as an improvement way. Thirdly, we qualitatively justify the use of DPPs over existing sampling methods. We finish by quantitative results, conclusion, and perspectives.
+    
 \end{abstract}
 
 \tableofcontents

@@ -4,7 +4,7 @@ We saw in \cref{chap_intro_coresets} the uniform bound on sample complexity of c
 
 Whereas the space of distributions for $m$ i.i.d samples has size that does not depend on $m$, the way $m$ samples can be correlated grows exponentially with $m$. In order to tackle this space of correlations, more recent results restricted to the cases of martingales or $\beta$-mixing processes, e.g. \cite{gao2016_learnability_beta_mixing}.
 
-In the current chapter, we introduce Determinantal Point Processes (DPPs), another restriction of correlated sampling, which admits useful tractability properties, while still maintaining expressiveness into the sub-category of negatively correlated sampling. This negative correlation is expected to be a key property in order to perform better sampling complexity.
+In the current chapter, we introduce Determinantal Point Processes (DPPs), another restriction of correlated sampling, which admits useful tractability properties, while still maintaining expressiveness into the sub-category of negatively correlated sampling. This negative correlation is expected to be a key property in order to perform better sample complexity.
 
 \section{Some intuition}
 
@@ -136,6 +136,7 @@ This geometric interpretation explain why diverse sets are more probable. It is 
 
 
 \section{Sampling from a DPP}
+\label{sec__sampling_DPP}
 \subsection{Exact DPP sampling}
 
 
@@ -150,9 +151,7 @@ This can often be the computational bottleneck since it generally requires $O(n^
 In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n k^2)$ time, where $k$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $k = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
 
 Some recent works from \cite{gillenwater2019_treebased_fast_dpp_sampling} improved somewhat this complexity. Based on the still needed eigendecomposition, it implements a binary tree structure storing appropriate summary statistics of the eigenvectors, requiring $O(n d^2)$ to build, but can then generate repeated
-samples in $O(\log(n)k^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel.
-
-This method becomes a viable alternative to the spectral method when the total
+samples in $O(\log(n)k^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel. Threfore, this method becomes a viable alternative to the spectral method when the total
 number of items $n$ is large and when the dimensionality $d$ of the
 features and the expected sample size $\operatorname{Tr} K$ are small compared to $n$.
 
