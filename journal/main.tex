@@ -46,30 +46,31 @@
     \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
 \usepackage{tcolorbox} % \begin{tcolorbox}[colframe=red!25,colback=blue!10,title=blue!60!black,title= More Test]\end{tcolorbox} red!25!black means 25% red, 75%black
 \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
-\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex
+\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex, authoryear-comp for compact, else authoryear
     \addbibresource{biblio.bib}
+% TODO: respectful citation, e.g. MSSW2018 instead of Munteanu2018, for Alexander Munteanu, Chris Schwiegelshohn, Christian Sohler, and David P. Woodruff. 2018
 
 
-% ###################
-% general commands
-\renewcommand{\epsilon}{\varepsilon}
-\renewcommand{\phi}{\varphi}
-\newcommand{\dd}{\mathrm{d}}
-\newcommand{\NN}{\mathbb{N}}
-\newcommand{\RR}{\mathbb{R}}
-\newcommand{\CC}{\mathbb{C}}
-\newcommand{\PP}[2]{\mathbb{P} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
-\newcommand{\EE}[2]{\mathbb{E} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
-\newcommand{\OO}{\mathcal{O}}
-\newcommand{\Var}[2]{\operatorname{\mathbb{V}ar} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
-\newcommand{\Cov}[2]{\operatorname{\mathbb{C}ov} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
-\newcommand{\T}{^\top}  % or ^\intercal
-\newcommand{\1}{\mathds{1}} % indicator
-\newcommand{\voones}{\boldsymbol{j}} % vector of ones
-\newcommand{\moones}{\boldsymbol{J}} % matrix of ones
-\newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
-\newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
-% Show fontsize: \fontname\font\ at \the\fontdimen6\font 
+    % ###################
+    % general commands
+    \renewcommand{\epsilon}{\varepsilon}
+    \renewcommand{\phi}{\varphi}
+    \newcommand{\dd}{\mathrm{d}}
+    \newcommand{\NN}{\mathbb{N}}
+    \newcommand{\RR}{\mathbb{R}}
+    \newcommand{\CC}{\mathbb{C}}
+    \newcommand{\PP}[2]{\mathbb{P} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+    \newcommand{\EE}[2]{\mathbb{E} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+    \newcommand{\OO}{\mathcal{O}}
+    \newcommand{\Var}[2]{\operatorname{\mathbb{V}ar} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+    \newcommand{\Cov}[2]{\operatorname{\mathbb{C}ov} \ifstrempty{#1}{}{_{#1}} \ifstrempty{#2}{}{\left[#2\right]}}
+    \newcommand{\T}{^\top}  % or ^\intercal
+    \newcommand{\1}{\mathds{1}} % indicator
+    \newcommand{\voones}{\boldsymbol{j}} % vector of ones
+    \newcommand{\moones}{\boldsymbol{J}} % matrix of ones
+    \newcommand{\intint}[2]{\llbracket #1,#2 \rrbracket} % integer interval
+    \newcommand{\note}[2]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red, #1]{#2}} % \note{inline}{"note"}
+    % Show fontsize: \fontname\font\ at \the\fontdimen6\font 
 
 % ##################
 % amsthm package settings

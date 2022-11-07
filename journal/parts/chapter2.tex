@@ -113,8 +113,7 @@ Denote the columns of $V$ by $(V_x)$ for $x\in \mathcal{X}$. Then $\forall A \su
     \PP{}{A \subseteq \mathcal{S}} = \operatorname{Vol}^2(V_A)
 \end{equation}
 
-The right hand side is the squared $|A|$-dimensional volume of the parallelepiped
-spanned by the columns of $V$ corresponding to elements in $A$.
+The right hand side is the squared $|A|$-dimensional volume of the parallelepiped spanned by the columns of $V$ corresponding to elements in $A$.
 
 Intuitively, we can think of the columns of $V$ as feature vectors describing the elements
 of $\mathcal{X}$. Then the kernel $K$ measures similarity using dot products between feature vectors, and \cref{def_dpp} says that the probability assigned by a DPP to the inclusion of a set $A$ is related to the volume spanned by its associated feature vectors. This is illustrated in \cref{fig_geometric_interpret}.
@@ -148,10 +147,10 @@ It leverages the fact that DPPs are mixtures of projective DPPs to generate repe
 Formally, if a DPP is defined by a kernel $K$ defined on $n$ data points, one requires the eigendecomposition $K= V V\T$  where $V \in \RR^{d \times n}$. 
 This can often be the computational bottleneck since it generally requires $O(n^3)$ time. Note however that for some DPPs based on specific kernels like OPE kernels, $K$ is built via this decomposition and thus it is trivially known.
 
-In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n k^2)$ time, where $k$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $k = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
+In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n m^2)$ time, where $m$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $m = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
 
 Some recent works from \cite{gillenwater2019_treebased_fast_dpp_sampling} improved somewhat this complexity. Based on the still needed eigendecomposition, it implements a binary tree structure storing appropriate summary statistics of the eigenvectors, requiring $O(n d^2)$ to build, but can then generate repeated
-samples in $O(\log(n)k^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel. Threfore, this method becomes a viable alternative to the spectral method when the total
+samples in $O(\log(n)m^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel. Therefore, this method becomes a viable alternative to the spectral method when the total
 number of items $n$ is large and when the dimensionality $d$ of the
 features and the expected sample size $\operatorname{Tr} K$ are small compared to $n$.
 

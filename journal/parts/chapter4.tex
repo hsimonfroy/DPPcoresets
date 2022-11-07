@@ -77,6 +77,7 @@ It is worth to say this variance generalize to the continuous case. Actually, pr
 
 Also, note that the higher $d$ is, the less the variance gain in \cref{eqn__improved_var}. Intuitively, this is because as the dimension increase, all points become already repelled from each others, so the addition of repulsiveness is less and less effective, or put differently, there is less and less redundancy in an independent sampling that we can get rid of by a negatively correlated sampling.
 
+% TODO
 % \note{}{cf. independent sphere packing in high dimension?}
 % \note{}{illustrate?}
 
@@ -396,7 +397,7 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 		\label{thm_breuerallqueries}
 		Let $m\in \NN$ and $\mathcal{S} \sim  \mathcal{DPP}(\opekernel{m})$. 
 
-		Then for all $\epsilon \in ]0,\bound]$ and all $\query \in \qset$
+		Then for all $\epsilon \in ]0,\bound]$
 		\begin{equation*}
 			\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
 			\leq 
@@ -644,7 +645,7 @@ First, it requires a supplementary regularity condition, namely, controlled Lips
 
 Second, we saw in \cref{sec__sampling_DPP} that sampling from DPP comes with additional computational cost. In our case, sampling from the OPE kernel can be achieved in $\OO(nm^2)$, compared to $\OO(nm)$ in the i.i.d. case. One could rely on approximate DPP sampling, though it is not clear how sensible is our analysis to the exactness of the sampling.
 
-Our analysis should rely on actual results on concentration inequalities for DPPs, known achievable variance rates, generalization bound in the non-i.i.d. framework, and known DPP sampling methods. We made it sufficiently flexible to adapt to any potential improvements of these. We hope it provided a good insight on the potential improvements in machine learning applications one should expect from negatively correlated sampling, and especially DPPs. This work was intended to be the most complete on the theoretical level. The next step would now be to confirm it empirically via numerical experiments.
+Our analysis should rely on current results on concentration inequalities for DPPs, known achievable variance rates, generalization bound in the non-i.i.d. framework, and known DPP sampling methods. We made it sufficiently flexible to adapt to any potential improvements of these. We hope it provided a good insight on the potential improvements in machine learning applications one should expect from negatively correlated sampling, and especially DPPs. This work was intended to be the most complete on the theoretical level. The next step would now be to confirm it empirically via numerical experiments.
 
 
 Finally, I can't close this report without thanking the team SigMA from CRIStAL, for its good spirit and understanding that has greatly contributed to dilute the worries of a broken arm while biking. In particular, I acknowledge R\'emi Bardenet motivation, openness, relevance and the energy he invests in involving everyone into its scientific adventures.

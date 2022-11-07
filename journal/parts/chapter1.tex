@@ -44,7 +44,7 @@ A large amount of machine learning problems falls into the framework \cref{eqn_l
     
 
 In many machine learning applications, the induced optimization problem can be hard to solve. Given a learning task, if an algorithm is too slow on large datasets, one can either speed up the algorithm or reduce the amount of data.
-The second alternative is theoretically guaranteed by the "coresets" idea.
+The second alternative is theoretically guaranteed by the coresets idea.
 A coreset is a weighted subset of the original data with the assurance that, up to a controlled relative error, the task's estimated cost function on the coreset will match the cost calculated on the complete dataset for any learning parameter.
 
 An elegant outcome of such property is the ability to execute learning algorithms only on the coreset, assuring nearly-equal performance while significantly reducing the computational cost. There are many algorithms that generate coresets, some of which are more specialized and are designed for a particular purpose (such as k-means, k-medians, logistic regression, etc.). Additionally, keep in mind that there are results for coresets in both the streaming and offline settings. We will focus here on the offline setting.
@@ -279,7 +279,7 @@ However, in the case $\qset$ is not finite, this bound diverge. We give here the
 
 The key idea is to construct a set $\qset'_\epsilon \subseteq \qset$ which still is finite, and that approximate the set $\qset$ with $\epsilon$ granularity. It would further imply that if $\mathcal{S}$ is an $\epsilon$-coreset for $\qset$, then it would be an $\epsilon'$-coreset for $\qset'_\epsilon$, for controlled $\epsilon'$, and then one could apply union bound on $\qset'_\epsilon$ instead.
 
-This would summon the size of $\qset'_\epsilon$ into the obtained bound, which depends on the richness of the set $\qset$ it approximate. Richness in that case can be quantified through pseudo-dimension, which generalize the VC-dimension to real-valued function sets.
+This would summon the size of $\qset'_\epsilon$ into the obtained bound, which depends on the richness of the set $\qset$ it approximate. Richness in that case can be quantified through pseudo-dimension, which generalizes the VC-dimension to real-valued function sets.
 
 \newpage
 

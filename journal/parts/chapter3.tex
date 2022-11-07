@@ -40,7 +40,7 @@ Thus, the obtained bound for DPPs of \cref{thm__tremblay} does not improve the s
 
 	However, one important fact is that it doesn't rely on more advanced concentration for projective DPPs from \cite{breuer2013nevai} that involves the variance of the estimator. Since recent results from \cite{bardenet2020mcdpp}, it is known DPPs can improve variance rate, and we hope this result to be leveraged into an improved bound on coreset for fixed query.
 
-	\item Second, the argument to generalize to all queries from \cite{tremblay2018dppcoreset} introduce a $\log \epsilon^{-1}$ term, and foremost a dependency in $n$, through $\eta$. If not tackled, this could ruin the effort finding improved bound for fixed queries. An improvement way would be to extend classical VC theory arguments in a correlated context.
+	\item Second, the argument to generalize to all queries from \cite{tremblay2018dppcoreset} introduce a $\log \epsilon^{-1}$ term, and foremost, a dependency in $n$ through $\eta$. If not tackled, this could ruin the effort finding improved bound for fixed queries. An improvement way would be to extend classical VC theory arguments in a correlated context.
 \end{itemize}
 
 
@@ -147,7 +147,7 @@ Massaging some linear algebra thus gives
 		Moreover, if the DPP is projective, then
 		\begin{align}
 			\label{eqn__projiid}
-			\forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{i.i.d.}}{f}.
+			\forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{iid}}{f}.
 		\end{align}
 	\end{proposition}
 \end{tcolorbox}
@@ -179,7 +179,7 @@ Massaging some linear algebra thus gives
 		
 		Then introduce $\tilde V = (\tilde V_i )_{i\in\intint{1}{n}}$, the matrix whose columns are diagram vectors of matrix $V$ columns. It allows us to rewrite $\tilde K = \frac{\moones}{r} + \frac{r-1}{r} \tilde V\T \tilde V$ thus $\tilde K - \frac{\moones}{m} = (\frac{1}{r}-\frac{1}{m})\moones + \frac{m-1}{m} \tilde V\T \tilde V$. Then in order to have 
 		\begin{equation*}
-			\tilde K - \frac{\moones}{m}\succeq 0 \iff \forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{i.i.d.}}{f}
+			\tilde K - \frac{\moones}{m}\succeq 0 \iff \forall \query \in \RR^{\mathcal{X}},\ \Var{\textrm{DPP}}{f} \leq \Var{\textrm{iid}}{f}
 		\end{equation*}
 		it is sufficient to have DPP kernel $K$ such that $r \leq m$. On the other hand, we know its average number of samples is $\operatorname{Tr}K = \operatorname{Tr}\Pi^{-1} = m$, because we fixed its marginals. Moreover $\operatorname{Tr}K \leq r$ holds for every DPP, this implies $\operatorname{Tr}K=r$, and therefore it is a projective DPP. Put differently, for any multinomial sampling, we have a projective DPP that beats it uniformly.
 	\end{enumerate}
