@@ -46,7 +46,10 @@
     \SetSymbolFont{stmry}{bold}{U}{stmry}{m}{n} % compatibility between amsmath and stmaryrd
 \usepackage{tcolorbox} % \begin{tcolorbox}[colframe=red!25,colback=blue!10,title=blue!60!black,title= More Test]\end{tcolorbox} red!25!black means 25% red, 75%black
 \usepackage[colorinlistoftodos,prependcaption,textsize=small]{todonotes} % \todo
-\usepackage[style=authoryear-comp,maxnames=1,uniquelist=false, backend=biber]{biblatex} %backend=biber/bibtex, authoryear-comp for compact, else authoryear
+\usepackage[style=authoryear-comp, maxbibnames=8, maxcitenames=1, sorting=ydnt, uniquelist=false, citetracker=true, backend=biber]{biblatex} % backend=biber/bibtex, authoryear-comp for compact, else authoryear
+    \renewcommand*{\revsdnamepunct}{} % no comma between given and family name
+    \AtEveryCitekey{\ifciteseen{}{\defcounter{maxnames}{8}}} % maxnames authors for first cite, else maxcitenames
+    \DeclareNameAlias{sortname}{family-given} % family then given name
     \addbibresource{biblio.bib}
 % TODO: respectful citation, e.g. MSSW2018 instead of Munteanu2018, for Alexander Munteanu, Chris Schwiegelshohn, Christian Sohler, and David P. Woodruff. 2018
 

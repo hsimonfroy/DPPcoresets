@@ -106,7 +106,7 @@ Edges in uniform spanning trees, eigenvalues of random matrices, as well as some
 
 
 \section{Geometric interpretation}
-DPPs are defined on determinants, that have an intuitive geometric interpretation. Since a DPP kernel $K$ is symmetric, there exists $V \in \RR^{d \times n}$ such that $K= V V\T$. 
+DPPs are defined on determinants, that have an intuitive geometric interpretation. Since a DPP kernel $K$ is symmetric, there exists $r\leq n$ and $V \in \RR^{r \times n}$ such that $K= V\T V$. 
 Denote the columns of $V$ by $(V_x)$ for $x\in \mathcal{X}$. Then $\forall A \subseteq \mathcal{X}$
 
 \begin{equation}
@@ -144,14 +144,14 @@ Except for a few specialised kernels like the edges in uniform spanning trees me
 
 It leverages the fact that DPPs are mixtures of projective DPPs to generate repeated samples given the spectral content of the kernel. This method is commonly called the spectral method since it requires the spectral/eigendecomposition of the positive kernel. 
 
-Formally, if a DPP is defined by a kernel $K$ defined on $n$ data points, one requires the eigendecomposition $K= V V\T$  where $V \in \RR^{d \times n}$. 
+Formally, if a DPP is defined by a kernel $K$ defined on $n$ data points, one requires the eigendecomposition $K= V V\T$  where $V \in \RR^{r \times n}$. 
 This can often be the computational bottleneck since it generally requires $O(n^3)$ time. Note however that for some DPPs based on specific kernels like OPE kernels, $K$ is built via this decomposition and thus it is trivially known.
 
-In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n m^2)$ time, where $m$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $m = \operatorname{Tr} K = d$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
+In any cases when multiple samples are required, this eigendecomposition can be reused. Then each sample from the spectral algorithm requires only $O(n m^2)$ time, where $m$ is the number of elements sampled. This means $O(n (\operatorname{Tr} K)^2)$ time on average. If $K$ is a projective kernel, $m = \operatorname{Tr} K = r$ which is a constant than can be small in many practical applications, e.g. in a recommendation context, $k$ would often be less than 10.
 
-Some recent works from \cite{gillenwater2019_treebased_fast_dpp_sampling} improved somewhat this complexity. Based on the still needed eigendecomposition, it implements a binary tree structure storing appropriate summary statistics of the eigenvectors, requiring $O(n d^2)$ to build, but can then generate repeated
-samples in $O(\log(n)m^2d^2 + d^3)$ time, hence $O(\log(n)d^4)$ for a projective kernel. Therefore, this method becomes a viable alternative to the spectral method when the total
-number of items $n$ is large and when the dimensionality $d$ of the
+Some recent works from \cite{gillenwater2019_treebased_fast_dpp_sampling} improved somewhat this complexity. Based on the still needed eigendecomposition, it implements a binary tree structure storing appropriate summary statistics of the eigenvectors, requiring $O(n r^2)$ to build, but can then generate repeated
+samples in $O(\log(n)m^2r^2 + r^3)$ time, hence $O(\log(n)r^4)$ for a projective kernel. Therefore, this method becomes a viable alternative to the spectral method when the total
+number of items $n$ is large and when the dimensionality $r$ of the
 features and the expected sample size $\operatorname{Tr} K$ are small compared to $n$.
 
 

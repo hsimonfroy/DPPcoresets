@@ -15,12 +15,12 @@ We know from central limit theorem that as long as variance under sampling distr
 \begin{equation}
 	\Var{}{\estloss{}{\threequery}} \lesssim m^{-1}
 \end{equation}
-Moreover, we know from \cite{bakhvalov1959_approximate_calculation_integrals} that when the integrand $\threequery$ belongs to the Sobolev space $W^{s,2}(\mathcal{I})$, i.e. when its Fourier coefficients decay sufficiently rapidly,
+Moreover, we know from \cite{1959bakhvalov_approximate_calculation_integrals} that when the integrand $\threequery$ belongs to the Sobolev space $W^{s,2}(\mathcal{I})$, i.e. when its Fourier coefficients decay sufficiently rapidly,
 \begin{equation}
 	\label{eqn__lower_bound_variance_integration}
 	\Var{}{\estloss{}{\threequery}} \gtrsim m^{-(1+\frac{2s}{d})}
 \end{equation}
-We refer to \cite{novak2014_complexity_numerical_integration} for a more recent inventory on complexity of numerical integration. 
+We refer to \cite{2014novak_complexity_numerical_integration} for a more recent inventory on complexity of numerical integration. 
 
 Of course, there is plenty of room between this two variance rates. One would be tempted to get out of the i.i.d. framework, without assuming too much regularity of the integrand, and find an estimator that is as close as possible to the lower bound \cref{eqn__lower_bound_variance_integration}. We present next a recent result that falls into this description.
 
@@ -385,7 +385,7 @@ In order to obtain an $\epsilon$-coreset for $\qset$, property \cref{eqn_queryco
 		Then for all $\epsilon \in ]0,M]$ and all $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$, it holds
 		\begin{equation}
 			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} \leq 
-			8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}} \boundrate(\epsilon/16, m).
+			8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}} \boundrate(\epsilon/8, m).
 		\end{equation}
 	\end{theorem}
 \end{tcolorbox}
@@ -401,7 +401,7 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 		\begin{equation*}
 			\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
 			\leq 
-			8\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}   \boundrate_{\textrm{BD}}(\epsilon/16, m)
+			8\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}   \boundrate_{\textrm{BD}}(\epsilon/8, m)
 		\end{equation*}
 		
 		Moreover, for all $\delta >0$ and for $n$ sufficiently large
@@ -426,16 +426,16 @@ Contrary to the classical union bound, this theorem allows to convert any reason
 	\begin{align*}
 		\PP{}{\exists \query \in \qset,\ \dnude{\nu}{\estloss{\mathcal{S}}{\query}}{\loss{\query}}>\epsilon\loss{\query}} 
 		= \PP{}{\exists \twoquery \in \twoqset_m,\ \dnude{\nu}{\empdistr{\mathcal{S}}{\twoquery}}{\meanempdistr{\twoquery}} >  \epsilon}\\
-		\leq  8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\twoqset_m}}  \boundrate_{\textrm{BD}}(\epsilon/16, m)
-		\leq  8\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim} \boundrate_{\textrm{BD}}(\epsilon/16, m)
+		\leq  8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\twoqset_m}}  \boundrate_{\textrm{BD}}(\epsilon/8, m)
+		\leq  8\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim} \boundrate_{\textrm{BD}}(\epsilon/8, m)
 	\end{align*}
 	where we used the assumption \ref{assum__pseudodim} that for all $m \in \NN$, $\operatorname{pdim}\twoqset_m \leq \pdim$.
 	
 	Hence, a sufficient condition for $\mathcal{S}$ to be an $\epsilon$-coreset for $\qset$ w.p. $1-\delta$ is to have
 	\begin{gather*}
-		\boundrate_{\textrm{BD}}(\epsilon/16, m) \leq \frac{\delta}{8} \left(\frac{8e\bound}{\epsilon}\right)^{-2\pdim}
+		\boundrate_{\textrm{BD}}(\epsilon/8, m) \leq \frac{\delta}{8} \left(\frac{8e\bound}{\epsilon}\right)^{-2\pdim}
 		\iff
-		m \gtrsim \left(\frac{256\lipschitz^2}{\epsilon^2} \log \left( \frac{16}{\delta }\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}\right) \right)^{\frac{1}{1+\frac 1 d}}\\
+		m \gtrsim \left(\frac{64\lipschitz^2}{\epsilon^2} \log \left( \frac{16}{\delta }\left(\frac{8e\bound}{\epsilon}\right)^{2\pdim}\right) \right)^{\frac{1}{1+\frac 1 d}}\\
 		\iff m \gtrsim \left(\frac{\lipschitz^2}{\epsilon^2} \left(\log \frac{1}{\delta } + \pdim \log \frac{\bound}{\epsilon} \right)\right)^{\frac{1}{1+\frac 1 d}}.
 	\end{gather*}
 	This rate is conditioned to the fact that $m$ is such that $\boundrate_{\textrm{BD}}(\epsilon/2, m) \leq 1/2$. But we know it holds as soon as $m \gtrsim \left(\frac{4\lipschitz^2}{\epsilon^2} \log 4 \right)^{\frac{1}{1+\frac 1 d}}$, which is trivially implied by the obtained bound.
@@ -478,7 +478,7 @@ We start by a symmetrisation argument that relates a concentration statement bet
 \begin{proof}
 	Let $\epsilon>0$ and take $m \in \NN$ such that $\boundrate(\epsilon/2, m) \leq 1/2$. Then let $\mathcal{S}_1$ be sampled such that $\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon$. This obviously happens with probability $\PP{}{\exists \threequery \in \threeqset, \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon }$.
 
-	For such an $f$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2$. Because $\boundrate(\epsilon, m) \leq 1/2$, we know this happens with probability greater than $1-1/2 = 1/2$, and we thus have
+	For such an $\threequery$, we then independently sample $\mathcal{S}_2$ such that $\dnude{\nu}{\empdistr{\mathcal{S}_2}{\threequery}}{\meanempdistr{\threequery}} \leq \epsilon/2$. Because $\boundrate(\epsilon, m) \leq 1/2$, we know this happens with probability greater than $1-1/2 = 1/2$, and we thus have
 	\begin{align*}
 		&\frac 1 2\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon}
 		\\
@@ -555,7 +555,7 @@ We introduce the following conjecture, as an attempt to extend Lemma 13. from \c
 		
 		\begin{gather*}
 			\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \\\leq \\
-			\sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
+			\sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }
 		\end{gather*}
 	\end{conjecture}
 \end{tcolorbox}
@@ -579,16 +579,16 @@ We introduce the following conjecture, as an attempt to extend Lemma 13. from \c
 	\end{equation*}
 	and therefore
 	\begin{equation*}
-		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \leq \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4}
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon} \leq \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}
 	\end{equation*}
 	By the law of total expectation, we obtain
 	\begin{align*}
 		\PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4}
-		&=\EE{}{ \1 \{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \} }\\
-		&=\EE{}{ \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \mid \threeqset'_{\mathcal{S}}}  }\\
-		&=\EE{}{ \PP{}{\bigcup_{\threequery \in \threeqset'_{\mathcal{S}}} \{ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 \mid \threeqset'_{\mathcal{S}}\} }  }\\		
-        &\overset{?}{\leq} \sup_{\threeqset'_{\mathcal{S}}} |\threeqset'_{\mathcal{S}}| \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }\\
-		&= \sup_{\mathcal{S} \in \mathcal{X}^{2m} } N(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
+		&=\EE{}{ \1 \{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2\} }\\
+		&=\EE{}{ \PP{}{\exists \threequery \in \threeqset'_{\mathcal{S}},\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2\mid \threeqset'_{\mathcal{S}}}  }\\
+		&=\EE{}{ \PP{}{\bigcup_{\threequery \in \threeqset'_{\mathcal{S}}} \{ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2\}  \mid \threeqset'_{\mathcal{S}}}  }\\		
+        &\overset{?}{\leq} \sup_{\threeqset'_{\mathcal{S}}} |\threeqset'_{\mathcal{S}}| \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}\\
+		&= \sup_{\mathcal{S} \in \mathcal{X}^{2m} } N(\epsilon/4, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{} ) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}
 	\end{align*}
 $\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists of bounding the probability of a union of event over a random set. Since we can bound uniformly both, event probability, and set cardinality, it could seem intuitive this random union bound hold. However, the conditioning by $\threeqset'_{\mathcal{S}}$ makes this bound non trivial and likely requires further assumptions.
 
@@ -596,6 +596,29 @@ $\overset{?}{\leq}$ indicates this inequality is still to be proven. It consists
 Though we make use of the symmetry between $\mathcal{S}_1$ and $\mathcal{S}_2$, we can't leverage it as much as the i.i.d. framework does. Such as in \cite{haussler1992decisiontheoricgeneralizationofPACmodel}, methods from PAC learning theory often leverage the fact that swapping samples from $\mathcal{S}_1$ and $\mathcal{S}_2$ preserves the i.i.d. sampling, which is not the case in general for a DPP sampling. For instance, if $\mathcal{X} = \{0,1\}$, then a $2$-DPP will return almost surely $\mathcal{S}_1 =\mathcal{S}_2 = \{0,1\}$. But swapping $0$ with $1$ leads to $\mathcal{S}_1 =\{0,0\}$ and $\mathcal{S}_2 =\{1,1\}$. This event has zero probability for a $2$-DPP sampling, so the sampling has not been preserved by the swapping.
 
 \end{proof}
+
+\begin{tcolorbox}[colback=red!25, title=Proof Ideas]
+	One could try making cover independent on $\mathcal{S}$
+	\paragraph{1} Take $\threeqset'_{\mathcal{}}$, a minimal $\epsilon/8$-cover of $\threeqset$ for the $d := \dlone{\meanempdistr{}}{}{}$ distance instead of the $\hat d_{\empdistr{\mathcal{S}}{}} := \dlone{\mathcal{S}}{}{}$ distance.
+	\begin{equation*}
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} \geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} -2d(\threequery,\threequery') + 2  (d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery'))
+	\end{equation*}
+	Then
+	\begin{align*}
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery')| \leq \epsilon/8} \\
+		\leq \PP{}{\exists \threequery \in \threeqset',\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}.
+	\end{align*}
+	The right hand side term is a union bound over a finite deterministic set. But there is still to control the other case
+	\begin{align*}
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery')| < \epsilon/8} \\
+		\leq \PP{}{\exists \threequery \in \threeqset',\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}.
+	\end{align*}
+
+
+	\paragraph{2}ssf
+	
+\end{tcolorbox}
+
 
 
 
@@ -606,16 +629,16 @@ Admitting \cref{lem_infi_union_bound}, we are able to prove \cref{thm_infinite_u
 	\begin{gather*}
 		\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
 		\leq 2\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2 }\\
-		\leq 2 \sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 }
+		\leq 2 \sup_{\mathcal{S} \in \mathcal{X}^{2m} } \covering(\epsilon/8, \threeqset, \dlone{\empdistr{\mathcal{S}}{}}{}{}) \sup_{\threequery \in \threeqset} \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 }
 	\end{gather*}
 
 In order to bound the last term, first consider applying the union bound
 	\begin{align*}
-		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/8 } 
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} + \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/8 }\\
-		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/16 }\\
-		&\leq 2\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/16 }\\
-		&\leq 2 \boundrate(\threeqset, \epsilon/16, m)
+		\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/4 } 
+		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} + \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/4 }\\
+		&\leq \PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/8 \vee  \dnude{\nu}{\meanempdistr{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}}> \epsilon/8 }\\
+		&\leq 2\PP{}{\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon/8 }\\
+		&\leq 2 \boundrate(\threeqset, \epsilon/8, m)
 	\end{align*}
 Second, we know from \cref{eqn__pack_cover_pack} and \cref{thm_pack}
 \begin{align*}
@@ -629,7 +652,7 @@ where we used the fact that $a \log a < (a/2)^2$ whenever $a \geq 5$, which is t
 The two precedent bounds do neither depend on $\mathcal{S}$ nor $f$, and therefore 
 \begin{align*}
 	\PP{}{ \exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\meanempdistr{\threequery}} > \epsilon} 
-	&\leq 8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}}\boundrate(\epsilon/16, m)\\
+	&\leq 8\left(\frac{8e\bound}{\epsilon}\right)^{2d'_{\threeqset}}\boundrate(\epsilon/8, m)\\
 \end{align*}
 which is the desired result.\end{proof}
 
