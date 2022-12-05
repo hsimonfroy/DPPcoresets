@@ -599,23 +599,35 @@ Though we make use of the symmetry between $\mathcal{S}_1$ and $\mathcal{S}_2$, 
 
 \begin{tcolorbox}[colback=red!25, title=Proof Ideas]
 	One could try making cover independent on $\mathcal{S}$
-	\paragraph{1} Take $\threeqset'_{\mathcal{}}$, a minimal $\epsilon/8$-cover of $\threeqset$ for the $d := \dlone{\meanempdistr{}}{}{}$ distance instead of the $\hat d_{\empdistr{\mathcal{S}}{}} := \dlone{\mathcal{S}}{}{}$ distance.
+	Take $\threeqset'_{\mathcal{}}$, a minimal $\epsilon/8$-cover of $\threeqset$ for the $d := \dlone{\meanempdistr{}}{}{}$ distance instead of the $\hat d_{\mathcal{S}} := \dlone{\empdistr{\mathcal{S}}{}}{}{}$ distance.
 	\begin{equation*}
-		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} \geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} -2d(\threequery,\threequery') + 2  (d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery'))
+		\dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery'}}{\empdistr{\mathcal{S}_2}{\threequery'}} \geq \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} -2d(\threequery,\threequery') + 2  (d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery'))
 	\end{equation*}
 	Then
 	\begin{align*}
-		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery')| \leq \epsilon/8} \\
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| \leq \epsilon/8} \\
 		\leq \PP{}{\exists \threequery \in \threeqset',\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}.
 	\end{align*}
-	The right hand side term is a union bound over a finite deterministic set. But there is still to control the other case
+	The right hand side term is a union bound over a finite deterministic set which can be handled. But there is still to control the other case
 	\begin{align*}
-		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}}(\threequery,\threequery')| < \epsilon/8} \\
-		\leq \PP{}{\exists \threequery \in \threeqset',\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon/2}.
+		\PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon \wedge |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| > \epsilon/8} \\
+		\leq \PP{}{\exists \threequery \in \threeqset,\ \dnude{\nu}{\empdistr{\mathcal{S}_1}{\threequery}}{\empdistr{\mathcal{S}_2}{\threequery}} > \epsilon}  \PP{}{\exists \threequery \in \threeqset,\ |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| > \epsilon/8}.
 	\end{align*}
-
-
-	\paragraph{2}ssf
+	One can rewrite
+	\begin{align*}
+		\PP{}{\exists \threequery \in \threeqset,\ |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| > \epsilon/8} =\\
+		 \PP{}{\exists \threequery' \in \threeqset',\ \exists \threequery \in \mathcal{B}_d(\threequery', \epsilon/8),\ |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| > \epsilon/8}.
+	\end{align*}
+	This leads to controlling the term
+	\begin{align*}
+		\PP{}{\exists \threequery \in \mathcal{B}_d(\threequery', \epsilon/8),\ |d(\threequery,\threequery')  -\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')| > \epsilon/8}\\
+		\leq 2 \PP{}{\exists \threequery \in \mathcal{B}_d(\threequery', \epsilon/8),\ |\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')  -\hat d_{\mathcal{S}_{3,4}}(\threequery,\threequery')| > \epsilon/16}
+	\end{align*}
+	by symmetrisation.
+	\begin{align*}
+		|\hat d_{\mathcal{S}_{1,2}}(\threequery,\threequery')  -\hat d_{\mathcal{S}_{3,4}}(\threequery,\threequery')| \leq |\hat d_{\mathcal{S}_{1,2}}(\threequery'',\threequery')  -\hat d_{\mathcal{S}_{3,4}}(\threequery'',\threequery')| + 2 \hat d_{\mathcal{S}_{1,2,3,4}}(\threequery'',\threequery)
+	\end{align*}
+	We are back at the same point except $\hat d_{\mathcal{S}_{1,2,3,4}}$ replaced $\hat d_{\mathcal{S}_{1,2}}$. This does not seem to lead anywhere.
 	
 \end{tcolorbox}
 
