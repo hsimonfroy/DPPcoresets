@@ -50,3 +50,60 @@ def get_circle_data(n, d, n_circles, radius, variance=1/20, border=1):
         if (np.abs(point) < border).all():
             filtered_data.append(point)
     return np.array(filtered_data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from scipy.cluster.vq import vq
+
+def risk(X, queries):
+    code, dist = vq(X.reshape(-1, X.shape[-1]), queries)
+    dist = dist.reshape(X.shape[:-1])
+    return dist ** 2
+
+def loss(X, query=None, samples=None, weights=None):
+    if query is None:
+        query = np.zeros((1,X.shape[-1]))
+    if samples is None:
+        return risk(X, query).mean(-1)
+    elif weights is None:
+        return (risk(X[samples], query)).mean(-1)
+    else:
+        return (risk(X[samples], query) * weights).sum(-1)
+
+def relative_error(y_hat, y):
+    return np.abs(1 - y_hat / y)
+
+
+
+
+
+from itertools import combinations
+
+def get_true_sensit(X, k):
+    max_sensit_query = np.zeros(len(X))
+    for combin in combinations(X, k):
+        queries = combin
+        risk_query = risk(X, queries)
+        sensit_query = risk_query / risk_query.sum()
+        max_sensit_query = np.maximum(max_sensit_query, sensit_query)
+    return max_sensit_query
+
+def plot3d_func(ax, func, nb_discr=100, cube_center=0, cube_halfsize=1.5):
+    x, y = np.linspace(cube_center-cube_halfsize, cube_center+cube_halfsize, nb_discr), np.linspace(cube_center-cube_halfsize, cube_center+cube_halfsize, nb_discr)
+    xx, yy = np.meshgrid(x, y)
+    xy = np.array([xx, yy]).transpose(1,2,0)
+    zz =  func(xy.reshape(-1,2)).reshape(nb_discr,nb_discr)
+    surf = ax.plot_surface(xx, yy, zz, cmap="viridis")

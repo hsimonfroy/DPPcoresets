@@ -1,4 +1,8 @@
 import numpy as np
+
+############
+#   OPE    #
+############
 from dppy.multivariate_jacobi_ope import MultivariateJacobiOPE
 from sklearn.neighbors import KernelDensity
 from dppy.finite_dpps import FiniteDPP
@@ -65,7 +69,9 @@ def draw_OPE(X, m, nb_samples, ab_coeff=-.5, gamma_X=None, prop_uniform=0):
 
 
 
-
+####################
+#   discrete OPE   #
+####################
 import itertools
 from scipy.linalg import qr
 
@@ -98,10 +104,9 @@ def draw_discrete_OPE(X, m, nb_samples):
 
 
 
-
-
-
-
+#####################
+#   gaussian kDPP   #
+#####################
 def gaussian_kernel(X, sigma=1):
     delta = X[:,None,:] - X[None,:,:]
     K = np.exp(-0.5 * np.sum(delta**2, axis=-1) / sigma**2)
@@ -119,18 +124,18 @@ def elementary_symmetric_polynomial(k, arr):
 def get_kDPP_weights(likelihood, k):
     n = len(likelihood)
     U, S, Vh = svd(likelihood)
-    eigvals = S**2
+    eigvals = np.abs(S)
     elem_sym_pol_ratio = np.empty(n)
-    for i_eigval, eigval in enumerate(eigvals):
+    for i_eigval in range(len(eigvals)):
         e_mn_kmo = elementary_symmetric_polynomial(k-1, np.concatenate((eigvals[:i_eigval], eigvals[i_eigval+1:])))
         e_n_k = elementary_symmetric_polynomial(k, eigvals)
         elem_sym_pol_ratio[i_eigval] = e_mn_kmo / e_n_k
-    return (1 / n) / ((U)**2 * eigvals * elem_sym_pol_ratio).sum(-1)
+    return (1 / n) / (U**2 * eigvals * elem_sym_pol_ratio).sum(-1)
     
-def draw_gaussian_kDPP(X, m, nb_samples, bandwidth=1):
+def draw_gaussian_kDPP(X, m, nb_samples, bandwidth=.1):
     likelihood = gaussian_kernel(X, bandwidth)
     weights = get_kDPP_weights(likelihood, m)
-    DPP = FiniteDPP(kernel_type='likelihood', L= likelihood)
+    DPP = FiniteDPP(kernel_type='likelihood', L=likelihood)
     for _ in range(nb_samples):
         DPP.sample_exact_k_dpp(m, mode='GS')
     samples = np.array(DPP.list_of_samples)
@@ -140,14 +145,65 @@ def draw_gaussian_kDPP(X, m, nb_samples, bandwidth=1):
 
 
 
-def draw_uniform(n, m, nb_samples):
-    return np.random.choice(n, (nb_samples, m))
+##################
+#   stratified   #
+##################
+from collections import defaultdict
+
+def shuffle_cycle_array(uncompleted_stratas, m):
+    # cycle through an array then shuffle and repeat until m elements (with repetitions) are selected
+    completed_stratas = []
+    for count in range(m):
+        if count == len(uncompleted_stratas):
+            np.random.shuffle(uncompleted_stratas)
+        completed_stratas.append(uncompleted_stratas[count % len(uncompleted_stratas)])
+    return completed_stratas
+
+def draw_stratified(X, m, nb_samples):
+    d = X.shape[-1]
+    box_length = m**(-1/d)
+
+    # build stratas by cycling through each point and add it to the corresponding strata accordingly to its position.
+    stratas = defaultdict(list)
+    for i_x, x in enumerate((X+1)/2):
+        key = ""
+        for dim in range(d):
+            key += str(int(x[dim]//box_length))
+        stratas[key].append(i_x)
+    stratas = np.array(list(stratas.values()), dtype=object)
+    nb_stratas = len(stratas)
+
+    # sample from each strata
+    strata_samples = np.empty((nb_samples, nb_stratas), dtype=int)
+    samples = np.empty((nb_samples, m), dtype=int)
+
+    # in case there strictly less stratas than m, cycle through all stratas then shuffle and repeat until m stratas (with repetitions) are selected
+    if nb_stratas<m:
+        # print(f"/!\ m={m} but there are only {nb_stratas} stratas. Try increase n or reduce m.")
+        for i_sample in range(nb_samples):
+            completed_stratas = shuffle_cycle_array(stratas, m)
+            for i_strata, strata in enumerate(completed_stratas):
+                samples[i_sample,i_strata] = np.random.choice(strata)
+        return samples
+    
+    # else, select uniformly one point for each strata...
+    for i_strata, strata in enumerate(stratas):
+        strata_samples[:,i_strata] = np.random.choice(strata, nb_samples)
+    if nb_stratas==m:
+        return strata_samples
+    # ... and in case there are strictly more stratas than m, extract m stratas for each samples
+    else: 
+        for i_strata_sample, strata_sample in enumerate(strata_samples):
+            samples[i_strata_sample] = np.random.choice(strata_sample, m, replace=False)
+    return samples
 
 
 
 
 
-
+###################
+#   sensitivity   #
+###################
 from scipy.spatial import distance
 from scipy.cluster.vq import vq
 
@@ -206,45 +262,8 @@ def draw_sensitivity(X, m, nb_samples, k, delta):
 
 
 
-
-
-from collections import defaultdict
-
-def shuffle_cycle_array(uncompleted_stratas, m):
-    completed_stratas = []
-    for count in range(m):
-        if count == len(uncompleted_stratas):
-            np.random.shuffle(uncompleted_stratas)
-        completed_stratas.append(uncompleted_stratas[count % len(uncompleted_stratas)])
-    return completed_stratas
-
-def draw_stratified(X, m, nb_samples):
-    d = X.shape[-1]
-    box_length = m**(-1/d)
-    # build stratas
-    stratas = defaultdict(list)
-    for i_x, x in enumerate((X+1)/2):
-        key = ""
-        for dim in range(d):
-            key += str(int(x[dim]//box_length))
-        stratas[key].append(i_x)
-    stratas = np.array(list(stratas.values()), dtype=object)
-    nb_stratas = len(stratas)
-    # sample from each strata
-    strata_samples = np.empty((nb_samples, nb_stratas), dtype=int)
-    samples = np.empty((nb_samples, m), dtype=int)
-    if nb_stratas<m:
-        # print(f"/!\ m={m} but there are only {nb_stratas} stratas. Try increase n or reduce m.")
-        for i_sample in range(nb_samples):
-            completed_stratas = shuffle_cycle_array(stratas, m)
-            for i_strata, strata in enumerate(completed_stratas):
-                samples[i_sample,i_strata] = np.random.choice(strata)
-        return samples
-    for i_strata, strata in enumerate(stratas):
-        strata_samples[:,i_strata] = np.random.choice(strata, nb_samples)
-    if nb_stratas==m:
-        return strata_samples
-    else:  # extract m stratas for each samples
-        for i_strata_sample, strata_sample in enumerate(strata_samples):
-            samples[i_strata_sample] = np.random.choice(strata_sample, m, replace=False)
-    return samples
+###############
+#   uniform   #
+###############
+def draw_uniform(n, m, nb_samples):
+    return np.random.choice(n, (nb_samples, m))
