@@ -179,7 +179,7 @@ def draw_stratified(X, m, nb_samples):
 
     # in case there strictly less stratas than m, cycle through all stratas then shuffle and repeat until m stratas (with repetitions) are selected
     if nb_stratas<m:
-        # print(f"/!\ m={m} but there are only {nb_stratas} stratas. Try increase n or reduce m.")
+        if nb_stratas<.9*m: print(f"/!\ m={m} but there are only {nb_stratas} stratas. Try increase n or reduce m.")
         for i_sample in range(nb_samples):
             completed_stratas = shuffle_cycle_array(stratas, m)
             for i_strata, strata in enumerate(completed_stratas):
@@ -222,7 +222,7 @@ def D_squared_sampling(X, k):
 def best_quant(X, k, delta):
     n_runs = np.ceil(10*np.log(1/delta)).astype(int)
     quant_error_min = np.inf
-    for run in range(n_runs):
+    for i_run in range(n_runs):
         B = D_squared_sampling(X, k)
         code, dist = vq(X, X[B])
         quant_error = (dist**2).sum()

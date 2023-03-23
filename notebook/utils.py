@@ -11,6 +11,8 @@ def get_hypercube_data(n,d, border=1, remove_subcube=False):
     else:
         return data
 
+
+
 def get_corners(d):
     corners = []
     for i in range(2**d):
@@ -21,14 +23,15 @@ def get_corners(d):
         corners.append(corner)
     return np.array(corners)
 
-def get_evenly_spaced_circle(radius, n_circles):
-    angles = 2*np.pi*np.arange(n_circles)/n_circles
-    means = np.stack((radius*np.cos(angles), radius*np.sin(angles)))
-    return means.T
-
-def get_cluster_data(n, d, k, variance=1/20, border=1):
-    if k<=2**d:
-        means = 0.6*get_corners(d)[:k]
+def get_corner_data(n, d, means=None, variance=1/20, border=1):
+    if isinstance(means, int):
+        k = means
+        if k<=2**d:
+            means = 0.5*get_corners(d)[:k]
+        else: 
+            raise Exception("Sorry, more centers are required than they are corners in the hypercube") 
+    else: 
+        k = len(means)
     covariances = [variance*np.identity(d) for i in range(k)]
     data = []
     for i in range(k):
@@ -38,6 +41,13 @@ def get_cluster_data(n, d, k, variance=1/20, border=1):
         if (np.abs(point) < border).all():
             filtered_data.append(point)
     return np.array(filtered_data)
+
+
+
+def get_evenly_spaced_circle(radius, n_circles):
+    angles = 2*np.pi*np.arange(n_circles)/n_circles + np.pi/4
+    means = np.stack((radius*np.cos(angles), radius*np.sin(angles)))
+    return means.T
 
 def get_circle_data(n, d, n_circles, radius, variance=1/20, border=1):
     means = get_evenly_spaced_circle(radius, n_circles)
@@ -101,9 +111,12 @@ def get_true_sensit(X, k):
         max_sensit_query = np.maximum(max_sensit_query, sensit_query)
     return max_sensit_query
 
-def plot3d_func(ax, func, nb_discr=100, cube_center=0, cube_halfsize=1.5):
-    x, y = np.linspace(cube_center-cube_halfsize, cube_center+cube_halfsize, nb_discr), np.linspace(cube_center-cube_halfsize, cube_center+cube_halfsize, nb_discr)
-    xx, yy = np.meshgrid(x, y)
-    xy = np.array([xx, yy]).transpose(1,2,0)
-    zz =  func(xy.reshape(-1,2)).reshape(nb_discr,nb_discr)
-    surf = ax.plot_surface(xx, yy, zz, cmap="viridis")
+
+
+
+
+
+
+
+
+
