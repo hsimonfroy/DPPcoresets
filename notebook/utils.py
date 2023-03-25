@@ -118,5 +118,3 @@ def get_true_sensit(X, k):
 
 
 
-
-

@@ -162,6 +162,7 @@ def shuffle_cycle_array(uncompleted_stratas, m):
 def draw_stratified(X, m, nb_samples):
     d = X.shape[-1]
     box_length = m**(-1/d)
+    weights = None # return None weights for samplers API consistency
 
     # build stratas by cycling through each point and add it to the corresponding strata accordingly to its position.
     stratas = defaultdict(list)
@@ -184,18 +185,19 @@ def draw_stratified(X, m, nb_samples):
             completed_stratas = shuffle_cycle_array(stratas, m)
             for i_strata, strata in enumerate(completed_stratas):
                 samples[i_sample,i_strata] = np.random.choice(strata)
-        return samples
+        return samples, weights
     
     # else, select uniformly one point for each strata...
     for i_strata, strata in enumerate(stratas):
         strata_samples[:,i_strata] = np.random.choice(strata, nb_samples)
     if nb_stratas==m:
-        return strata_samples
+        return strata_samples, weights
     # ... and in case there are strictly more stratas than m, extract m stratas for each samples
     else: 
         for i_strata_sample, strata_sample in enumerate(strata_samples):
             samples[i_strata_sample] = np.random.choice(strata_sample, m, replace=False)
-    return samples
+
+    return samples, weights
 
 
 
@@ -265,5 +267,8 @@ def draw_sensitivity(X, m, nb_samples, k, delta):
 ###############
 #   uniform   #
 ###############
-def draw_uniform(n, m, nb_samples):
-    return np.random.choice(n, (nb_samples, m))
+def draw_uniform(X, m, nb_samples):
+    n = len(X)
+    samples = np.random.choice(n, (nb_samples, m))
+    weights = None
+    return samples, weights
