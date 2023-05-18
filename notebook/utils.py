@@ -11,6 +11,15 @@ def get_hypercube_data(n,d, border=1, remove_subcube=False):
     else:
         return data
 
+def get_disk_data(n,d, radius=1):
+    data = 2*(np.random.rand(n, d) - .5)
+    filtered_data = []
+    for point in data:
+        if np.linalg.norm(point)<radius:
+            filtered_data.append(point)
+    return np.array(filtered_data)
+
+
 
 
 def get_corners(d):
@@ -23,7 +32,7 @@ def get_corners(d):
         corners.append(corner)
     return np.array(corners)
 
-def get_corner_data(n, d, means=None, variance=1/20, border=1):
+def get_corner_data(n, d, means=None, variance=1/25, border=1):
     if isinstance(means, int):
         k = means
         if k<=2**d:
@@ -49,7 +58,7 @@ def get_evenly_spaced_circle(radius, n_circles):
     means = np.stack((radius*np.cos(angles), radius*np.sin(angles)))
     return means.T
 
-def get_circle_data(n, d, n_circles, radius, variance=1/20, border=1):
+def get_circle_data(n, d, n_circles, radius, variance=1/25, border=1):
     means = get_evenly_spaced_circle(radius, n_circles)
     covariances = [variance*np.identity(d) for i in range(n_circles)]
     data = []

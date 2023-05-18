@@ -45,10 +45,14 @@ def save_current_subplots(fig_directory, fig_name):
 
     # save figure and its subplots
     plt.savefig(fig_directory + fig_name)
-    for i_ax, ax in enumerate(plt.gcf().axes):
-        extent = ax.get_tightbbox().transformed(plt.gcf().dpi_scale_trans.inverted()).padded(2/72) # add 2 pts of padding
-        plt.savefig(fig_directory + fig_name_stem + "_ax" + str(i_ax+1) + fig_name_suffix, bbox_inches=extent)
-    print(f"Saved figure and its {i_ax+1} subplots in {fig_directory} folder.")
+    axes_list = plt.gcf().axes
+    if axes_list:
+        for i_ax, ax in enumerate(axes_list):
+            extent = ax.get_tightbbox().transformed(plt.gcf().dpi_scale_trans.inverted()).padded(0.1/2.54) # add 0.1 cm of padding (matplotlib unit is inches)
+            plt.savefig(fig_directory + fig_name_stem + "_ax" + str(i_ax+1) + fig_name_suffix, bbox_inches=extent)
+        print(f"Saved figure and its {i_ax+1} subplots in {fig_directory} folder.")
+    else:
+        print(f"Saved figure in {fig_directory} folder.")    
 
 def set_plotting_options(use_TeX, font_size):
     # reset plotting options, in case they has been coincidentaly altered
@@ -65,10 +69,11 @@ def set_plotting_options(use_TeX, font_size):
 def plot_figure(my_plot, fig_width=6.4, fig_height=4.8, use_TeX=False, font_size=10):
     # default plotting parameters are matplotlib default options
     set_plotting_options(use_TeX, font_size)
+    plt.close() # close potential previous figures to not saturate cache
     plt.figure(figsize=(fig_width, fig_height))
     my_plot()
     plt.tight_layout()
-    display(plt.gcf())
+    display(plt.gcf()) # use display() instead of plt.show(), because the latter close figure automatically which doesn't allow to save it later. However, it is better to not forget to close figure later.
 
 def get_save_plots_interface(my_plot, 
                     fig_size=(6.4, 4.8), use_TeX=False, font_size=10,
@@ -79,10 +84,10 @@ def get_save_plots_interface(my_plot,
     fig_width, fig_height = fig_size
     plot_fig_button = interactive(plot_figure, {"manual":True, "manual_name":"plot figure"},
                               my_plot=fixed(my_plot),
-                              fig_width=FloatSlider(min=4., max=20., step=.2, value=fig_width),
-                              fig_height=FloatSlider(min=3., max=15., step=.2, value=fig_height),
+                              fig_width=FloatSlider(min=4., max=20., step=.2, value=fig_width, continuous_update=False),
+                              fig_height=FloatSlider(min=3., max=15., step=.2, value=fig_height, continuous_update=False),
                               use_TeX=use_TeX, 
-                              font_size=IntSlider(min=6, max=16, step=1, value=font_size))
+                              font_size=IntSlider(min=6, max=16, step=1, value=font_size, continuous_update=False))
     
     # construct save figure button
     save_fig_button = interactive(save_current_subplots, {"manual":True, "manual_name":"save figure"},

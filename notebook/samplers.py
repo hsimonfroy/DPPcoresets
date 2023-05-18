@@ -8,12 +8,13 @@ from sklearn.neighbors import KernelDensity
 from dppy.finite_dpps import FiniteDPP
 from scipy.linalg import svd
 
-def draw_OPE(X, m, nb_samples, ab_coeff=-.5, gamma_X=None, prop_uniform=0): 
+def draw_OPE(X, m:int, nb_samples:int, ab_coeff=-.5, gamma_X=None, prop_uniform=0.): 
     # complexity is n^2*m^2 if gamma_X is None then KDE needs to be computed, else n*m^2 
     n = len(X)
     m = int(m)
     d = X.shape[-1]
     if gamma_X is None: # /!\ induce n^2 complexity
+        print("/!\ OPE sampling and gamma_X is None\nit will be KDE estimated, inducing n^2 complexity")
         # construct gamma tilde KDE estimation
         # alternatively, scipy.stats.gaussian_kde can be used
         kde = KernelDensity(kernel="epanechnikov", bandwidth="scott").fit(X)
@@ -24,11 +25,14 @@ def draw_OPE(X, m, nb_samples, ab_coeff=-.5, gamma_X=None, prop_uniform=0):
     nb_sample_uniform = round(prop_uniform * m)
     if nb_total_uniform>0:
         m -= nb_sample_uniform
-        argsort_X = np.argsort(gamma_X)
-        uniform_idX = argsort_X[:nb_total_uniform]
-        OPE_idX = argsort_X[nb_total_uniform:]
-        X_OPE = X[OPE_idX]
-        gamma_X_OPE = gamma_X[OPE_idX] 
+        if m==0:
+            return draw_uniform(X, nb_sample_uniform, nb_samples)
+        else:
+            argsort_X = np.argsort(gamma_X)
+            uniform_idX = argsort_X[:nb_total_uniform]
+            OPE_idX = argsort_X[nb_total_uniform:]
+            X_OPE = X[OPE_idX]
+            gamma_X_OPE = gamma_X[OPE_idX] 
     else:
         X_OPE = X
         gamma_X_OPE = gamma_X
@@ -107,12 +111,12 @@ def draw_discrete_OPE(X, m, nb_samples):
 #####################
 #   gaussian kDPP   #
 #####################
-def gaussian_kernel(X, sigma=1):
+def gaussian_kernel(X, sigma=1.):
     delta = X[:,None,:] - X[None,:,:]
     K = np.exp(-0.5 * np.sum(delta**2, axis=-1) / sigma**2)
     return K
 
-def elementary_symmetric_polynomial(k, arr):
+def elementary_symmetric_polynomial(k:int, arr):
     n = len(arr)
     esp_eval = np.zeros((n+1,k+1))
     esp_eval[:,0] = np.ones(n+1)
@@ -121,7 +125,7 @@ def elementary_symmetric_polynomial(k, arr):
             esp_eval[j,i] = esp_eval[j-1,i] + arr[j-1] * esp_eval[j-1,i-1]
     return esp_eval[-1,-1]
 
-def get_kDPP_weights(likelihood, k):
+def get_kDPP_weights(likelihood, k:int):
     n = len(likelihood)
     U, S, Vh = svd(likelihood)
     eigvals = np.abs(S)
@@ -132,7 +136,7 @@ def get_kDPP_weights(likelihood, k):
         elem_sym_pol_ratio[i_eigval] = e_mn_kmo / e_n_k
     return (1 / n) / (U**2 * eigvals * elem_sym_pol_ratio).sum(-1)
     
-def draw_gaussian_kDPP(X, m, nb_samples, bandwidth=.1):
+def draw_gaussian_kDPP(X, m:int, nb_samples:int, bandwidth=.1):
     likelihood = gaussian_kernel(X, bandwidth)
     weights = get_kDPP_weights(likelihood, m)
     DPP = FiniteDPP(kernel_type='likelihood', L=likelihood)

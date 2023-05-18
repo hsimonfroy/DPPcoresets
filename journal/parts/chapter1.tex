@@ -106,7 +106,7 @@ An important consequence of the coreset property is the following
         \loss{\query^*} \le {L}( \hat\query^*) \le \frac{(1+\epsilon)}{(1-\epsilon) } \loss{\query^*} \leq (1+ 3 \epsilon)\loss{\query^*}.
         \end{equation*}
 \end{proof}
-A key consequence of that theorem is that one can minimize on the estimated loss $\estloss{\mathcal{S}}{}$ and still guarantee a low error on the true loss, even when the size of $\mathcal{S}$ is small before the size of $\mathcal{X}$. Therefore, it makes coreset very relevant in a machine learning context, and  inscribes them into a more general learning framework that is PAC learning.
+A key consequence of that theorem is that one can minimize on the estimated loss $\estloss{\mathcal{S}}{}$ and still guarantee a low error on the true loss, even when the size of $\mathcal{S}$ is small before the size of $\mathcal{X}$. Therefore, it makes coreset very relevant in a machine learning context, and inscribes them into a more general learning framework that is PAC learning.
 
 \section{Coresets and PAC learning}
 In computational learning theory, probably approximately correct (PAC) learning is a framework for mathematical analysis of machine learning. It was proposed in 1984 in \cite{valiant1984learnable}. The first idea is that a learning problem can be formulate into an expected risk minimization. In another words, by learning, one is interested in minimizing errors over a distribution of guesses it would have to make. To do so, the learner will receives samples and must select a prediction function based on them. The PAC framework states that the learner ability can be quantified by how probable (the "probably" part) the learner have a low generalization error (the "approximately correct" part) in some sense.
