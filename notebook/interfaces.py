@@ -46,13 +46,14 @@ def save_current_subplots(fig_directory, fig_name):
     # save figure and its subplots
     plt.savefig(fig_directory + fig_name)
     axes_list = plt.gcf().axes
+    print("Saving...", end="\r")
     if axes_list:
         for i_ax, ax in enumerate(axes_list):
             extent = ax.get_tightbbox().transformed(plt.gcf().dpi_scale_trans.inverted()).padded(0.1/2.54) # add 0.1 cm of padding (matplotlib unit is inches)
             plt.savefig(fig_directory + fig_name_stem + "_ax" + str(i_ax+1) + fig_name_suffix, bbox_inches=extent)
-        print(f"Saved figure and its {i_ax+1} subplots in {fig_directory} folder.")
+        print(f"Saved figure {fig_name} and its {i_ax+1} subplots in {fig_directory} folder.")
     else:
-        print(f"Saved figure in {fig_directory} folder.")    
+        print(f"Saved figure {fig_name} in {fig_directory} folder.")    
 
 def set_plotting_options(use_TeX, font_size):
     # reset plotting options, in case they has been coincidentaly altered
@@ -63,7 +64,9 @@ def set_plotting_options(use_TeX, font_size):
               'xtick.labelsize': font_size,
               'ytick.labelsize': font_size,
               'legend.fontsize': font_size,
-              'text.usetex': use_TeX} # see also 'ps.useafm', 'pdf.use14corefonts'
+              'text.usetex': use_TeX,
+              'ps.useafm': True,
+              'pdf.use14corefonts': True} # 'ps.useafm' and 'pdf.use14corefonts' for PS and PDF font comptatibiliies
     plt.rcParams.update(params)
 
 def plot_figure(my_plot, fig_width=6.4, fig_height=4.8, use_TeX=False, font_size=10):
@@ -73,7 +76,7 @@ def plot_figure(my_plot, fig_width=6.4, fig_height=4.8, use_TeX=False, font_size
     plt.figure(figsize=(fig_width, fig_height))
     my_plot()
     plt.tight_layout()
-    display(plt.gcf()) # use display() instead of plt.show(), because the latter close figure automatically which doesn't allow to save it later. However, it is better to not forget to close figure later.
+    display(plt.gcf()) # use display() instead of plt.show(), because the latter close figure automatically which doesn't allow to save it later. However, it is better not to forget to close figure later.
 
 def get_save_plots_interface(my_plot, 
                     fig_size=(6.4, 4.8), use_TeX=False, font_size=10,
@@ -128,6 +131,7 @@ def save_variables_as_dict(variable_names="var1, var2", output_directory="./npys
     # split along "," and strip potential extra-spaces 
     variable_names_list = [unstriped.strip() for unstriped in variable_names.split(",")]
 
+    print("Saving...", end="\r")
     if save_separately:
         # save each variable separately in a dict 
         # e.g. {name1:value1} in file OUTPUT_name1, {name2:value2} in file OUTPUT_name2

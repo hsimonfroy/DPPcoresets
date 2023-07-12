@@ -1,23 +1,44 @@
 import numpy as np
 
-def get_hypercube_data(n,d, border=1, remove_subcube=False):
+def get_hypercube_data(n,d, border=1):
     data = border*2*(np.random.rand(n, d) - .5)
-    if remove_subcube:
-        filtered_data = []
-        for point in data:
-            if (point < 0).any():
-                filtered_data.append(point)
-        return np.array(filtered_data)
-    else:
-        return data
+    return data
 
-def get_disk_data(n,d, radius=1):
+def get_disk_data(n, d, radius=1):
+    n = round(n * 4/(np.pi*radius**2)) # to compensate for filtering
     data = 2*(np.random.rand(n, d) - .5)
     filtered_data = []
     for point in data:
         if np.linalg.norm(point)<radius:
             filtered_data.append(point)
     return np.array(filtered_data)
+
+
+
+
+
+def get_evenly_spaced_circle(radius, n_circles):
+    angles = 2*np.pi*np.arange(n_circles)/n_circles + np.pi/4
+    means = np.stack((radius*np.cos(angles), radius*np.sin(angles)))
+    return means.T
+
+def get_circle_data(n, d, n_circle, n_means=None, radius=0.5*2**.5, variance=1/49, border=1):
+    means = get_evenly_spaced_circle(radius, n_circle)
+    covariances = [variance*np.identity(d) for i in range(n_circle)]
+    data = []
+    if n_means is None:
+        n_means = n_circle
+
+    for i in range(n_means):
+        data.extend(np.random.multivariate_normal(means[i], covariances[i], round(n/n_means)))
+    filtered_data = []
+    for point in data:
+        if (np.abs(point) < border).all():
+            filtered_data.append(point)
+    return np.array(filtered_data)
+
+
+
 
 
 
@@ -45,25 +66,6 @@ def get_corner_data(n, d, means=None, variance=1/25, border=1):
     data = []
     for i in range(k):
         data.extend(np.random.multivariate_normal(means[i], covariances[i], int(n/k)))
-    filtered_data = []
-    for point in data:
-        if (np.abs(point) < border).all():
-            filtered_data.append(point)
-    return np.array(filtered_data)
-
-
-
-def get_evenly_spaced_circle(radius, n_circles):
-    angles = 2*np.pi*np.arange(n_circles)/n_circles + np.pi/4
-    means = np.stack((radius*np.cos(angles), radius*np.sin(angles)))
-    return means.T
-
-def get_circle_data(n, d, n_circles, radius, variance=1/25, border=1):
-    means = get_evenly_spaced_circle(radius, n_circles)
-    covariances = [variance*np.identity(d) for i in range(n_circles)]
-    data = []
-    for i in range(n_circles):
-        data.extend(np.random.multivariate_normal(means[i], covariances[i], int(n/n_circles)))
     filtered_data = []
     for point in data:
         if (np.abs(point) < border).all():
