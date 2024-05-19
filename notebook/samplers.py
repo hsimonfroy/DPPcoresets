@@ -239,15 +239,16 @@ def best_quant(X, k, delta):
 
 def kmean_sensit_ub(X, k, delta):
     code, dist = best_quant(X, k, delta)
+    sq_dist = dist**2
     alpha = 16*(np.log(k) + 2)
     n = len(X)
-    c_phi = 1/n * dist.sum()
+    c_B = 1/n * sq_dist.sum()
     count_B = np.zeros(k, dtype=int)
-    dist_B = np.zeros(k)
-    for i, c in enumerate(code):
+    sq_dist_B = np.zeros(k)
+    for c, sqd in zip(code, sq_dist):
         count_B[c] += 1
-        dist_B[c] += dist[i]
-    sensit_ub = alpha*dist/c_phi + 2*alpha*dist_B[code]/(count_B[code]*c_phi) + 4*n/count_B[code]
+        sq_dist_B[c] += sqd
+    sensit_ub = 2*alpha*sq_dist/c_B + 4*alpha*sq_dist_B[code]/(count_B[code]*c_B) + 4*n/count_B[code]
     return sensit_ub
 
 def get_sensit_sample(X, m, k, delta):

@@ -1,4 +1,8 @@
 import numpy as np
+from pickle import dump, load, HIGHEST_PROTOCOL
+import matplotlib.pyplot as plt
+
+
 
 def get_hypercube_data(n,d, border=1):
     data = border*2*(np.random.rand(n, d) - .5)
@@ -127,5 +131,16 @@ def get_true_sensit(X, k):
 
 
 
+def pickle_dump(obj, path):
+    with open(path, 'wb') as file:
+        dump(obj, file, protocol=HIGHEST_PROTOCOL)
 
 
+def pickle_load(path):
+    with open(path, 'rb') as file:
+        return load(file)   
+
+def set_plotting_options(usetex=False):
+    params = {'text.usetex': usetex,
+              'font.family': 'roman' if usetex else None,}
+    plt.rcParams.update(params)
