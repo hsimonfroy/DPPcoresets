@@ -140,7 +140,8 @@ def pickle_load(path):
     with open(path, 'rb') as file:
         return load(file)   
 
-def set_plotting_options(usetex=False):
+def set_plotting_options(usetex=False, font_size=None):
     params = {'text.usetex': usetex,
-              'font.family': 'roman' if usetex else None,}
+              'font.family': 'roman' if usetex else None,
+              'font.size':font_size,}
     plt.rcParams.update(params)
