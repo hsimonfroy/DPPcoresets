@@ -280,3 +280,75 @@ def draw_uniform(X, m, nb_samples):
     samples = np.random.choice(n, (nb_samples, m))
     weights = None
     return samples, weights
+
+
+###########################
+#      sensitivity        #
+# for logistic regression #
+###########################
+from scipy.spatial import distance
+from scipy.cluster.vq import vq
+
+def D_squared_sampling(X, k):
+    n = len(X)
+    B = np.zeros(k, dtype=int)
+    B[0] = np.random.choice(n)
+    sqdist_to_B = np.full(n, np.inf)
+    for i in range(1,k):
+        sqdist_to_sample = distance.cdist(X[None,B[i-1]], X, 'sqeuclidean')[0]
+        sqdist_to_B = np.minimum(sqdist_to_B, sqdist_to_sample)
+        sample = np.random.choice(n, p=sqdist_to_B/sqdist_to_B.sum())
+        B[i] = sample
+    return B        
+
+
+def best_quant(X, k, delta):
+    n_runs = np.ceil(10*np.log(1/delta)).astype(int)
+    quant_error_min = np.inf
+    for i_run in range(n_runs):
+        B = D_squared_sampling(X, k)
+        code, dist = vq(X, X[B])
+        quant_error = (dist**2).sum()
+        if quant_error < quant_error_min:
+            quant_error_min = quant_error
+            code_min, dist_min = code, dist
+    return code_min, dist_min
+
+
+def logist_sensit_ub(X, k, delta, R):
+    """
+    cf. Lemma 3.1 from [Huggings+2017](http://arxiv.org/abs/1605.06423).
+    """
+    code, _ = best_quant(X, k, delta) # TODO: get best quant i.e. kmeans sol?
+    n = len(X)
+    count_B = np.zeros(k, dtype=int)
+    sum_B = np.zeros((k, X.shape[-1]))
+    for c in code:
+        count_B[c] += 1
+        sum_B[c] += X[c]
+
+    sensit_ub = np.ones(n)
+    for cb, sb in zip(count_B, sum_B):
+        sensit_ub += cb * np.exp( - R * ((sb/cb - X)**2).sum(-1)**.5)
+    
+    for i_c, c in enumerate(code): # correct for the term where sample is in cluster
+        cb, sb = count_B[c], sum_B[c]
+        sensit_ub[i_c] -= cb * np.exp( - R * ((sb/cb - X[i_c])**2).sum(-1)**.5)
+        sensit_ub[i_c] += (cb-1) * np.exp( - R * (((sb - X[i_c]) / (cb-1) - X[i_c])**2).sum(-1)**.5)
+    return n / sensit_ub
+
+
+def get_logist_sensit_sample(X, m, k, delta, R):
+    n = len(X)
+    sensit_ub = logist_sensit_ub(X, k, delta, R)
+    sensit_proba = sensit_ub/sensit_ub.sum()
+    samples = np.random.choice(n, m, p=sensit_proba)
+    weights = 1/(sensit_proba[samples]*m*n)
+    return samples, weights
+
+
+def draw_logist_sensitivity(X, m, nb_samples, k, delta, R):
+    samples, weights = np.empty((nb_samples, m), dtype=int), np.empty((nb_samples, m))
+    for i_sample in range(nb_samples):
+        samples[i_sample], weights[i_sample] = get_logist_sensit_sample(X, m, k, delta, R)
+    return samples, weights

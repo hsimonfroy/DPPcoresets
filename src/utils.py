@@ -3,6 +3,9 @@ from pickle import dump, load, HIGHEST_PROTOCOL
 import matplotlib.pyplot as plt
 
 
+###################
+# Data generation #
+###################
 
 def get_hypercube_data(n,d, border=1):
     data = border*2*(np.random.rand(n, d) - .5)
@@ -90,7 +93,9 @@ def get_corner_data(n, d, means=None, variance=1/25, border=1):
 
 
 
-
+#################
+# Loss and risk #
+#################
 from scipy.cluster.vq import vq
 
 def risk(X, queries):
@@ -113,8 +118,23 @@ def relative_error(y_hat, y):
 
 
 
+def logist_risk(X, y, queries):
+    energy = y * (X @ queries)
+    return np.log(1 + np.exp(energy))
+
+def logist_loss(X, y, query, samples=None, weights=None):
+    if samples is None:
+        return logist_risk(X, y, query).mean(-1)
+    elif weights is None:
+        return (logist_risk(X[samples], y[samples], query)).mean(-1)
+    else:
+        return (logist_risk(X[samples], y[samples], query) * weights).sum(-1)
 
 
+
+#########
+# Misc. #
+#########
 from itertools import combinations
 
 def get_true_sensit(X, k):
@@ -128,13 +148,9 @@ def get_true_sensit(X, k):
 
 
 
-
-
-
 def pickle_dump(obj, path):
     with open(path, 'wb') as file:
         dump(obj, file, protocol=HIGHEST_PROTOCOL)
-
 
 def pickle_load(path):
     with open(path, 'rb') as file:
