@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools >= 64.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "DPPcoresets"
+version = "0.0.1"
+authors = [{name="Hugo Simon-Onfroy"}] # email=""
+description = "Determinantal Point Processes (DPPs) for coreset sampling."
+dependencies = ["numpy","dppy"]
+readme = "README.md"
+requires-python = ">=3.7"
+urls = {Repository="https://github.com/hsimonfroy/DPPcoresets"} # Documentation=""
+
+[tool.setuptools]
+packages = ["dppcoresets"]
